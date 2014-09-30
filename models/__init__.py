@@ -1,1 +1,2 @@
 from models.SNESControllerWindow import SNESControllerWindow
+from models.SNESGPIOController import SNESGPIOController

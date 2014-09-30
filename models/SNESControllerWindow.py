@@ -3,6 +3,7 @@ from time import sleep
 
 class SNESControllerWindow(Frame):
 
+
   def __init__(self, base, snesController):
     super(SNESControllerWindow, self).__init__(base)
 
@@ -119,7 +120,27 @@ class SNESControllerWindow(Frame):
     self.BUTTON_SELECT["command"] = lambda: self.snesController.sendSNESCommand("SELECT")
     self.BUTTON_SELECT.grid(row=3, column=7)
 
-  def updateLabel(self, text):
-    self.LABEL_CMD["text"] = text
+  def getButtonForCommand(self, command):
+
+    buttons = {"A" : self.BUTTON_A,
+             "B" : self.BUTTON_B,
+             "X" : self.BUTTON_X,
+             "Y" : self.BUTTON_Y,
+             "SELECT" : self.BUTTON_SELECT,
+             "START" : self.BUTTON_START,
+             "LEFT" : self.BUTTON_LEFT,
+             "RIGHT" : self.BUTTON_RIGHT,
+             "TOP" : self.BUTTON_TOP,
+             "BOTTOM" : self.BUTTON_BOTTOM,
+    }
+
+    return buttons[command]
+
+  def updateLabel(self, command):
+    self.LABEL_CMD["text"] = command
+
+  def flashButton(self, command):
+    button = self.getButtonForCommand(command)
+    button.flash()
 
 
