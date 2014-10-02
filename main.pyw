@@ -29,9 +29,8 @@ app = VirtualControllerDisplay(appWindow, ctrlState)
 consoleCtrl = ConsoleController(ctrlState)
 
 # Now loads the GPIO Controller that will set state flags depending on the GPIO inputs
-# It needs the app to flash the buttons for instance
+# It needs the app to flash the buttons
 gpioCtrl = GPIOController(ctrlState, app)
-
 
 # Run main loop
 appWindow.mainloop()
