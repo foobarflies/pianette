@@ -1,12 +1,13 @@
 class ControllerState:
 
+  # Mapping
   state = { "T" : False,
             "S" : False,
             "X" : False,
             "O" : False,
             "TOP" : False,
             "BOTTOM" : False,
-            "RIGHT" : False
+            "RIGHT" : False,
             "LEFT" : False,
             "SELECT" : False,
             "START" : False,
@@ -20,9 +21,6 @@ class ControllerState:
         state_string += button + " "
 
     return state_string
-
-  def setFlag(self, flag, state):
-    self.state[flag] = state
 
   def raiseFlag(self, flag):
     self.state[flag] = True

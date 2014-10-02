@@ -2,10 +2,6 @@ import RPi.GPIO as GPIO
 
 class GPIOController:
 
-  # Pinout
-  KEY_1 = 15
-  KEY_2 = 3
-
   # Mapping
   KEYS  = { 15 : "T",
             3 : "S",
@@ -17,20 +13,18 @@ class GPIOController:
             # 10 : "LEFT",
             # 11 : "SELECT",
             # 12 : "START",
-            # We can have doubles
+            # We can have doubles : two GPIO that trigger the same controller keys
           }
 
   def __init__(self, stateController, app):
     self.stateController = stateController
     self.app = app
 
+    ## Attach a callback to each INPUT pin
     for pin, button in self.KEYS.items():
+      print("Attaching pin %s for button %s" % (pin, button) )
       GPIO.setup(pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
       GPIO.add_event_detect(pin, GPIO.RISING, callback=self.gpio_callback, bouncetime=300)
-
-    # FORCE Flex Sensor : needs PULLUP with other side to GND
-    #GPIO.setup(GPIOController.KEY_1, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-    #GPIO.add_event_detect(GPIOController.KEY_1, GPIO.RISING, callback=self.gpio_callback, bouncetime=300)
 
   def gpio_callback(self,channel):
 
@@ -42,4 +36,6 @@ class GPIOController:
     # Updates the UI to reflect the trigger
     self.app.updateLabel(command)
     self.app.flashButton(command)
+    # Debug
+    # print(self.stateController)
 

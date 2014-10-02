@@ -12,7 +12,7 @@ appWindow = Tk()
 appWindow.title("Virtual Controller")
 
 # Set fullscreen
-appWindow.geometry("{0}x{1}+0+0".format(appWindow.winfo_screenwidth(), appWindow.winfo_screenheight()))
+# appWindow.geometry("{0}x{1}+0+0".format(appWindow.winfo_screenwidth(), appWindow.winfo_screenheight()))
 appWindow.focus_set()  # <-- move focus to this widget
 # Binds <Escape> key to quit the program
 appWindow.bind("<Escape>", lambda e: e.widget.destroy())

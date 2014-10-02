@@ -3,11 +3,11 @@ from time import sleep
 
 class VirtualControllerDisplay(Frame):
 
-
   def __init__(self, base, stateController):
     super(VirtualControllerDisplay, self).__init__(base)
 
     self.stateController = stateController
+    self.base = base # appWindow
 
     self.grid()
     self.createButtons()
@@ -16,7 +16,7 @@ class VirtualControllerDisplay(Frame):
   def createUtilityButtons(self):
 # Quit button
     self.BUTTON_QUIT = Button(self)
-    self.BUTTON_QUIT["text"] = "╳ Quit"
+    self.BUTTON_QUIT["text"] = "Quit"
     self.BUTTON_QUIT["command"] = lambda: self.base.destroy()	
     self.BUTTON_QUIT.grid(row=7, column=5, columnspan=2)
 
@@ -47,69 +47,77 @@ class VirtualControllerDisplay(Frame):
 
 # O Button
     self.BUTTON_O = Button(self)
-    self.BUTTON_O["bg"] = "red"
-    self.BUTTON_O["activebackground"] = "red"
-    self.BUTTON_O["fg"] = "white"
+    self.BUTTON_O["bg"] = "darkGray"
+    self.BUTTON_O["activebackground"] = "darkGray"
+    self.BUTTON_O["fg"] = "red"
     self.BUTTON_O["height"] = 1
     self.BUTTON_O["width"] = 1
     self.BUTTON_O["text"] = "◯"
-    self.BUTTON_O["command"] = lambda: self.stateController.raiseFlag("O")
+    self.BUTTON_O["command"] = lambda: self.buttonAction("O")
     self.BUTTON_O.grid(row=4, column=9)
 # X Button
     self.BUTTON_X = Button(self)
-    self.BUTTON_X["bg"] = "blue"
-    self.BUTTON_X["activebackground"] = "blue"
-    self.BUTTON_X["fg"] = "white"
+    self.BUTTON_X["bg"] = "darkGray"
+    self.BUTTON_X["activebackground"] = "darkGray"
+    self.BUTTON_X["fg"] = "blue"
     self.BUTTON_X["height"] = 1
     self.BUTTON_X["width"] = 1
     self.BUTTON_X["text"] = "✕"
-    self.BUTTON_X["command"] = lambda: self.stateController.raiseFlag("X")
+    self.BUTTON_X["command"] = lambda: self.buttonAction("X")
     self.BUTTON_X.grid(row=5, column=8)
 # TRIANGLE Button
     self.BUTTON_T = Button(self)
-    self.BUTTON_T["bg"] = "green"
-    self.BUTTON_T["activebackground"] = "green"
-    self.BUTTON_T["fg"] = "white"
+    self.BUTTON_T["bg"] = "darkGray"
+    self.BUTTON_T["activebackground"] = "darkGray"
+    self.BUTTON_T["fg"] = "green"
     self.BUTTON_T["height"] = 1
     self.BUTTON_T["width"] = 1
     self.BUTTON_T["text"] = "△"
-    self.BUTTON_T["command"] = lambda: self.stateController.raiseFlag("T")
+    self.BUTTON_T["command"] = lambda: self.buttonAction("T")
     self.BUTTON_T.grid(row=3, column=8)
 # SQUARE Button
     self.BUTTON_S = Button(self)
-    self.BUTTON_S["bg"] = "pink"
-    self.BUTTON_S["activebackground"] = "pink"
-    self.BUTTON_S["fg"] = "white"
+    self.BUTTON_S["bg"] = "darkGray"
+    self.BUTTON_S["activebackground"] = "darkGray"
+    self.BUTTON_S["fg"] = "pink"
     self.BUTTON_S["height"] = 1
     self.BUTTON_S["width"] = 1
     self.BUTTON_S["text"] = "▢"
-    self.BUTTON_S["command"] = lambda: self.stateController.raiseFlag("S")
+    self.BUTTON_S["command"] = lambda: self.buttonAction("S")
     self.BUTTON_S.grid(row=4, column=7)
 
 # Movement Buttons
     self.BUTTON_LEFT = Button(self)
+    self.BUTTON_LEFT["bg"] = "darkSlateGray"
+    self.BUTTON_LEFT["activebackground"] = "darkSlateGray"
     self.BUTTON_LEFT["height"] = 1
     self.BUTTON_LEFT["width"] = 1
     self.BUTTON_LEFT["text"] = "◀"
-    self.BUTTON_LEFT["command"] = lambda: self.stateController.raiseFlag("LEFT")
+    self.BUTTON_LEFT["command"] = lambda: self.buttonAction("LEFT")
     self.BUTTON_LEFT.grid(row=4, column=1)
     self.BUTTON_RIGHT = Button(self)
+    self.BUTTON_RIGHT["bg"] = "darkSlateGray"
+    self.BUTTON_RIGHT["activebackground"] = "darkSlateGray"
     self.BUTTON_RIGHT["height"] = 1
     self.BUTTON_RIGHT["width"] = 1
     self.BUTTON_RIGHT["text"] = "▶"
-    self.BUTTON_RIGHT["command"] = lambda: self.stateController.raiseFlag("RIGHT")
+    self.BUTTON_RIGHT["command"] = lambda: self.buttonAction("RIGHT")
     self.BUTTON_RIGHT.grid(row=4, column=3)
     self.BUTTON_TOP = Button(self)
+    self.BUTTON_TOP["bg"] = "darkSlateGray"
+    self.BUTTON_TOP["activebackground"] = "darkSlateGray"
     self.BUTTON_TOP["height"] = 1
     self.BUTTON_TOP["width"] = 1
     self.BUTTON_TOP["text"] = "▲"
-    self.BUTTON_TOP["command"] = lambda: self.stateController.raiseFlag("TOP")
+    self.BUTTON_TOP["command"] = lambda: self.buttonAction("TOP")
     self.BUTTON_TOP.grid(row=3, column=2)
     self.BUTTON_BOTTOM = Button(self)
+    self.BUTTON_BOTTOM["bg"] = "darkSlateGray"
+    self.BUTTON_BOTTOM["activebackground"] = "darkSlateGray"
     self.BUTTON_BOTTOM["height"] = 1
     self.BUTTON_BOTTOM["width"] = 1
     self.BUTTON_BOTTOM["text"] = "▼"
-    self.BUTTON_BOTTOM["command"] = lambda: self.stateController.raiseFlag("BOTTOM")
+    self.BUTTON_BOTTOM["command"] = lambda: self.buttonAction("BOTTOM")
     self.BUTTON_BOTTOM.grid(row=5, column=2)
 
 # Select and Start
@@ -124,7 +132,7 @@ class VirtualControllerDisplay(Frame):
     self.BUTTON_START["height"] = 1
     self.BUTTON_START["text"] = "START"
     self.BUTTON_START["font"] = ('Helvetica', '7')
-    self.BUTTON_START["command"] = lambda: self.stateController.raiseFlag("START")
+    self.BUTTON_START["command"] = lambda: self.buttonAction("START")
     self.BUTTON_START.pack(side=LEFT)
     self.BUTTON_SELECT = Button(self.FRAME_MIDDLE)
     self.BUTTON_SELECT["bg"] = "grey"
@@ -133,9 +141,15 @@ class VirtualControllerDisplay(Frame):
     self.BUTTON_SELECT["height"] = 1
     self.BUTTON_SELECT["text"] = "SEL"
     self.BUTTON_SELECT["font"] = ('Helvetica', '7')
-    self.BUTTON_SELECT["command"] = lambda: self.stateController.raiseFlag("SELECT")
+    self.BUTTON_SELECT["command"] = lambda: self.buttonAction("SELECT")
     self.BUTTON_SELECT.pack(side=LEFT)
-
+ 
+  def buttonAction(self, command):
+    self.stateController.raiseFlag(command)
+    self.updateLabel(command)
+    self.flashButton(command)
+    # Debug
+    # print (self.stateController)
 
   def getButtonForCommand(self, command):
 
@@ -155,6 +169,7 @@ class VirtualControllerDisplay(Frame):
 
   def updateLabel(self, command):
     self.LABEL_CMD["text"] = command
+    self.base.update()
 
   def flashButton(self, command):
     button = self.getButtonForCommand(command)

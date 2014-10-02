@@ -36,7 +36,7 @@ class ConsoleController:
     logging.basicConfig(filename='/home/pi/Desktop/SNESTest/log/snesCommands.log', filemode='a', level=logging.INFO, format='%(asctime)s.%(msecs).03d : %(message)s', datefmt='%m/%d/%Y %H:%M:%S')
     self.stateController = stateController
 
-    if (self.sendState):
+    if (self.sendState == True):
       GPIO.setup(ConsoleController.ATT_PIN, GPIO.IN)
       GPIO.setup(ConsoleController.CLK_PIN, GPIO.IN)
       GPIO.setup(ConsoleController.DATA_PIN, GPIO.OUT)
@@ -45,11 +45,15 @@ class ConsoleController:
       # ATT will go low to get the attention of the controller
       GPIO.add_event_detect(ConsoleController.ATT_PIN, GPIO.FALLING, callback=self.sendState, bouncetime=300)
 
-  def sendState(self):
+  def sendState(self, channel):
     print("Sending state :", self.stateController)
     logging.info(self.stateController)
     
     # BITBANG ALL THE SH*T !!!
-    # if (self.sendState):
+    # if (self.sendState == True):
       # GPIO.output(ConsoleController.DATA_PIN, True)
+
+    # Clears all the sent button for next iteration
+    self.stateController.clearFlags()
+
 
