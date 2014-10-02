@@ -2,13 +2,18 @@
 
 from tkinter import *
 from models import *
+import logging
 import RPi.GPIO as GPIO
 	
 class SNESController:
 
+  def __init__(self):
+    logging.basicConfig(filename='/home/pi/Desktop/SNESTest/log/snesCommands.log', filemode='a', level=logging.INFO, format='%(asctime)s.%(msecs).03d : %(message)s', datefmt='%m/%d/%Y %H:%M:%S')
+
   def sendSNESCommand(self, command):
     global app
     print("Command :", command)
+    logging.info(command)
     app.updateLabel(command)
     app.flashButton(command)
 
@@ -19,12 +24,13 @@ class SNESController:
 snesCtrl = SNESController()
 
 appWindow = Tk()
-appWindow.title = "SNES Controller"
+appWindow.title("SNES Controller")
 
 # Set fullscreen
 appWindow.geometry("{0}x{1}+0+0".format(appWindow.winfo_screenwidth(), appWindow.winfo_screenheight()))
 appWindow.focus_set()  # <-- move focus to this widget
 appWindow.bind("<Escape>", lambda e: e.widget.destroy())
+appWindow.overrideredirect(True)
 
 # Inject the controller in the "view"
 app = SNESControllerWindow(appWindow, snesCtrl)

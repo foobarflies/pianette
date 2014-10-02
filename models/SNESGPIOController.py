@@ -3,8 +3,8 @@ import RPi.GPIO as GPIO
 class SNESGPIOController:
 
   # Pinout
-  KEY_1 = 21
-  KEY_2 = 13
+  KEY_1 = 15
+  KEY_2 = 3
 
   def __init__(self, app, snesController):
     self.app = app

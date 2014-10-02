@@ -16,20 +16,32 @@ class SNESControllerWindow(Frame):
   def createUtilityButtons(self):
 # Quit button
     self.BUTTON_QUIT = Button(self)
-    self.BUTTON_QUIT["text"] = "Quit"
+    self.BUTTON_QUIT["text"] = "╳ Quit"
     self.BUTTON_QUIT["command"] = lambda: self.snesController.quitController()	
-    self.BUTTON_QUIT.grid(row=5	, column=4, columnspan=2)
+    self.BUTTON_QUIT.grid(row=7, column=5, columnspan=2)
 
 # Label for commands
     self.LABEL_CMD = Label(self)
-    self.LABEL_CMD["text"] = ""
+    self.LABEL_CMD["text"] = "..."
     self.LABEL_CMD["relief"] = SUNKEN
-    self.LABEL_CMD.grid(row=0, column=4	, columnspan=2, padx=1, pady=1)
+    self.LABEL_CMD["font"] = ('Helvetica', '16')
+    self.LABEL_CMD.grid(row=1, column=5	, columnspan=2, padx=1, pady=1, sticky="we")
 
 # Placeholder for swag
     self.LABEL_PLACEHOLDER = Label(self)
     self.LABEL_PLACEHOLDER["text"] = "  "
-    self.LABEL_PLACEHOLDER.grid(row=1, column=4	, columnspan=2)
+    self.LABEL_PLACEHOLDER.grid(row=0, column=4	, columnspan=2)
+
+# Placeholder for swag
+    self.LABEL_PLACEHOLDER = Label(self)
+    self.LABEL_PLACEHOLDER["text"] = "  "
+    self.LABEL_PLACEHOLDER.grid(row=2, column=4	, columnspan=2)
+
+# Placeholder for swag
+    self.LABEL_PLACEHOLDER = Label(self)
+    self.LABEL_PLACEHOLDER["text"] = "  "
+    self.LABEL_PLACEHOLDER["font"] = ('Helvetica', '30')
+    self.LABEL_PLACEHOLDER.grid(row=6, column=4	, columnspan=2)
 
   def createButtons(self):
 
@@ -42,7 +54,7 @@ class SNESControllerWindow(Frame):
     self.BUTTON_A["width"] = 1
     self.BUTTON_A["text"] = "A"
     self.BUTTON_A["command"] = lambda: self.snesController.sendSNESCommand("A")
-    self.BUTTON_A.grid(row=3, column=10)
+    self.BUTTON_A.grid(row=4, column=9)
 # B Button
     self.BUTTON_B = Button(self)
     self.BUTTON_B["bg"] = "yellow"
@@ -52,7 +64,7 @@ class SNESControllerWindow(Frame):
     self.BUTTON_B["width"] = 1
     self.BUTTON_B["text"] = "B"
     self.BUTTON_B["command"] = lambda: self.snesController.sendSNESCommand("B")
-    self.BUTTON_B.grid(row=4, column=9	)
+    self.BUTTON_B.grid(row=5, column=8)
 # X Button
     self.BUTTON_X = Button(self)
     self.BUTTON_X["bg"] = "blue"
@@ -62,7 +74,7 @@ class SNESControllerWindow(Frame):
     self.BUTTON_X["width"] = 1
     self.BUTTON_X["text"] = "X"
     self.BUTTON_X["command"] = lambda: self.snesController.sendSNESCommand("X")
-    self.BUTTON_X.grid(row=2, column=9)
+    self.BUTTON_X.grid(row=3, column=8)
 # Y Button
     self.BUTTON_Y = Button(self)
     self.BUTTON_Y["bg"] = "green"
@@ -72,7 +84,7 @@ class SNESControllerWindow(Frame):
     self.BUTTON_Y["width"] = 1
     self.BUTTON_Y["text"] = "Y"
     self.BUTTON_Y["command"] = lambda: self.snesController.sendSNESCommand("Y")
-    self.BUTTON_Y.grid(row=3, column=8)
+    self.BUTTON_Y.grid(row=4, column=7)
 
 # Movement Buttons
     self.BUTTON_LEFT = Button(self)
@@ -80,28 +92,32 @@ class SNESControllerWindow(Frame):
     self.BUTTON_LEFT["width"] = 1
     self.BUTTON_LEFT["text"] = "◀"
     self.BUTTON_LEFT["command"] = lambda: self.snesController.sendSNESCommand("LEFT")
-    self.BUTTON_LEFT.grid(row=3, column=1)
+    self.BUTTON_LEFT.grid(row=4, column=1)
     self.BUTTON_RIGHT = Button(self)
     self.BUTTON_RIGHT["height"] = 1
     self.BUTTON_RIGHT["width"] = 1
     self.BUTTON_RIGHT["text"] = "▶"
     self.BUTTON_RIGHT["command"] = lambda: self.snesController.sendSNESCommand("RIGHT")
-    self.BUTTON_RIGHT.grid(row=3, column=3)
+    self.BUTTON_RIGHT.grid(row=4, column=3)
     self.BUTTON_TOP = Button(self)
     self.BUTTON_TOP["height"] = 1
     self.BUTTON_TOP["width"] = 1
     self.BUTTON_TOP["text"] = "▲"
     self.BUTTON_TOP["command"] = lambda: self.snesController.sendSNESCommand("TOP")
-    self.BUTTON_TOP.grid(row=2, column=2)
+    self.BUTTON_TOP.grid(row=3, column=2)
     self.BUTTON_BOTTOM = Button(self)
     self.BUTTON_BOTTOM["height"] = 1
     self.BUTTON_BOTTOM["width"] = 1
     self.BUTTON_BOTTOM["text"] = "▼"
     self.BUTTON_BOTTOM["command"] = lambda: self.snesController.sendSNESCommand("BOTTOM")
-    self.BUTTON_BOTTOM.grid(row=4, column=2)
+    self.BUTTON_BOTTOM.grid(row=5, column=2)
 
 # Select and Start
-    self.BUTTON_START = Button(self)
+    self.FRAME_MIDDLE = Frame(self)
+    self.FRAME_MIDDLE.grid(row=4, column=5, columnspan=2, sticky="we")
+    self.FRAME_MIDDLE.grid_propagate(0)
+
+    self.BUTTON_START = Button(self.FRAME_MIDDLE)
     self.BUTTON_START["bg"] = "grey"
     self.BUTTON_START["activebackground"] = "grey"
     self.BUTTON_START["fg"] = "white"
@@ -109,16 +125,17 @@ class SNESControllerWindow(Frame):
     self.BUTTON_START["text"] = "START"
     self.BUTTON_START["font"] = ('Helvetica', '7')
     self.BUTTON_START["command"] = lambda: self.snesController.sendSNESCommand("START")
-    self.BUTTON_START.grid(row=3, column=5)
-    self.BUTTON_SELECT = Button(self)
+    self.BUTTON_START.pack(side=LEFT)
+    self.BUTTON_SELECT = Button(self.FRAME_MIDDLE)
     self.BUTTON_SELECT["bg"] = "grey"
-    self.BUTTON_SELECT	["activebackground"] = "grey"
+    self.BUTTON_SELECT["activebackground"] = "grey"
     self.BUTTON_SELECT["fg"] = "white"
     self.BUTTON_SELECT["height"] = 1
     self.BUTTON_SELECT["text"] = "SEL"
     self.BUTTON_SELECT["font"] = ('Helvetica', '7')
     self.BUTTON_SELECT["command"] = lambda: self.snesController.sendSNESCommand("SELECT")
-    self.BUTTON_SELECT.grid(row=3, column=7)
+    self.BUTTON_SELECT.pack(side=LEFT)
+
 
   def getButtonForCommand(self, command):
 
