@@ -2,46 +2,41 @@
 
 from tkinter import *
 from models import *
+
 import logging
 import RPi.GPIO as GPIO
-	
-class SNESController:
 
-  def __init__(self):
-    logging.basicConfig(filename='/home/pi/Desktop/SNESTest/log/snesCommands.log', filemode='a', level=logging.INFO, format='%(asctime)s.%(msecs).03d : %(message)s', datefmt='%m/%d/%Y %H:%M:%S')
-
-  def sendSNESCommand(self, command):
-    global app
-    print("Command :", command)
-    logging.info(command)
-    app.updateLabel(command)
-    app.flashButton(command)
-
-  def quitController(self):
-    global appWindow
-    appWindow.destroy()
-
-snesCtrl = SNESController()
+GPIO.setmode(GPIO.BCM)
 
 appWindow = Tk()
-appWindow.title("SNES Controller")
+appWindow.title("Virtual Controller")
 
 # Set fullscreen
 appWindow.geometry("{0}x{1}+0+0".format(appWindow.winfo_screenwidth(), appWindow.winfo_screenheight()))
 appWindow.focus_set()  # <-- move focus to this widget
+# Binds <Escape> key to quit the program
 appWindow.bind("<Escape>", lambda e: e.widget.destroy())
+# Removes the title bar and menu bar
 appWindow.overrideredirect(True)
 
-# Inject the controller in the "view"
-app = SNESControllerWindow(appWindow, snesCtrl)
+# This holds the controller state at any moment
+ctrlState = ControllerState()
 
-# Now loads the GPIO Controller
-snesGPIO = SNESGPIOController(app, snesCtrl)
+# The virtual controller can set state flags via the UI
+app = VirtualControllerDisplay(appWindow, ctrlState)
+
+# Instantiate the console controller that will send out the state to the console when needed
+consoleCtrl = ConsoleController(ctrlState)
+
+# Now loads the GPIO Controller that will set state flags depending on the GPIO inputs
+# It needs the app to flash the buttons for instance
+gpioCtrl = GPIOController(ctrlState, app)
+
 
 # Run main loop
 appWindow.mainloop()
 
-# Cleanup
+# Cleanup GPIOs
 GPIO.cleanup()
 
 

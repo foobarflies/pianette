@@ -1,13 +1,13 @@
 from tkinter import *
 from time import sleep
 
-class SNESControllerWindow(Frame):
+class VirtualControllerDisplay(Frame):
 
 
-  def __init__(self, base, snesController):
-    super(SNESControllerWindow, self).__init__(base)
+  def __init__(self, base, stateController):
+    super(VirtualControllerDisplay, self).__init__(base)
 
-    self.snesController = snesController
+    self.stateController = stateController
 
     self.grid()
     self.createButtons()
@@ -17,7 +17,7 @@ class SNESControllerWindow(Frame):
 # Quit button
     self.BUTTON_QUIT = Button(self)
     self.BUTTON_QUIT["text"] = "╳ Quit"
-    self.BUTTON_QUIT["command"] = lambda: self.snesController.quitController()	
+    self.BUTTON_QUIT["command"] = lambda: self.base.destroy()	
     self.BUTTON_QUIT.grid(row=7, column=5, columnspan=2)
 
 # Label for commands
@@ -45,26 +45,16 @@ class SNESControllerWindow(Frame):
 
   def createButtons(self):
 
-# A Button
-    self.BUTTON_A = Button(self)
-    self.BUTTON_A["bg"] = "red"
-    self.BUTTON_A["activebackground"] = "red"
-    self.BUTTON_A["fg"] = "white"
-    self.BUTTON_A["height"] = 1
-    self.BUTTON_A["width"] = 1
-    self.BUTTON_A["text"] = "A"
-    self.BUTTON_A["command"] = lambda: self.snesController.sendSNESCommand("A")
-    self.BUTTON_A.grid(row=4, column=9)
-# B Button
-    self.BUTTON_B = Button(self)
-    self.BUTTON_B["bg"] = "yellow"
-    self.BUTTON_B["activebackground"] = "yellow"
-    self.BUTTON_B["fg"] = "white"
-    self.BUTTON_B["height"] = 1
-    self.BUTTON_B["width"] = 1
-    self.BUTTON_B["text"] = "B"
-    self.BUTTON_B["command"] = lambda: self.snesController.sendSNESCommand("B")
-    self.BUTTON_B.grid(row=5, column=8)
+# O Button
+    self.BUTTON_O = Button(self)
+    self.BUTTON_O["bg"] = "red"
+    self.BUTTON_O["activebackground"] = "red"
+    self.BUTTON_O["fg"] = "white"
+    self.BUTTON_O["height"] = 1
+    self.BUTTON_O["width"] = 1
+    self.BUTTON_O["text"] = "◯"
+    self.BUTTON_O["command"] = lambda: self.stateController.raiseFlag("O")
+    self.BUTTON_O.grid(row=4, column=9)
 # X Button
     self.BUTTON_X = Button(self)
     self.BUTTON_X["bg"] = "blue"
@@ -72,44 +62,54 @@ class SNESControllerWindow(Frame):
     self.BUTTON_X["fg"] = "white"
     self.BUTTON_X["height"] = 1
     self.BUTTON_X["width"] = 1
-    self.BUTTON_X["text"] = "X"
-    self.BUTTON_X["command"] = lambda: self.snesController.sendSNESCommand("X")
-    self.BUTTON_X.grid(row=3, column=8)
-# Y Button
-    self.BUTTON_Y = Button(self)
-    self.BUTTON_Y["bg"] = "green"
-    self.BUTTON_Y["activebackground"] = "green"
-    self.BUTTON_Y["fg"] = "white"
-    self.BUTTON_Y["height"] = 1
-    self.BUTTON_Y["width"] = 1
-    self.BUTTON_Y["text"] = "Y"
-    self.BUTTON_Y["command"] = lambda: self.snesController.sendSNESCommand("Y")
-    self.BUTTON_Y.grid(row=4, column=7)
+    self.BUTTON_X["text"] = "✕"
+    self.BUTTON_X["command"] = lambda: self.stateController.raiseFlag("X")
+    self.BUTTON_X.grid(row=5, column=8)
+# TRIANGLE Button
+    self.BUTTON_T = Button(self)
+    self.BUTTON_T["bg"] = "green"
+    self.BUTTON_T["activebackground"] = "green"
+    self.BUTTON_T["fg"] = "white"
+    self.BUTTON_T["height"] = 1
+    self.BUTTON_T["width"] = 1
+    self.BUTTON_T["text"] = "△"
+    self.BUTTON_T["command"] = lambda: self.stateController.raiseFlag("T")
+    self.BUTTON_T.grid(row=3, column=8)
+# SQUARE Button
+    self.BUTTON_S = Button(self)
+    self.BUTTON_S["bg"] = "pink"
+    self.BUTTON_S["activebackground"] = "pink"
+    self.BUTTON_S["fg"] = "white"
+    self.BUTTON_S["height"] = 1
+    self.BUTTON_S["width"] = 1
+    self.BUTTON_S["text"] = "▢"
+    self.BUTTON_S["command"] = lambda: self.stateController.raiseFlag("S")
+    self.BUTTON_S.grid(row=4, column=7)
 
 # Movement Buttons
     self.BUTTON_LEFT = Button(self)
     self.BUTTON_LEFT["height"] = 1
     self.BUTTON_LEFT["width"] = 1
     self.BUTTON_LEFT["text"] = "◀"
-    self.BUTTON_LEFT["command"] = lambda: self.snesController.sendSNESCommand("LEFT")
+    self.BUTTON_LEFT["command"] = lambda: self.stateController.raiseFlag("LEFT")
     self.BUTTON_LEFT.grid(row=4, column=1)
     self.BUTTON_RIGHT = Button(self)
     self.BUTTON_RIGHT["height"] = 1
     self.BUTTON_RIGHT["width"] = 1
     self.BUTTON_RIGHT["text"] = "▶"
-    self.BUTTON_RIGHT["command"] = lambda: self.snesController.sendSNESCommand("RIGHT")
+    self.BUTTON_RIGHT["command"] = lambda: self.stateController.raiseFlag("RIGHT")
     self.BUTTON_RIGHT.grid(row=4, column=3)
     self.BUTTON_TOP = Button(self)
     self.BUTTON_TOP["height"] = 1
     self.BUTTON_TOP["width"] = 1
     self.BUTTON_TOP["text"] = "▲"
-    self.BUTTON_TOP["command"] = lambda: self.snesController.sendSNESCommand("TOP")
+    self.BUTTON_TOP["command"] = lambda: self.stateController.raiseFlag("TOP")
     self.BUTTON_TOP.grid(row=3, column=2)
     self.BUTTON_BOTTOM = Button(self)
     self.BUTTON_BOTTOM["height"] = 1
     self.BUTTON_BOTTOM["width"] = 1
     self.BUTTON_BOTTOM["text"] = "▼"
-    self.BUTTON_BOTTOM["command"] = lambda: self.snesController.sendSNESCommand("BOTTOM")
+    self.BUTTON_BOTTOM["command"] = lambda: self.stateController.raiseFlag("BOTTOM")
     self.BUTTON_BOTTOM.grid(row=5, column=2)
 
 # Select and Start
@@ -124,7 +124,7 @@ class SNESControllerWindow(Frame):
     self.BUTTON_START["height"] = 1
     self.BUTTON_START["text"] = "START"
     self.BUTTON_START["font"] = ('Helvetica', '7')
-    self.BUTTON_START["command"] = lambda: self.snesController.sendSNESCommand("START")
+    self.BUTTON_START["command"] = lambda: self.stateController.raiseFlag("START")
     self.BUTTON_START.pack(side=LEFT)
     self.BUTTON_SELECT = Button(self.FRAME_MIDDLE)
     self.BUTTON_SELECT["bg"] = "grey"
@@ -133,23 +133,23 @@ class SNESControllerWindow(Frame):
     self.BUTTON_SELECT["height"] = 1
     self.BUTTON_SELECT["text"] = "SEL"
     self.BUTTON_SELECT["font"] = ('Helvetica', '7')
-    self.BUTTON_SELECT["command"] = lambda: self.snesController.sendSNESCommand("SELECT")
+    self.BUTTON_SELECT["command"] = lambda: self.stateController.raiseFlag("SELECT")
     self.BUTTON_SELECT.pack(side=LEFT)
 
 
   def getButtonForCommand(self, command):
 
-    buttons = {"A" : self.BUTTON_A,
-             "B" : self.BUTTON_B,
-             "X" : self.BUTTON_X,
-             "Y" : self.BUTTON_Y,
-             "SELECT" : self.BUTTON_SELECT,
-             "START" : self.BUTTON_START,
-             "LEFT" : self.BUTTON_LEFT,
-             "RIGHT" : self.BUTTON_RIGHT,
-             "TOP" : self.BUTTON_TOP,
-             "BOTTOM" : self.BUTTON_BOTTOM,
-    }
+    buttons = { "O" : self.BUTTON_O,
+                "X" : self.BUTTON_X,
+                "T" : self.BUTTON_T,
+                "S" : self.BUTTON_S,
+                "SELECT" : self.BUTTON_SELECT,
+                "START" : self.BUTTON_START,
+                "LEFT" : self.BUTTON_LEFT,
+                "RIGHT" : self.BUTTON_RIGHT,
+                "TOP" : self.BUTTON_TOP,
+                "BOTTOM" : self.BUTTON_BOTTOM,
+              }
 
     return buttons[command]
 
