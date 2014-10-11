@@ -4,11 +4,11 @@ import logging
 class ConsoleController:
 
   # Declare pins for console dialog
-  ATT_PIN = 1
-  DATA_PIN = 2
-  # CMD_PIN = 3 # This signal can be ignored
-  CLK_PIN = 4
-  ACK_PIN = 5
+  ATT_PIN = 8 # PSX Controller Yellow
+  DATA_PIN = 9 # PSX Controller Brown
+  CMD_PIN = 10 # PSX Controller Orange
+  CLK_PIN = 11 # PSX Controller Blue
+  ACK_PIN = 25 # PSX Controller Green
 
   # DATA : Signal from Controller to PSX.
   # This signal is an 8 bit serial transmission synchronous to the falling edge of clock (That is both the incoming and outgoing signals change on a high to low transition of clock. All the reading of signals is done on the leading edge to allow settling time.)
