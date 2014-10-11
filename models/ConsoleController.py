@@ -46,14 +46,14 @@ class ConsoleController:
 
   def sendStateBit(self, channel):
     state_byte = self.state_as_bytes[self.state_as_bytes_txn_bytecount]
-    state_bit = (state_byte >> self.state_as_bytes_txn_byte_bitcount) && 1
+    state_bit = (state_byte >> self.state_as_bytes_txn_byte_bitcount) & 1
 
     GPIO.output(ConsoleController.DATA_PIN, state_bit)
 
-    self.state_as_bytes_txn_byte_bitcount++
+    self.state_as_bytes_txn_byte_bitcount+= 1
     if (self.state_as_bytes_txn_byte_bitcount == 8):
       self.state_as_bytes_txn_byte_bitcount = 0
-      self.state_as_bytes_txn_bytecount++
+      self.state_as_bytes_txn_bytecount+= 1
 
       if (self.state_as_bytes_txn_bytecount > len(self.state_as_bytes)):
         # If end of sequence is reached, end transmission
