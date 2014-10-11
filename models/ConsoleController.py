@@ -89,19 +89,19 @@ class ConsoleController:
     self.state_as_bytes = [ 0xFF, 0x41, 0x5A ] # Controller ID
 
     self.state_as_bytes.append( # Data byte 1
-      (self.stateController.state["SELECT"] & 0b00000001) |
-      (self.stateController.state["START"]  & 0b00001000) |
-      (self.stateController.state["TOP"]    & 0b00010000) |
-      (self.stateController.state["RIGHT"]  & 0b00100000) |
-      (self.stateController.state["BOTTOM"] & 0b01000000) |
-      (self.stateController.state["LEFT"]   & 0b10000000)
+      (0b00000001 if self.stateController.state["SELECT"] else 0) |
+      (0b00001000 if self.stateController.state["START"] else 0) |
+      (0b00010000 if self.stateController.state["TOP"] else 0) |
+      (0b00100000 if self.stateController.state["RIGHT"] else 0) |
+      (0b01000000 if self.stateController.state["BOTTOM"] else 0) |
+      (0b10000000 if self.stateController.state["LEFT"] else 0)
     )
 
     self.state_as_bytes.append( # Data byte 2
-      (self.stateController.state["T"] & 0b00010000) |
-      (self.stateController.state["O"] & 0b00100000) |
-      (self.stateController.state["X"] & 0b01000000) |
-      (self.stateController.state["S"] & 0b10000000)
+      (0b00010000 if self.stateController.state["T"] else 0) |
+      (0b00100000 if self.stateController.state["O"] else 0) |
+      (0b01000000 if self.stateController.state["X"] else 0) |
+      (0b10000000 if self.stateController.state["S"] else 0)
     )
 
     self.state_as_bytes_txn_bytecount = 0
