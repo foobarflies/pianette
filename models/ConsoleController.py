@@ -33,18 +33,27 @@ class ConsoleController:
   # It should also be noted that this is a bus of sorts. This means that the wires are all tied together (except select which is seperate for each device). For the CLK, ATT, and CMD pins this does not matter as the PSX is always the originator. The DATA and ACK pins however can be driven from any one of four devices. To avoid contentions on these lines they are open collectors and can only be driven low.
 
   def __init__(self, stateController):
-    logging.basicConfig(filename='/home/pi/Desktop/SNESTest/log/snesCommands.log', filemode='a', level=logging.INFO, format='%(asctime)s.%(msecs).03d : %(message)s', datefmt='%m/%d/%Y %H:%M:%S')
+    logging.basicConfig(filename='/home/pi/Desktop/VirtualManette/log/snesCommands.log', filemode='a', level=logging.INFO, format='%(asctime)s.%(msecs).03d : %(message)s', datefmt='%m/%d/%Y %H:%M:%S')
     self.stateController = stateController
+
+    GPIO.setmode(GPIO.BCM)
 
     GPIO.setup(ConsoleController.ATT_PIN, GPIO.IN)
     GPIO.setup(ConsoleController.CLK_PIN, GPIO.IN)
     GPIO.setup(ConsoleController.DATA_PIN, GPIO.OUT)
     GPIO.setup(ConsoleController.ACK_PIN, GPIO.OUT)
 
+    self.state_as_bytes_txn = False
+    GPIO.add_event_detect(ConsoleController.CLK_PIN, GPIO.FALLING, callback=self.sendStateBit)
+
     # ATT will go low to get the attention of the controller
     GPIO.add_event_detect(ConsoleController.ATT_PIN, GPIO.FALLING, callback=self.sendState, bouncetime=300)
 
   def sendStateBit(self, channel):
+
+    if (self.state_as_bytes_txn == False):
+      return
+
     state_byte = self.state_as_bytes[self.state_as_bytes_txn_bytecount]
     state_bit = (state_byte >> self.state_as_bytes_txn_byte_bitcount) & 1
 
@@ -61,6 +70,9 @@ class ConsoleController:
 
         # Clears all the sent button for next iteration
         self.stateController.clearFlags()
+
+        # Clears the Clock Pin callback for next iteration
+        self.state_as_bytes_txn = False
 
       else:
         # Otherwise, send 4µs ACK after 12µs
@@ -96,7 +108,8 @@ class ConsoleController:
     self.state_as_bytes_txn_byte_bitcount = 0
 
     # BITBANG ALL THE SH*T !!!
-    logging.info('state_as_bytes:' . self.state_as_bytes)
+    logging.info('state_as_bytes: %s' % ','.join(map(str,self.state_as_bytes)))
     logging.info('state_as_bytes transmission starting')
 
-    GPIO.add_event_detect(ConsoleController.CLK_PIN, GPIO.FALLING, callback=self.sendStateBit)
+    self.state_as_bytes_txn = True
+
