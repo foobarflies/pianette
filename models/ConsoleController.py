@@ -1,5 +1,8 @@
 import RPi.GPIO as GPIO
 import logging
+import time
+
+usleep = lambda x: time.sleep(x/1000000.0)
 
 class ConsoleController:
 
@@ -41,13 +44,39 @@ class ConsoleController:
     # ATT will go low to get the attention of the controller
     GPIO.add_event_detect(ConsoleController.ATT_PIN, GPIO.FALLING, callback=self.sendState, bouncetime=300)
 
+  def sendStateBit(self, channel):
+    state_byte = self.state_as_bytes[self.state_as_bytes_txn_bytecount]
+    state_bit = (state_byte >> self.state_as_bytes_txn_byte_bitcount) && 1
+
+    GPIO.output(ConsoleController.DATA_PIN, state_bit)
+
+    self.state_as_bytes_txn_byte_bitcount++
+    if (self.state_as_bytes_txn_byte_bitcount == 8):
+      self.state_as_bytes_txn_byte_bitcount = 0
+      self.state_as_bytes_txn_bytecount++
+
+      if (self.state_as_bytes_txn_bytecount > len(self.state_as_bytes)):
+        # If end of sequence is reached, end transmission
+        logging.info('state_as_bytes transmission completed!')
+
+        # Clears all the sent button for next iteration
+        self.stateController.clearFlags()
+
+      else:
+        # Otherwise, send 4µs ACK after 12µs
+        usleep(12)
+        GPIO.output(ConsoleController.ACK_PIN, 0)
+
+        usleep(4)
+        GPIO.output(ConsoleController.ACK_PIN, 1)
+
   def sendState(self, channel):
     print("Sending state :", self.stateController)
     logging.info(self.stateController)
     
-    byteseq = [ 0xFF, 0x41, 0x5A ] # Controller ID
+    self.state_as_bytes = [ 0xFF, 0x41, 0x5A ] # Controller ID
 
-    byteseq.append( # Data byte 1
+    self.state_as_bytes.append( # Data byte 1
       (self.stateController.state["SELECT"] & 0b00000001) &
       (self.stateController.state["START"]  & 0b00001000) &
       (self.stateController.state["TOP"]    & 0b00010000) &
@@ -56,14 +85,18 @@ class ConsoleController:
       (self.stateController.state["LEFT"]   & 0b10000000)
     )
 
-    byteseq.append( # Data byte 2
+    self.state_as_bytes.append( # Data byte 2
       (self.stateController.state["T"] & 0b00010000) &
       (self.stateController.state["O"] & 0b00100000) &
       (self.stateController.state["X"] & 0b01000000) &
       (self.stateController.state["S"] & 0b10000000)
     )
 
-    # BITBANG ALL THE SH*T !!!
+    self.state_as_bytes_txn_bytecount = 0
+    self.state_as_bytes_txn_byte_bitcount = 0
 
-    # Clears all the sent button for next iteration
-    self.stateController.clearFlags()
+    # BITBANG ALL THE SH*T !!!
+    logging.info('state_as_bytes:' . self.state_as_bytes)
+    logging.info('state_as_bytes transmission starting')
+
+    GPIO.add_event_detect(ConsoleController.CLK_PIN, GPIO.FALLING, callback=self.sendStateBit)
