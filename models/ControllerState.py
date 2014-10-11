@@ -30,4 +30,4 @@ class ControllerState:
 
   def clearFlags(self):
     for button, state in self.state.items():
-      self.state[flag] = False
+      self.state[button] = False

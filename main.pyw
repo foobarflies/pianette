@@ -7,6 +7,7 @@ import logging
 import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM)
+GPIO.cleanup()
 
 appWindow = Tk()
 appWindow.title("Virtual Controller")

@@ -33,21 +33,21 @@ class ConsoleController:
   # It should also be noted that this is a bus of sorts. This means that the wires are all tied together (except select which is seperate for each device). For the CLK, ATT, and CMD pins this does not matter as the PSX is always the originator. The DATA and ACK pins however can be driven from any one of four devices. To avoid contentions on these lines they are open collectors and can only be driven low.
 
   def __init__(self, stateController):
-    logging.basicConfig(filename='/home/pi/Desktop/VirtualManette/log/snesCommands.log', filemode='a', level=logging.INFO, format='%(asctime)s.%(msecs).03d : %(message)s', datefmt='%m/%d/%Y %H:%M:%S')
+    logging.basicConfig(filename='/home/pi/Desktop/VirtualManette/log/commands.log', filemode='a', level=logging.INFO, format='%(asctime)s.%(msecs).03d : %(message)s', datefmt='%m/%d/%Y %H:%M:%S')
     self.stateController = stateController
 
     GPIO.setmode(GPIO.BCM)
 
-    GPIO.setup(ConsoleController.ATT_PIN, GPIO.IN)
-    GPIO.setup(ConsoleController.CLK_PIN, GPIO.IN)
-    GPIO.setup(ConsoleController.DATA_PIN, GPIO.OUT)
-    GPIO.setup(ConsoleController.ACK_PIN, GPIO.OUT)
+    GPIO.setup(self.ATT_PIN, GPIO.IN)
+    GPIO.setup(self.CLK_PIN, GPIO.IN)
+    GPIO.setup(self.DATA_PIN, GPIO.OUT)
+    GPIO.setup(self.ACK_PIN, GPIO.OUT)
 
     self.state_as_bytes_txn = False
-    GPIO.add_event_detect(ConsoleController.CLK_PIN, GPIO.FALLING, callback=self.sendStateBit)
+    GPIO.add_event_detect(self.CLK_PIN, GPIO.FALLING, callback=self.sendStateBit)
 
     # ATT will go low to get the attention of the controller
-    GPIO.add_event_detect(ConsoleController.ATT_PIN, GPIO.FALLING, callback=self.sendState, bouncetime=300)
+    GPIO.add_event_detect(self.ATT_PIN, GPIO.FALLING, callback=self.sendState)
 
   def sendStateBit(self, channel):
 
@@ -57,19 +57,18 @@ class ConsoleController:
     state_byte = self.state_as_bytes[self.state_as_bytes_txn_bytecount]
     state_bit = (state_byte >> self.state_as_bytes_txn_byte_bitcount) & 1
 
-    GPIO.output(ConsoleController.DATA_PIN, state_bit)
+    print(" Sending bit 0b%d, bitcount : %d, bytecount : %d" % (state_bit, self.state_as_bytes_txn_byte_bitcount, self.state_as_bytes_txn_bytecount))
+    GPIO.output(self.DATA_PIN, state_bit)
 
     self.state_as_bytes_txn_byte_bitcount+= 1
     if (self.state_as_bytes_txn_byte_bitcount == 8):
+      print(" bitcount == 8, bytecount : %d" % self.state_as_bytes_txn_bytecount)
       self.state_as_bytes_txn_byte_bitcount = 0
       self.state_as_bytes_txn_bytecount+= 1
 
-      if (self.state_as_bytes_txn_bytecount > len(self.state_as_bytes)):
+      if (self.state_as_bytes_txn_bytecount >= len(self.state_as_bytes)):
         # If end of sequence is reached, end transmission
-        logging.info('state_as_bytes transmission completed!')
-
-        # Clears all the sent button for next iteration
-        self.stateController.clearFlags()
+        print('state_as_bytes transmission completed!')
 
         # Clears the Clock Pin callback for next iteration
         self.state_as_bytes_txn = False
@@ -77,12 +76,15 @@ class ConsoleController:
       else:
         # Otherwise, send 4µs ACK after 12µs
         usleep(12)
-        GPIO.output(ConsoleController.ACK_PIN, 0)
+        GPIO.output(self.ACK_PIN, 0)
 
         usleep(4)
-        GPIO.output(ConsoleController.ACK_PIN, 1)
+        GPIO.output(self.ACK_PIN, 1)
 
   def sendState(self, channel):
+    if (self.state_as_bytes_txn == True):
+     return
+
     print("Sending state :", self.stateController)
     logging.info(self.stateController)
     
@@ -107,9 +109,11 @@ class ConsoleController:
     self.state_as_bytes_txn_bytecount = 0
     self.state_as_bytes_txn_byte_bitcount = 0
 
+    # Clears all the sent button for next iteration
+    self.stateController.clearFlags()
+
     # BITBANG ALL THE SH*T !!!
-    logging.info('state_as_bytes: %s' % ','.join(map(str,self.state_as_bytes)))
-    logging.info('state_as_bytes transmission starting')
+    print('state_as_bytes starting transmission : %s' % ','.join(map(str,self.state_as_bytes)))
 
     self.state_as_bytes_txn = True
 
