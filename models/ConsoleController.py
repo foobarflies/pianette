@@ -44,48 +44,82 @@ class ConsoleController:
     GPIO.setup(self.ACK_PIN, GPIO.OUT)
 
     self.state_as_bytes_txn = False
-    GPIO.add_event_detect(self.CLK_PIN, GPIO.FALLING, callback=self.sendStateBit)
+    GPIO.add_event_detect(self.CLK_PIN, GPIO.FALLING, callback=self.startBitBang)
 
     # ATT will go low to get the attention of the controller
     GPIO.add_event_detect(self.ATT_PIN, GPIO.FALLING, callback=self.sendState)
 
-  def sendStateBit(self, channel):
+  def startBitBang(self, channel):
 
-    if (self.state_as_bytes_txn == False):
-      return
+    print('CLK FALLING received ! ')
 
-    state_byte = self.state_as_bytes[self.state_as_bytes_txn_bytecount]
-    state_bit = (state_byte >> self.state_as_bytes_txn_byte_bitcount) & 1
+    while self.state_as_bytes_txn:
 
-    print(" Sending bit 0b%d, bitcount : %d, bytecount : %d" % (state_bit, self.state_as_bytes_txn_byte_bitcount, self.state_as_bytes_txn_bytecount))
-    GPIO.output(self.DATA_PIN, state_bit)
+      state_byte = self.state_as_bytes[self.state_as_bytes_txn_bytecount]
+      state_bit = (state_byte >> self.state_as_bytes_txn_byte_bitcount) & 1
 
-    self.state_as_bytes_txn_byte_bitcount+= 1
-    if (self.state_as_bytes_txn_byte_bitcount == 8):
-      print(" bitcount == 8, bytecount : %d" % self.state_as_bytes_txn_bytecount)
-      self.state_as_bytes_txn_byte_bitcount = 0
-      self.state_as_bytes_txn_bytecount+= 1
+      GPIO.output(self.DATA_PIN, state_bit)
+      self.state_as_bytes_txn_byte_bitcount+= 1
+      
+      usleep(2)
 
-      if (self.state_as_bytes_txn_bytecount >= len(self.state_as_bytes)):
-        # If end of sequence is reached, end transmission
-        print('state_as_bytes transmission completed!')
+      if (self.state_as_bytes_txn_byte_bitcount == 8):
 
-        # Clears the Clock Pin callback for next iteration
-        self.state_as_bytes_txn = False
 
-      else:
-        # Otherwise, send 4µs ACK after 12µs
-        usleep(12)
-        GPIO.output(self.ACK_PIN, 0)
+        self.state_as_bytes_txn_byte_bitcount = 0
+        self.state_as_bytes_txn_bytecount+= 1
 
-        usleep(4)
-        GPIO.output(self.ACK_PIN, 1)
+        if (self.state_as_bytes_txn_bytecount >= len(self.state_as_bytes)):
+          # If end of sequence is reached, end transmission
+          print('state_as_bytes transmission completed!')
+
+          # Clears the Clock Pin callback for next iteration
+          self.state_as_bytes_txn = False
+
+        else:
+          # Otherwise, send 4µs ACK after 12µs
+
+          usleep(5)
+          GPIO.output(self.ACK_PIN, 0)
+
+          usleep(4)
+          GPIO.output(self.ACK_PIN, 1)
+
+    # if (self.state_as_bytes_txn == False):
+    #   return
+
+    # state_byte = self.state_as_bytes[self.state_as_bytes_txn_bytecount]
+    # state_bit = (state_byte >> self.state_as_bytes_txn_byte_bitcount) & 1
+
+    # print(" Sending bit 0b%d, bitcount : %d, bytecount : %d" % (state_bit, self.state_as_bytes_txn_byte_bitcount, self.state_as_bytes_txn_bytecount))
+    # GPIO.output(self.DATA_PIN, state_bit)
+
+    # self.state_as_bytes_txn_byte_bitcount+= 1
+    # if (self.state_as_bytes_txn_byte_bitcount == 8):
+    #   print(" bitcount == 8, bytecount : %d" % self.state_as_bytes_txn_bytecount)
+    #   self.state_as_bytes_txn_byte_bitcount = 0
+    #   self.state_as_bytes_txn_bytecount+= 1
+
+    #   if (self.state_as_bytes_txn_bytecount >= len(self.state_as_bytes)):
+    #     # If end of sequence is reached, end transmission
+    #     print('state_as_bytes transmission completed!')
+
+    #     # Clears the Clock Pin callback for next iteration
+    #     self.state_as_bytes_txn = False
+
+    #   else:
+    #     # Otherwise, send 4µs ACK after 12µs
+    #     usleep(12)
+    #     GPIO.output(self.ACK_PIN, 0)
+
+    #     usleep(4)
+    #     GPIO.output(self.ACK_PIN, 1)
 
   def sendState(self, channel):
     if (self.state_as_bytes_txn == True):
      return
 
-    print("Sending state :", self.stateController)
+    print("ATT LOW ! Sending state :", self.stateController)
     logging.info(self.stateController)
     
     self.state_as_bytes = [ 0xFF, 0x41, 0x5A ] # Controller ID
