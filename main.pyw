@@ -23,6 +23,9 @@ appWindow.overrideredirect(True)
 # This holds the controller state at any moment
 ctrlState = ControllerState()
 
+# FIX ME Whether we have a jumper somewhere ?????
+ctrl.setPlayerTwo()
+
 # The virtual controller can set state flags via the UI
 app = VirtualControllerDisplay(appWindow, ctrlState)
 

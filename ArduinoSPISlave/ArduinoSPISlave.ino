@@ -36,6 +36,10 @@ Arduino pin |  AVR pin | PSX pin
 
 #define DATA_LEN 5
 
+#define _DEBUG 0
+
+char command[2] = {0xFF,0xFF};
+
 volatile uint8_t data_buff[DATA_LEN]={0x41,0x5A,0xFF,0xFF,0xFF}; // Reply: nothing pressed.
 volatile uint8_t command_buff[DATA_LEN]={0x01,0x42,0x00,0x00,0x00};
     
@@ -70,10 +74,11 @@ void setup() {
   
   sei(); // Enable global interrupts.
 
-  # FIX ME  : to replace with a "OK" From Arduino to Raspberry Pi so the Pi knows that the Arduino is up and running and acknowledges
-  Serial.println("");
-  Serial.println("Playstation 2 Protocol initialized.");
-  Serial.println("");
+  if (_DEBUG) {
+    Serial.println("-----------------------------------");
+    Serial.println("Playstation 2 Protocol initialized.");
+    Serial.println("-----------------------------------");
+  }
 
 }
 
@@ -119,38 +124,27 @@ ISR(SPI_STC_vect) {
 void loop() {
 
   /* Reads input from Serial connection */
-  if (Serial.available()) {
+  /*
+    We're going to read 2 characters = 2 x 1 byte
+    It's going to be read as a char but then translated
+    to HEX, taking only the lower byte
+  */
+  if (Serial.available() == 2) {
     
-    char command = Serial.read();
-    Serial.print("Command : ");Serial.println(command);
-    
-    // FIX ME : for moves LEFT/RIGHT, we need to send several similar commands for a real move
+    Serial.readBytes(command, 2); // Read 16 bits
 
-    if (command == 'T') {
-      data_buff[2] = 0xFF;
-      data_buff[3] = 0xEF;
-    } else if (command == 'C'){
-      data_buff[2] = 0xFF;
-      data_buff[3] = 0x7F;
-    } else if (command == 'O'){
-      data_buff[2] = 0xFF;
-      data_buff[3] = 0xDF;
-    } else if (command == 'X'){
-      data_buff[2] = 0xFF;
-      data_buff[3] = 0xBF;
-    } else if (command == 'Q'){
-      data_buff[2] = 0x7F;
-      data_buff[3] = 0xFF;
-    } else if (command == 'S'){
-      data_buff[2] = 0xBF;
-      data_buff[3] = 0xFF;
-    } else if (command == 'D'){
-      data_buff[2] = 0xDF;
-      data_buff[3] = 0xFF;
-    } else if (command == 'Z'){
-      data_buff[2] = 0xEF;
-      data_buff[3] = 0xFF;
+    /* DEBUG */
+    if (_DEBUG) {
+      Serial.print("Command : 0x");
+      Serial.print(lowByte(command[0]), HEX);
+      Serial.print(" 0x");
+      Serial.print(lowByte(command[1]), HEX);
+      Serial.println("");
     }
+    
+    // We store the new commands in the data_buff buffer
+    data_buff[2] = lowByte(command[0]);
+    data_buff[3] = lowByte(command[1]);
 
   }
 

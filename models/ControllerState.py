@@ -2,8 +2,6 @@ import serial
 
 class ControllerState:
 
-  serialConnection = False;
-
   # Mapping
   state = { "T" : False,
             "S" : False,
@@ -17,9 +15,7 @@ class ControllerState:
             "START" : False,
           }
 
-  def __init__(self):
-
-    self.serialConnection = serial.Serial('/dev/ttyACM0', 115200)
+  playerOne = True
 
   def __str__(self):
 
@@ -33,13 +29,15 @@ class ControllerState:
   def raiseFlag(self, flag):
     self.state[flag] = True
 
-    # Sends the command out to the Arduino
-    # FIX ME ONLY a CHAR here
-    self.serialConnection.write(flag);
-
   def clearFlag(self, flag):
     self.state[flag] = False
 
   def clearFlags(self):
     for button, state in self.state.items():
       self.state[button] = False
+
+  def setPlayerOne(self):
+    self.playerOne = True
+
+  def setPlayerTwo(self):
+    self.playerOne = False
