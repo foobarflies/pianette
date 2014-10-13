@@ -3,7 +3,6 @@
 from tkinter import *
 from models import *
 
-import configparser
 import RPi.GPIO as GPIO
 
 # Read config
