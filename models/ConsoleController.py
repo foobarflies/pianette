@@ -18,61 +18,61 @@ class ConsoleController:
 
   # Single buttons
   def sendX(self):
-    ser.write(b'\xFF\xBF')
+    self.serialConnection.write(b'\xFF\xBF')
   def sendO(self):
-    ser.write(b'\xFF\xDF')
+    self.serialConnection.write(b'\xFF\xDF')
   def sendSquare(self):
-    ser.write(b'\xFF\x7F')
+    self.serialConnection.write(b'\xFF\x7F')
   def sendTriangle(self):
-    ser.write(b'\xFF\xEF')
+    self.serialConnection.write(b'\xFF\xEF')
 
   def sendStart(self):
-    ser.write(b'\xF7\xFF')
+    self.serialConnection.write(b'\xF7\xFF')
   def sendSelect(self):
-    ser.write(b'\xF7\xFE')
+    self.serialConnection.write(b'\xF7\xFE')
 
   def sendUp(self):
-    ser.write(b'\xEF\xFF')
+    self.serialConnection.write(b'\xEF\xFF')
   def sendDown(self):
-    ser.write(b'\xBF\xFF')
+    self.serialConnection.write(b'\xBF\xFF')
   def sendLeft(self):
-    ser.write(b'\x7F\xFF')
+    self.serialConnection.write(b'\x7F\xFF')
   def sendRight(self):
-    ser.write(b'\xDF\xFF')
+    self.serialConnection.write(b'\xDF\xFF')
 
   # Simple movement combos
   def sendDownRight(self):
     # RIGHT + DOWN
-    ser.write(b'\x9F\xFF')
+    self.serialConnection.write(b'\x9F\xFF')
   def sendDownLeft(self):
     # LEFT + DOWN
-    ser.write(b'\x3F\xFF')
+    self.serialConnection.write(b'\x3F\xFF')
   def sendUpRight(self):
     # RIGHT + UP
-    ser.write(b'\xCF\xFF')
+    self.serialConnection.write(b'\xCF\xFF')
   def sendUpLeft(self):
     # LEFT + UP
-    ser.write(b'\x6F\xFF')
+    self.serialConnection.write(b'\x6F\xFF')
 
 
 # FIX ME FIX ME
   # Nice combos
   def sendHadouken(self):
     # LEFT + UP
-    ser.write(b'\xFF\xFF')
+    self.serialConnection.write(b'\xFF\xFF')
 
   def sendTatsumaki(self):
     # LEFT + UP
-    ser.write(b'\xFF\xFF')
+    self.serialConnection.write(b'\xFF\xFF')
 
   def sendUltra(self):
     # LEFT + UP
-    ser.write(b'\xFF\xFF')
+    self.serialConnection.write(b'\xFF\xFF')
 # FIX ME FIX ME
 
   # Send a reset byte couple, going back to the menus
   def sendReset(self):
-    ser.write(b'\x00\x00')
+    self.serialConnection.write(b'\x00\x00')
 
   # Methods 
   def restartFresh(self):
