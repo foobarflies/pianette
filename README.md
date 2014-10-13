@@ -50,6 +50,15 @@ If you have a graphical environment, you can run:
 
 Test script to verify that all GPIOs can be accessed. Run with `sudo ./testGPIO.py` and trigger each pin to see if it calls back.
 
+### Street Fighter Alpha 3 Specifics
+
+#### Timing
+
+Fighting buttons timings :
+  - X : 270 ms
+  - S : 200 ms
+  - T : 370 ms
+  - O : 400 ms
 
 #### TODO / GENERAL
 
