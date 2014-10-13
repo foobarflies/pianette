@@ -19,6 +19,7 @@ class ConsoleController:
     open_ports = self.getSerialPorts()
     # Opens first port available
     self.serialConnection = serial.Serial(open_ports[0], 115200)
+    time.sleep(3) # DIRTY but apparently required for the controller to get fully ready
     random.seed()
 
   def getSerialPorts(self):
