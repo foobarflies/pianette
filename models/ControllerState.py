@@ -17,6 +17,12 @@ class ControllerState:
 
   playerOne = True
 
+  def __init__(self, player):
+    if (player == 1):
+      self.setPlayerOne()
+    else:
+      self.setPlayerTwo()
+
   def __str__(self):
 
     state_string = ""

@@ -36,6 +36,8 @@ Test script to verify that all GPIOs can be accessed. Run with `sudo ./test.py` 
 
 #### TODO 
 
+  - Rajouter un jumper pour player 1 / player 2
+  - Faire une carte ARduino pour connexion manette playstation dessus
   - Modify the Arduino sketch to have a better LEFT/RIGHT (keep the button pressed longer)
   - Acknowledge from Arduino to make sure the correct info is transmitted
   - Change the interface for something more lookalike to a real controller

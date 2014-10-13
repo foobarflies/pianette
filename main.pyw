@@ -3,17 +3,25 @@
 from tkinter import *
 from models import *
 
-import logging
+import configparser
 import RPi.GPIO as GPIO
 
+# Read config
+import configparser
+config = configparser.ConfigParser()
+config.read('conf.ini')
+
 GPIO.setmode(GPIO.BCM)
+
+# Just to be sure
+# THIS LINE WILL HOPEFULLY ISSUE A WARNING THAT CAN BE IGNORED
 GPIO.cleanup()
 
 appWindow = Tk()
 appWindow.title("Virtual Controller")
 
-# Set fullscreen [Not necessary when debugging]
-# appWindow.geometry("{0}x{1}+0+0".format(appWindow.winfo_screenwidth(), appWindow.winfo_screenheight()))
+# Set fullscreen
+appWindow.geometry("{0}x{1}+0+0".format(appWindow.winfo_screenwidth(), appWindow.winfo_screenheight()))
 appWindow.focus_set()  # <-- move focus to this widget
 # Binds <Escape> key to quit the program
 appWindow.bind("<Escape>", lambda e: e.widget.destroy())
@@ -21,7 +29,7 @@ appWindow.bind("<Escape>", lambda e: e.widget.destroy())
 appWindow.overrideredirect(True)
 
 # This holds the controller state at any moment
-ctrlState = ControllerState()
+ctrlState = ControllerState(config['DEFAULT']['player'])
 
 # FIX ME Whether we have a jumper somewhere ?????
 ctrl.setPlayerTwo()

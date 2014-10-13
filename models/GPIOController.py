@@ -18,7 +18,8 @@ class GPIOController:
 
   def __init__(self, stateController, app):
     self.stateController = stateController
-    self.app = app
+    if (app):
+      self.app = app
 
     ## Attach a callback to each INPUT pin
     for pin, button in self.KEYS.items():
@@ -33,9 +34,8 @@ class GPIOController:
     print("Pin %s activated : Button %s" % (channel, command) )
     self.stateController.raiseFlag(command)
 
-    # Updates the UI to reflect the trigger
-    self.app.updateLabel(command)
-    self.app.flashButton(command)
-    # Debug
-    # print(self.stateController)
+    if (self.app):
+      # Updates the UI to reflect the trigger
+      self.app.updateLabel(command)
+      self.app.flashButton(command)
 
