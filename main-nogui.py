@@ -51,7 +51,7 @@ while (True):
       print("You entered character with ordinal {}.".format(ord(char)))
     else:
       print("You entered character '{}'.".format(char))
-    if char in "^C^D":
+    if ord(char) == 3: # ^C
       # Cleanup GPIOs
       GPIO.cleanup()
       sys.exit()
