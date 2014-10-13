@@ -38,6 +38,9 @@ class ControllerState:
   def clearFlag(self, flag):
     self.state[flag] = False
 
+  def toggleFlag(self, flag):
+    self.state[flag] = not self.state[flag]
+
   def clearFlags(self):
     for button, state in self.state.items():
       self.state[button] = False
