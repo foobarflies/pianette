@@ -18,13 +18,13 @@ class ConsoleController:
 
   # Single buttons
   def sendX(self):
-    ser.write(b'\xFF\xBF');
+    ser.write(b'\xFF\xBF')
   def sendO(self):
-    ser.write(b'\xFF\xDF');
+    ser.write(b'\xFF\xDF')
   def sendSquare(self):
-    ser.write(b'\xFF\x7F');
+    ser.write(b'\xFF\x7F')
   def sendTriangle(self):
-    ser.write(b'\xFF\xEF');
+    ser.write(b'\xFF\xEF')
 
   def sendStart(self):
     ser.write(b'\xF7\xFF')
@@ -32,13 +32,13 @@ class ConsoleController:
     ser.write(b'\xF7\xFE')
 
   def sendUp(self):
-    ser.write(b'\xEF\xFF');
+    ser.write(b'\xEF\xFF')
   def sendDown(self):
-    ser.write(b'\xBF\xFF');
+    ser.write(b'\xBF\xFF')
   def sendLeft(self):
-    ser.write(b'\x7F\xFF');
+    ser.write(b'\x7F\xFF')
   def sendRight(self):
-    ser.write(b'\xDF\xFF');
+    ser.write(b'\xDF\xFF')
 
   # Simple movement combos
   def sendDownRight(self):
@@ -72,7 +72,7 @@ class ConsoleController:
 
   # Send a reset byte couple, going back to the menus
   def sendReset(self):
-    ser.write(b'\x00\x00');
+    ser.write(b'\x00\x00')
 
   # Methods 
   def restartFresh(self):
