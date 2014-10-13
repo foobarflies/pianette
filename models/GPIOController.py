@@ -9,7 +9,7 @@ class GPIOController:
             6: "S",
             13: "O",
             19: "X",
-            26: "LEFT"
+            26: "LEFT",
 
             # Bank 2, Octave 0
             21: "T",
