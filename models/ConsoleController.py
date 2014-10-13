@@ -92,7 +92,7 @@ class ConsoleController:
     self.restartFresh()
     
   def chooseVersusModeFromMenu(self):
-    self.sendLeft())
+    self.sendLeft()
     usleep(usecs_between_data)
     self.sendX()
     usleep(usecs_between_data)
@@ -148,5 +148,5 @@ class ConsoleController:
 
     # Sends the command out to the Arduino
     # FIX ME ???
-    ser.write(self.state_as_bytes)
+    self.serialConnection.write(self.state_as_bytes)
 

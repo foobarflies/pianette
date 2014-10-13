@@ -45,9 +45,9 @@ class GPIOController:
       self.app = app
 
     ## Attach a callback to the RESET pin when it brought LOW
-    print("Attaching single pin %s for RESET switch" % RESET_KEY )
-      GPIO.setup(RESET_KEY, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-      GPIO.add_event_detect(RESET_KEY, GPIO.FALLING, callback=self.gpio_reset, bouncetime=300)
+    print("Attaching single pin %s for RESET switch" % self.RESET_KEY )
+    GPIO.setup(self.RESET_KEY, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    GPIO.add_event_detect(self.RESET_KEY, GPIO.FALLING, callback=self.gpio_reset, bouncetime=300)
 
     ## Attach a callback to each INPUT pin
     for pin, button in self.KEYS.items():
