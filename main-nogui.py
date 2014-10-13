@@ -35,9 +35,6 @@ GPIO.cleanup()
 # This holds the controller state at any moment
 ctrlState = ControllerState(config['DEFAULT']['player'])
 
-# FIX ME Whether we have a jumper somewhere ?????
-ctrl.setPlayerTwo()
-
 # Instantiate the console controller that will send out the state to the console when needed
 consoleCtrl = ConsoleController(ctrlState)
 
