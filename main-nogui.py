@@ -38,6 +38,17 @@ ctrlState = ControllerState(config['DEFAULT']['player'])
 # Instantiate the console controller that will send out the state to the console when needed
 consoleCtrl = ConsoleController(ctrlState)
 
+# Start the thred that permantently writes the controller state
+import threading
+import time
+def csThreadWorker():
+  while True:
+    consoleCtrl.sendStateBytes()
+
+csThread = threading.Thread(target=csThreadWorker)
+csThread.daemon = True
+csThread.start()
+
 # Now loads the GPIO Controller that will set state flags depending on the GPIO inputs
 # It needs the app to flash the buttons
 gpioCtrl = GPIOController(ctrlState, False)
@@ -51,6 +62,7 @@ while (True):
       print("You entered character with ordinal {}.".format(ord(char)))
     else:
       print("You entered character '{}'.".format(char))
+      ctrlState.toggleFlag(char)
     if ord(char) == 3: # ^C
       # Cleanup GPIOs
       GPIO.cleanup()

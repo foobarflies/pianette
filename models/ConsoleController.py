@@ -161,6 +161,5 @@ class ConsoleController:
 
     if (stateByte1 | stateByte2):
       # Send the command out to the Arduino controller through serial connection
-      print('sending state bytes: %d,%d' % (stateByte1, stateByte2))
       self.serialConnection.write(bytes([stateByte1, stateByte2]))
 
