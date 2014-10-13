@@ -38,7 +38,7 @@ Arduino pin |  AVR pin | PSX pin
 
 #define _DEBUG 0
 
-char command[2] = {0xFF,0xFF};
+char control_data[2] = {0xFF,0xFF};
 
 volatile uint8_t data_buff[DATA_LEN]={0x41,0x5A,0xFF,0xFF,0xFF}; // Reply: nothing pressed.
 volatile uint8_t command_buff[DATA_LEN]={0x01,0x42,0x00,0x00,0x00};
@@ -75,6 +75,7 @@ void setup() {
   sei(); // Enable global interrupts.
 
   if (_DEBUG) {
+    Serial.println("");
     Serial.println("-----------------------------------");
     Serial.println("Playstation 2 Protocol initialized.");
     Serial.println("-----------------------------------");
@@ -103,19 +104,12 @@ ISR(SPI_STC_vect) {
     } else { // Except for the last packet
       SPDR = 0xFF;
       curr_byte = 0;
-
-      // Resets controller to "nothing pressed"
-      data_buff[2] = 0xFF;
-      data_buff[3] = 0xFF;
     }
 
   } else {
     
     SPDR = 0xFF;
     curr_byte = 0;
-    // Resets controller to "nothing pressed"
-    data_buff[2] = 0xFF;
-    data_buff[3] = 0xFF;
   
   }
   
@@ -129,22 +123,23 @@ void loop() {
     It's going to be read as a char but then translated
     to HEX, taking only the lower byte
   */
-  if (Serial.available() == 2) {
-    
-    Serial.readBytes(command, 2); // Read 16 bits
 
-    /* DEBUG */
+  if (Serial.available() >= 2) {
+    
+    Serial.readBytes(control_data, 2); // Read 16 bits
+
+    // DEBUG 
     if (_DEBUG) {
       Serial.print("Command : 0x");
-      Serial.print(lowByte(command[0]), HEX);
+      Serial.print(lowByte(control_data[0]), HEX);
       Serial.print(" 0x");
-      Serial.print(lowByte(command[1]), HEX);
+      Serial.print(lowByte(control_data[1]), HEX);
       Serial.println("");
     }
     
     // We store the new commands in the data_buff buffer
-    data_buff[2] = lowByte(command[0]);
-    data_buff[3] = lowByte(command[1]);
+    data_buff[2] = lowByte(control_data[0]);
+    data_buff[3] = lowByte(control_data[1]);
 
   }
 
