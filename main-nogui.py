@@ -19,7 +19,6 @@ class ReadChar():
     def __exit__(self, type, value, traceback):
         termios.tcsetattr(self.fd, termios.TCSADRAIN, self.old_settings)
 
-import configparser
 import RPi.GPIO as GPIO
 
 # Read config
