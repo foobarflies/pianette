@@ -132,9 +132,9 @@ class ConsoleController:
     self.state_as_bytes.append( # Data byte 1
       (0b00000001 if self.stateController.state["SELECT"] else 0) |
       (0b00001000 if self.stateController.state["START"] else 0) |
-      (0b00010000 if self.stateController.state["TOP"] else 0) |
+      (0b00010000 if self.stateController.state["UP"] else 0) |
       (0b00100000 if self.stateController.state["RIGHT"] else 0) |
-      (0b01000000 if self.stateController.state["BOTTOM"] else 0) |
+      (0b01000000 if self.stateController.state["DOWN"] else 0) |
       (0b10000000 if self.stateController.state["LEFT"] else 0)
     )
 

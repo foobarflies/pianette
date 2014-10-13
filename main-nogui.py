@@ -49,19 +49,17 @@ gpioCtrl = GPIOController(ctrlState, False)
 # Run main loop
 while (True):
   with ReadChar() as rc:
-            char = rc
-            # FIX ME FIX ME
-        if ord(char) <= 32:
-            print("You entered character with ordinal {}."\
-                        .format(ord(char)))
-        else:
-            print("You entered character '{}'."\
-                        .format(char))
-        if char in "^C^D":
-            sys.exit()
+    char = rc
+    # FIX ME FIX ME
+    if ord(char) <= 32:
+      print("You entered character with ordinal {}.".format(ord(char)))
+    else:
+      print("You entered character '{}'.".format(char))
+    if char in "^C^D":
+      # Cleanup GPIOs
+      GPIO.cleanup()
+      sys.exit()
   pass
 
-# Cleanup GPIOs
-GPIO.cleanup()
 
 

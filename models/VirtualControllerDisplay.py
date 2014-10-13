@@ -17,8 +17,14 @@ class VirtualControllerDisplay(Frame):
 # Quit button
     self.BUTTON_QUIT = Button(self)
     self.BUTTON_QUIT["text"] = "Quit"
-    self.BUTTON_QUIT["command"] = lambda: self.base.destroy()	
-    self.BUTTON_QUIT.grid(row=7, column=5, columnspan=2)
+    self.BUTTON_QUIT["command"] = lambda: self.base.destroy()
+    self.BUTTON_QUIT.grid(row=7, column=5)
+
+# Reset button
+    self.BUTTON_RESET = Button(self)
+    self.BUTTON_RESET["text"] = "Reset"
+    self.BUTTON_RESET["command"] = lambda: self.buttonAction("RESET")  
+    self.BUTTON_RESET.grid(row=7, column=6)
 
 # Label for commands
     self.LABEL_CMD = Label(self)
@@ -103,22 +109,22 @@ class VirtualControllerDisplay(Frame):
     self.BUTTON_RIGHT["text"] = "▶"
     self.BUTTON_RIGHT["command"] = lambda: self.buttonAction("RIGHT")
     self.BUTTON_RIGHT.grid(row=4, column=3)
-    self.BUTTON_TOP = Button(self)
-    self.BUTTON_TOP["bg"] = "darkSlateGray"
-    self.BUTTON_TOP["activebackground"] = "darkSlateGray"
-    self.BUTTON_TOP["height"] = 1
-    self.BUTTON_TOP["width"] = 1
-    self.BUTTON_TOP["text"] = "▲"
-    self.BUTTON_TOP["command"] = lambda: self.buttonAction("TOP")
-    self.BUTTON_TOP.grid(row=3, column=2)
-    self.BUTTON_BOTTOM = Button(self)
-    self.BUTTON_BOTTOM["bg"] = "darkSlateGray"
-    self.BUTTON_BOTTOM["activebackground"] = "darkSlateGray"
-    self.BUTTON_BOTTOM["height"] = 1
-    self.BUTTON_BOTTOM["width"] = 1
-    self.BUTTON_BOTTOM["text"] = "▼"
-    self.BUTTON_BOTTOM["command"] = lambda: self.buttonAction("BOTTOM")
-    self.BUTTON_BOTTOM.grid(row=5, column=2)
+    self.BUTTON_UP = Button(self)
+    self.BUTTON_UP["bg"] = "darkSlateGray"
+    self.BUTTON_UP["activebackground"] = "darkSlateGray"
+    self.BUTTON_UP["height"] = 1
+    self.BUTTON_UP["width"] = 1
+    self.BUTTON_UP["text"] = "▲"
+    self.BUTTON_UP["command"] = lambda: self.buttonAction("UP")
+    self.BUTTON_UP.grid(row=3, column=2)
+    self.BUTTON_DOWN = Button(self)
+    self.BUTTON_DOWN["bg"] = "darkSlateGray"
+    self.BUTTON_DOWN["activebackground"] = "darkSlateGray"
+    self.BUTTON_DOWN["height"] = 1
+    self.BUTTON_DOWN["width"] = 1
+    self.BUTTON_DOWN["text"] = "▼"
+    self.BUTTON_DOWN["command"] = lambda: self.buttonAction("DOWN")
+    self.BUTTON_DOWN.grid(row=5, column=2)
 
 # Select and Start
     self.FRAME_MIDDLE = Frame(self)
@@ -148,8 +154,6 @@ class VirtualControllerDisplay(Frame):
     self.stateController.raiseFlag(command)
     self.updateLabel(command)
     self.flashButton(command)
-    # Debug
-    # print (self.stateController)
 
   def getButtonForCommand(self, command):
 
@@ -161,8 +165,9 @@ class VirtualControllerDisplay(Frame):
                 "START" : self.BUTTON_START,
                 "LEFT" : self.BUTTON_LEFT,
                 "RIGHT" : self.BUTTON_RIGHT,
-                "TOP" : self.BUTTON_TOP,
-                "BOTTOM" : self.BUTTON_BOTTOM,
+                "UP" : self.BUTTON_UP,
+                "DOWN" : self.BUTTON_DOWN,
+                "RESET" : self.BUTTON_RESET,
               }
 
     return buttons[command]

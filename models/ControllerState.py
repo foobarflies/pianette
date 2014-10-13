@@ -1,5 +1,3 @@
-import serial
-
 class ControllerState:
 
   # Mapping
@@ -7,12 +5,14 @@ class ControllerState:
             "S" : False,
             "X" : False,
             "O" : False,
-            "TOP" : False,
-            "BOTTOM" : False,
+            "UP" : False,
+            "DOWN" : False,
             "RIGHT" : False,
             "LEFT" : False,
             "SELECT" : False,
             "START" : False,
+            # Special Flag for restarting a game
+            "RESET": False,
           }
 
   playerOne = True
