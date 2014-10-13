@@ -1,4 +1,7 @@
+import sys
+import glob
 import serial
+
 import time
 import random
 
@@ -13,8 +16,24 @@ class ConsoleController:
 
   def __init__(self, stateController):
     self.stateController = stateController
-    self.serialConnection = serial.Serial('/dev/ttyACM0', 115200)
+    # Tries to find correct Serial port
+    open_ports = self.getSerialPorts()
+    # Opens first port available
+    self.serialConnection = serial.Serial(open_ports[0], 115200)
     random.seed()
+
+  def getSerialPorts():
+
+    temp_list = glob.glob ('/dev/ttyACM*')
+    result = []
+    for a_port in temp_list:
+        try:
+            s = serial.Serial (a_port)
+            s.close ()
+            result.append (a_port)
+        except serial.SerialException:
+            pass
+    return result
 
   # Single buttons
   def sendX(self):
