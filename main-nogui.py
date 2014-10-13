@@ -56,6 +56,3 @@ while (True):
       GPIO.cleanup()
       sys.exit()
   pass
-
-
-

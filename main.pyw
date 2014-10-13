@@ -46,5 +46,3 @@ appWindow.mainloop()
 
 # Cleanup GPIOs
 GPIO.cleanup()
-
-

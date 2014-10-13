@@ -48,7 +48,7 @@ If you have a graphical environment, you can run:
 
 ### Test Script
 
-Test script to verify that all GPIOs can be accessed. Run with `sudo ./test.py` and trigger each pin to see if it calls back.
+Test script to verify that all GPIOs can be accessed. Run with `sudo ./testGPIO.py` and trigger each pin to see if it calls back.
 
 
 #### TODO / GENERAL
