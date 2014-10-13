@@ -143,29 +143,25 @@ class ConsoleController:
 
     # FIGHT !!!!
 
-  def createStateBytes(self, channel):
-    print("Sending state :", self.stateController)
-    
-    self.state_as_bytes = []
-
-    self.state_as_bytes.append( # Data byte 1
+  def sendStateBytes(self):
+    stateByte1 = (
       (0b00000001 if self.stateController.state["SELECT"] else 0) |
       (0b00001000 if self.stateController.state["START"] else 0) |
       (0b00010000 if self.stateController.state["UP"] else 0) |
       (0b00100000 if self.stateController.state["RIGHT"] else 0) |
       (0b01000000 if self.stateController.state["DOWN"] else 0) |
       (0b10000000 if self.stateController.state["LEFT"] else 0)
-    )
+    ) ^ 0xff
 
-    self.state_as_bytes.append( # Data byte 2
+    stateByte2 = (
       (0b00010000 if self.stateController.state["T"] else 0) |
       (0b00100000 if self.stateController.state["O"] else 0) |
       (0b01000000 if self.stateController.state["X"] else 0) |
       (0b10000000 if self.stateController.state["S"] else 0)
-    )
+    ) ^ 0xff
 
-
-    # Sends the command out to the Arduino
-    # FIX ME ???
-    self.serialConnection.write(self.state_as_bytes)
+    if (stateByte1 | stateByte2):
+      # Send the command out to the Arduino controller through serial connection
+      print('sending state bytes: %d,%d' % (stateByte1, stateByte2))
+      self.serialConnection.write(bytes([stateByte1, stateByte2]))
 
