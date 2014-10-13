@@ -160,7 +160,7 @@ class ConsoleController:
       (0b10000000 if self.stateController.state["S"] else 0)
     ) ^ 0xff
 
-    if (stateByte1 | stateByte2):
-      # Send the command out to the Arduino controller through serial connection
-      self.serialConnection.write(bytes([stateByte1, stateByte2]))
+    # Send the command out to the Arduino controller through serial connection
+    # DEBUG: print ("%d, %d\r" % (stateByte1, stateByte2))
+    self.serialConnection.write(bytes([stateByte1, stateByte2]))
 

@@ -40,14 +40,21 @@ consoleCtrl = ConsoleController(ctrlState)
 
 # Start the thred that permantently writes the controller state
 import threading
-import time
 def csThreadWorker():
   while True:
+    lock = threading.Lock()
+    lock.acquire()
     consoleCtrl.sendStateBytes()
+    lock.release()
 
 csThread = threading.Thread(target=csThreadWorker)
 csThread.daemon = True
 csThread.start()
+
+csTimedBuffer = ControllerStateTimedBuffer(ctrlState, consoleCtrl)
+csTimedBufferThread = threading.Thread(target=csTimedBuffer.popStateBuffers)
+csTimedBufferThread.daemon = True
+csTimedBufferThread.start()
 
 # Now loads the GPIO Controller that will set state flags depending on the GPIO inputs
 # It needs the app to flash the buttons
