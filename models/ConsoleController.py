@@ -22,7 +22,7 @@ class ConsoleController:
     self.serialConnection = serial.Serial(open_ports[0], 115200)
     random.seed()
 
-  def getSerialPorts():
+  def getSerialPorts(self):
 
     temp_list = glob.glob ('/dev/ttyACM*')
     result = []
