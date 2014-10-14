@@ -44,7 +44,7 @@ class GPIOController:
     if (app):
       self.app = app
 
-    print("  # GPIOController : INFO : Attaching pins" % self.RESET_KEY )
+    print("  # GPIOController : INFO : Attaching pins ...")
 
     ## Attach a callback to the RESET pin when it brought LOW
     print("    - pin %s => RESET switch" % self.RESET_KEY )
