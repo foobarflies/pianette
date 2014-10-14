@@ -152,6 +152,7 @@ class VirtualControllerDisplay(Frame):
     self.BUTTON_SELECT.pack(side=LEFT)
  
   def buttonAction(self, command):
+    Debug.println("NOTICE", "Button %s activated from GUI" % command)
     self.stateController.raiseFlag(command)
     self.updateLabel(command)
     self.flashButton(command)

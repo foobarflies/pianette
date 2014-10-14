@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from models import *
+from utils import *
 
 # Read config
 import configparser
@@ -60,7 +61,7 @@ csTimedBufferThread.start()
 # It needs the app to flash the buttons
 gpioCtrl = GPIOController(ctrlState, app)
 
-print("  # Main : INFO : Entering main loop")
+Debug.println("NOTICE", "Entering main loop")
 
 # Run main loop
 appWindow.mainloop()

@@ -21,11 +21,12 @@ class ConsoleController:
     # Opens first port available
     try:
       self.serialConnection = serial.Serial(open_ports[0], 115200)
-      print("  # ConsoleController : INFO : SPI Slave detected at %s, waiting for the port to initialize." % open_ports[0])
+      Debug.println("INFO", "SPI Slave detected at %s, waiting for the port to initialize." % open_ports[0])
       time.sleep(3) # DIRTY but apparently required for the serial port to get fully ready
+      Debug.println("SUCCESS", "SPI Slave initialized.")
     except Exception:
       self.serialConnection = None
-      print("  # ConsoleController : WARNING : No ConsoleController SPI Slave detected.")
+      Debug.println("WARNING", "No ConsoleController SPI Slave detected.")
     
     # Seeds random for stage selection
     random.seed()
@@ -156,5 +157,5 @@ class ConsoleController:
     if (self.serialConnection):
       self.serialConnection.write(bytes([stateByte1, stateByte2]))
     # else: 
-    #  print(" > ConsoleController : INFO : Bytes lost %d %d\r" % (stateByte1, stateByte2))
+    #  Debug.println("INFO", "Bytes lost %d %d" % (stateByte1, stateByte2))
 

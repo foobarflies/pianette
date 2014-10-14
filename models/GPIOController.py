@@ -44,23 +44,23 @@ class GPIOController:
     if (app):
       self.app = app
 
-    print("  # GPIOController : INFO : Attaching pins ...")
+    Debug.println("INFO", "Attaching pins ...")
 
     ## Attach a callback to the RESET pin when it brought LOW
-    print("    - pin %s => RESET switch" % self.RESET_KEY )
+    Debug.println("SUCCESS", "Pin %s => RESET switch" % self.RESET_KEY )
     GPIO.setup(self.RESET_KEY, GPIO.IN, pull_up_down = GPIO.PUD_UP)
     GPIO.add_event_detect(self.RESET_KEY, GPIO.FALLING, callback=self.gpio_reset, bouncetime=300)
 
     ## Attach a callback to each INPUT pin
     for pin, button in self.KEYS.items():
-      print("    - pin %s => %s" % (pin, button) )
+      Debug.println("SUCCESS", "Pin %s => %s" % (pin, button) )
       GPIO.setup(pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
       GPIO.add_event_detect(pin, GPIO.RISING, callback=self.gpio_callback, bouncetime=300)
 
   # Callback for the RESET button
   def gpio_reset(self, channel):
 
-    print(" > GPIOController : INFO : Pin %s activated : RESET" % (channel) )
+    Debug.println("INFO", "Pin %s activated : RESET" % (channel) )
     self.stateController.raiseFlag("RESET")
 
     if (self.app):
@@ -73,7 +73,7 @@ class GPIOController:
 
     command = self.KEYS[channel]
 
-    print(" > GPIOController : INFO : Pin %s activated : Button %s" % (channel, command) )
+    Debug.println("INFO", "Pin %s activated : Button %s" % (channel, command) )
     self.stateController.raiseFlag(command)
 
     if (self.app):
