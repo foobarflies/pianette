@@ -60,7 +60,8 @@ csTimedBufferThread.start()
 # It needs the app to flash the buttons
 gpioCtrl = GPIOController(ctrlState, app)
 
-print("  # Min : INFO : Entering main loop")
+print("  # Main : INFO : Entering main loop")
+
 # Run main loop
 appWindow.mainloop()
 

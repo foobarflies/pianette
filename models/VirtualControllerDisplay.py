@@ -12,7 +12,7 @@ class VirtualControllerDisplay(Frame):
     self.grid()
     self.createButtons()
     self.createUtilityButtons()
-    print("VirtualControllerDisplay : INFO : Gui created.")
+    print("  # VirtualControllerDisplay : INFO : Gui created.")
 
   def createUtilityButtons(self):
 # Quit button

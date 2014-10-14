@@ -60,7 +60,7 @@ class GPIOController:
   # Callback for the RESET button
   def gpio_reset(self, channel):
 
-    print(" %% GPIOController : INFO : Pin %s activated : RESET" % (channel) )
+    print(" > GPIOController : INFO : Pin %s activated : RESET" % (channel) )
     self.stateController.raiseFlag("RESET")
 
     if (self.app):
@@ -73,7 +73,7 @@ class GPIOController:
 
     command = self.KEYS[channel]
 
-    print(" %% GPIOController : INFO : Pin %s activated : Button %s" % (channel, command) )
+    print(" > GPIOController : INFO : Pin %s activated : Button %s" % (channel, command) )
     self.stateController.raiseFlag(command)
 
     if (self.app):

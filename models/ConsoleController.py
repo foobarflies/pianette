@@ -156,5 +156,5 @@ class ConsoleController:
     if (self.serialConnection):
       self.serialConnection.write(bytes([stateByte1, stateByte2]))
     # else: 
-    #  print(" % ConsoleController : INFO : Bytes lost %d %d\r" % (stateByte1, stateByte2))
+    #  print(" > ConsoleController : INFO : Bytes lost %d %d\r" % (stateByte1, stateByte2))
 
