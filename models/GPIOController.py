@@ -1,3 +1,5 @@
+from utils import *
+
 import RPi.GPIO as GPIO
 
 class GPIOController:

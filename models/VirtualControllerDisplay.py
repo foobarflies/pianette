@@ -1,5 +1,5 @@
+from utils import *
 from tkinter import *
-from time import sleep
 
 class VirtualControllerDisplay(Frame):
 
@@ -12,7 +12,7 @@ class VirtualControllerDisplay(Frame):
     self.grid()
     self.createButtons()
     self.createUtilityButtons()
-    print("  # VirtualControllerDisplay : INFO : Gui created.")
+    Debug.println("SUCCESS", "Gui created.")
 
   def createUtilityButtons(self):
 # Quit button
