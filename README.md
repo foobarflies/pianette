@@ -1,6 +1,5 @@
 # Virtual & GPIO Game Console Controller
 
-
 A graphical emulator of a Game Pad Controller that asynchronously listens to GPIO `EDGE_RISING` inputs from sensors and sends Serial commands to an `ATMEGA328P` acting as a fake SPI Slave for the Console.
 
 _Written in Python 3._
