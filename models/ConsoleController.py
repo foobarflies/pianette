@@ -73,22 +73,6 @@ class ConsoleController:
     # LEFT + UP
     self.serialConnection.write(b'\x6F\xFF')
 
-
-# FIX ME FIX ME
-  # Nice combos
-  def sendHadouken(self):
-    # LEFT + UP
-    self.serialConnection.write(b'\xFF\xFF')
-
-  def sendTatsumaki(self):
-    # LEFT + UP
-    self.serialConnection.write(b'\xFF\xFF')
-
-  def sendUltra(self):
-    # LEFT + UP
-    self.serialConnection.write(b'\xFF\xFF')
-# FIX ME FIX ME
-
   # Send a reset byte couple, going back to the menus
   def sendReset(self):
     self.serialConnection.write(b'\x00\x00')

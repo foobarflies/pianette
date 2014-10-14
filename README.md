@@ -1,9 +1,15 @@
-## Virtual & GPIO Game Console Controller
-- - -
+# Virtual & GPIO Game Console Controller
 
-A graphical emulator of a Game Pad Controller that asynchronously listens to GPIO `EDGE_RISING` inputs from sensors and sends Serial commands to an ATMEGA328P acting as a fake SPI Slave for the Console.
 
-Written in Python 3.
+A graphical emulator of a Game Pad Controller that asynchronously listens to GPIO `EDGE_RISING` inputs from sensors and sends Serial commands to an `ATMEGA328P` acting as a fake SPI Slave for the Console.
+
+_Written in Python 3._
+
+## Installation
+
+### ATMEGA
+
+The `ArduinoSPISlave.ino` sketch must be loaded onto the Arduino, connected via serial. The port is of no consequence as the program will poll the open `/dev/ttyACM*`ports and choose the first one available.
 
 ### Blacklisting
 
@@ -29,6 +35,8 @@ in `/etc/modprobe.d/raspi-blacklist.conf` :
 
     blacklist leds-gpio
 
+And to remove modules at boot time in `/etc/modules`, especially sound-related modules.
+
 ### Run
 
 `sudo`is required to have access to GPIO pins on the Raspberry Pi.
@@ -48,27 +56,43 @@ If you have a graphical environment, you can run:
 
 ### Test Script
 
-Test script to verify that all GPIOs can be accessed. Run with `sudo ./testGPIO.py` and trigger each pin to see if it calls back.
+A test script is available to verify that all GPIOs can be accessed. Run with `sudo ./testGPIO.py` and trigger each pin to see if it calls back.
 
 ### Street Fighter Alpha 3 Specifics
 
 #### Timing
 
 Fighting buttons timings :
-  - X : 270 ms
-  - S : 200 ms
-  - T : 370 ms
-  - O : 400 ms
 
-#### TODO / GENERAL
+  - ☓ : 270 ms
+  - ◼ : 200 ms
+  - ▲ : 370 ms
+  - ◯ : 400 ms
 
-  - Modify the Arduino sketch to have a better LEFT/RIGHT (keep the button pressed longer)
+If two antinomic buttons are pressed at the same time, the following rules apply :
 
-#### TODO / CLI
+  - Up & Down => Up will be triggered
+  - Right & Left => Left will be triggered
 
-  - Get correct keys in infinite loop and bind the stuff
+#### List of keys and combos
 
-#### TODO / GUI
+  - ☓ (Cross) : `0xFF 0xBF`
+  - ◯ (Circle) : `0xFF 0xDF`
+  - ◼ (Square) : `0xFF 0x7F`
+  - ▲ (Triangle) : `0xFF 0xEF`
 
-  - Change the interface for something more lookalike to a real controller
-  - In `rd.c` : load `main.pyw` on startup
+  - START : `xF7 0xFF`
+  - SELECT : `xF7 0xFE`
+
+  - ▲ : `0xEF 0xFF`
+  - ▼ : `0xBF 0xFF`
+  - ◀ : `0x7F 0xFF`
+  - ▶ : `0xDF 0xFF`
+
+  - ▼ + ▶ = ◢ : `0x9F 0xFF`
+  - ▼ + ◀ = ◣ : `0x3F 0xFF`
+  - ▲ + ▶ = ◥  : `0xCF 0xFF`
+  - ▲ + ◀ = ◤ : `0x6F 0xFF`
+
+  - ▼ + (▶|◀) + ◼ (Hadouken) : _timed combo_
+  - ▼ + (▶|◀) + ☓ (Tatsumaki) : _timed combo_

@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 
-from tkinter import *
 from models import *
-
-import RPi.GPIO as GPIO
 
 # Read config
 import configparser
 config = configparser.ConfigParser()
 config.read('conf.ini')
 
+# Set GPIO Mode
+import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
 # Just to be sure
 # THIS LINE WILL HOPEFULLY ISSUE A WARNING THAT CAN BE IGNORED
 GPIO.cleanup()
 
+# GUI ################
+from tkinter import *
 appWindow = Tk()
 appWindow.title("Virtual Controller")
 
@@ -35,6 +36,25 @@ app = VirtualControllerDisplay(appWindow, ctrlState)
 
 # Instantiate the console controller that will send out the state to the console when needed
 consoleCtrl = ConsoleController(ctrlState)
+
+# Start the thread that permantently writes the controller state
+import threading
+def csThreadWorker():
+  while True:
+    lock = threading.Lock()
+    lock.acquire()
+    consoleCtrl.sendStateBytes()
+    lock.release()
+
+csThread = threading.Thread(target=csThreadWorker)
+csThread.daemon = True
+csThread.start()
+
+# Start the timing thread
+csTimedBuffer = ControllerStateTimedBuffer(ctrlState, consoleCtrl)
+csTimedBufferThread = threading.Thread(target=csTimedBuffer.popStateBuffers)
+csTimedBufferThread.daemon = True
+csTimedBufferThread.start()
 
 # Now loads the GPIO Controller that will set state flags depending on the GPIO inputs
 # It needs the app to flash the buttons

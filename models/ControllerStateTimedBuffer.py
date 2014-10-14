@@ -20,7 +20,7 @@ class ControllerStateTimedBuffer(object):
             "START" : [],
         }
 
-        self._interval = 10/1000
+        self._interval = 0.010 # 7 msecs < _interval < 26 msecs
 
     def popStateBuffers(self):
         while(True):
