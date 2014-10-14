@@ -4,9 +4,12 @@ from models import *
 from utils import *
 
 # Read config
-import configparser
+import configparser, os
 config = configparser.ConfigParser()
-config.read('conf.ini')
+main_base = os.path.dirname(__file__)
+config_file = os.path.join([main_base, "conf.ini"])
+Debug.println("INFO", "Reading configuration file %s ..." % ("/".join(config_file)))
+config.read("/".join(config_file))
 
 # Set GPIO Mode
 import RPi.GPIO as GPIO

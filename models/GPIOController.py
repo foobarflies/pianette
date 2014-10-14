@@ -56,8 +56,11 @@ class GPIOController:
     ## Attach a callback to each INPUT pin
     for pin, button in self.KEYS.items():
       Debug.println("SUCCESS", "Pin %s => %s" % (pin, button) )
-      GPIO.setup(pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
-      GPIO.add_event_detect(pin, GPIO.RISING, callback=self.gpio_callback, bouncetime=300)
+      try:
+        GPIO.setup(pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+        GPIO.add_event_detect(pin, GPIO.RISING, callback=self.gpio_callback, bouncetime=300)
+      except Exception:
+        Debug.println("FAIL", "Pin %s (%s) already in use." % (pin, button))
 
   # Callback for the RESET button
   def gpio_reset(self, channel):
