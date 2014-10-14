@@ -7,32 +7,32 @@ class GPIOController:
   # Mapping
   KEYS  = {   
             # Bank 1, Octave -1
-            5: "DOWN",
-            6: "S",
-            13: "O",
-            19: "X",
-            26: "LEFT",
+            5: "LEFT",    # Do
+            6: "LEFT2",   # Ré
+            13: "CL",     # Mi
+            19: "DOWN",   # Fa
+            26: "CL2",    # Sol
 
-            # Bank 2, Octave 0
-            21: "T",
-            20: "UP",
-            16: "O",
-            12: "X",
-            25: "LEFT",
+            # Bank 2, Octave -1
+            21: "RIGHT",  # La
+            20: "CL3",    # Sib
+            16: "RIGHT2", # Si
+            12: "CL4",    # Do
+            25: None,
 
             # Bank 3, Octave 1
-            24: "T",
-            23: "S",
-            18: "DOWN",
-            15: "X",
-            14: "RIGHT",
+            24: "S",      # Do
+            23: "O",      # Ré
+            18: "CR",     # Mib
+            15: "X",      # Mi
+            14: "S2",     # Fa
 
-            # Bank 4, Octave 2
-            2: "T",
-            3: "S",
-            4: "O",
-            17: "UP",
-            27: "RIGHT",
+            # Bank 4, Octave 1
+            2: "CR2",     # Solb
+            3: "O2",      # Sol
+            4: "T",       # La
+            17: "CR3",    # Sib
+            27: "T2",     # Si
 
             # N/A : "SELECT",
             # N/A : "START",
