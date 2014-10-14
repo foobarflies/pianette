@@ -20,8 +20,10 @@ class ControllerState:
   def __init__(self, player):
     if (player == 1):
       self.setPlayerOne()
+      print("ControllerState : INFO : Player is #1")
     else:
       self.setPlayerTwo()
+      print("ControllerState : INFO : Player is #2")
 
   def __str__(self):
 

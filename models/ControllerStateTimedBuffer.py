@@ -21,6 +21,7 @@ class ControllerStateTimedBuffer(object):
         }
 
         self._interval = 0.010 # 7 msecs < _interval < 26 msecs
+        print("ControllerStateTimedBuffer : INFO : Timed buffer initialized at %f secs interval" % self._interval)
 
     def popStateBuffers(self):
         while(True):
