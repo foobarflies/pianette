@@ -54,6 +54,8 @@ class ReadChar():
     def __exit__(self, type, value, traceback):
         termios.tcsetattr(self.fd, termios.TCSADRAIN, self.old_settings)
 
+print("  # Main : INFO : Entering main loop")
+
 while (True):
   with ReadChar() as rc:
     char = rc

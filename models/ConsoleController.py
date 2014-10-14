@@ -17,15 +17,17 @@ class ConsoleController:
     self.stateController = stateController
     # Tries to find correct Serial port
     open_ports = self.getSerialPorts()
+
     # Opens first port available
     try:
       self.serialConnection = serial.Serial(open_ports[0], 115200)
-      print("ConsoleController : INFO : SPI Slave detected at %s, waiting for the port to initialize." % open_ports[0])
+      print("  # ConsoleController : INFO : SPI Slave detected at %s, waiting for the port to initialize." % open_ports[0])
       time.sleep(3) # DIRTY but apparently required for the serial port to get fully ready
-    except Exception, e:
+    except Exception:
       self.serialConnection = None
-      print("ConsoleController : WARNING : No ConsoleController SPI Slave detected.")
+      print("  # ConsoleController : WARNING : No ConsoleController SPI Slave detected.")
     
+    # Seeds random for stage selection
     random.seed()
 
   def getSerialPorts(self):
@@ -151,9 +153,8 @@ class ConsoleController:
     ) ^ 0xff
 
     # Send the command out to the Arduino controller through serial connection
-    # DEBUG: print ("%d, %d\r" % (stateByte1, stateByte2))
     if (self.serialConnection):
       self.serialConnection.write(bytes([stateByte1, stateByte2]))
-    else: 
-      print("ConsoleController : INFO : Bytes lost %d %d\r" % (stateByte1, stateByte2))
+    # else: 
+    #  print(" % ConsoleController : INFO : Bytes lost %d %d\r" % (stateByte1, stateByte2))
 
