@@ -52,9 +52,13 @@ while (True):
     char = rc
     # FIX ME FIX ME if char in {allowed_chars} ??
     if ord(char) > 32:
-      print("{} ".format(char))
-      ctrlState.toggleFlag(char)
+      Debug.println("INFO", "Key : {}".format(char))
+      try:
+        ctrlState.toggleFlag(char)
+      except Exception:
+        Debut.println("FAIL", "This key does not correspond to any ControllerState flag")
     if ord(char) == 3: # ^C
+      Debut.println("WARNING", "Exiting ...")
       # Cleanup GPIOs
       GPIO.cleanup()
       # FIX ME Stop threads ??
