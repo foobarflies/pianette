@@ -37,30 +37,6 @@ class ControllerState:
 
   playerOne = True
 
-# Combos
-
-#   "Touche PS2" => "Touches pianos"
-
-#  Left hand
-#
-#   UP => LEFT1 + CL1 + CL2 (Do majeur)
-#   UP => LEFT1 + CL4 (Do octave)
-#   UP + Kick droit (ou gauche suivant player) => LEFT1 + CL1 + CL2  + CL3 (Do majeur 7e)
-#   UP+RIGHT => CL1 + CL2 + CL4 (Do Majeur premier renversement)
-#   DOWN+LEFT => LEFT1 + DOWN (Do Dim 4)
-#   DOWN+LEFT => LEFT2 + DOWN (Ré Min)
-#   RIGHT+DOWN => RIGHT1 + DOWN (Ré min)
-#   RIGHT+DOWN => RIGHT2 + DOWN (Si)
-
-#  Right hand
-
-#   Tatsukami => S1 + X1 + O1 (Do majeur)
-#   Hadouken =>  S1 + X1 + O1 + CR3 (Do 7e)
-#   ? => S1 + S2 + T1 (Do 6)
-#   ? => S1 + CR1 + O1 (Do min)
-#   ? => S1 + CR1 + O1 + CR3 (Do min 7e)
-#   ? => S1 + CR1 + CR2 + CR3 (Dim 3)
-
   def __init__(self, player):
     if (player == 1):
       self.setPlayerOne()

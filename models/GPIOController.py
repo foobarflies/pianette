@@ -15,33 +15,33 @@ GPIO.cleanup()
 """
 GPIO_PIN_ATTACHMENTS = {
     # Bank 1
-    5: { "note": "C3" },   # "LEFT"
-    6: { "note": "D3" },   # "LEFT2"
-    13: { "note": "E3" },  # "CL"
-    19: { "note": "F3" },  # "DOWN"
-    26: { "note": "G3" },  # "CL2"
+    5: { "note": "C3" },
+    6: { "note": "D3" },
+    13: { "note": "E3" },
+    19: { "note": "F3" },
+    26: { "note": "G3" },
 
     # Bank 2
-    21: { "note": "A4" },  # "RIGHT"
-    20: { "note": "B♭4" }, # "CL3"
-    16: { "note": "B4" },  # "RIGHT2"
-    12: { "note": "C4" },   # "CL4"
+    21: { "note": "A4" },
+    20: { "note": "B♭4" },
+    16: { "note": "B4" },
+    12: { "note": "C4" },
     25: None,
     22: { "pull_up_down": GPIO.PUD_UP, "event": GPIO.FALLING, "command": "RESET" },
 
     # Bank 3
-    24: { "note": "C5" },  # "S"
-    23: { "note": "D5" },  # "O"
-    18: { "note": "E♭5" }, # "CR"
-    15: { "note": "E5" },  # "X"
-    14: { "note": "F5" },  # "S2"
+    24: { "note": "C5" },
+    23: { "note": "D5" },
+    18: { "note": "E♭5" },
+    15: { "note": "E5" },
+    14: { "note": "F5" },
 
     # Bank 4
-    2: { "note": "G♭5" },  # "CR2"
-    3: { "note": "G5" },   # "O2"
-    4: { "note": "A6" },   # "T"
-    17: { "note": "B♭6" }, # "CR3"
-    27: { "note": "B6" },  # "T2"
+    2: { "note": "G♭5" },
+    3: { "note": "G5" },
+    4: { "note": "A6" },
+    17: { "note": "B♭6" },
+    27: { "note": "B6" },
 }
 
 class GPIOController:
