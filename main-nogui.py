@@ -17,15 +17,11 @@ piano_state = PianoState()
 # This holds the PSX controller state at any moment
 psx_controller_state = ControllerState(config['DEFAULT']['player'])
 
-# Instantiate the console controller that will send out the state to the console when needed
+# Instantiate the console controller that is responsible for sendint out the psx constroller state to the console
 console_controller = ConsoleController(psx_controller_state)
 
-# Start the timing thread
-import threading
-csTimedBuffer = ControllerStateTimedBuffer(psx_controller_state)
-csTimedBufferThread = threading.Thread(target=csTimedBuffer.popStateBuffers)
-csTimedBufferThread.daemon = True
-csTimedBufferThread.start()
+# Start the pianette
+pianette = Pianette(piano_state, psx_controller_state)
 
 # Instanciate the global GPIO Controller
 # Its responsibility is to set piano and controller states based on GPIO inputs

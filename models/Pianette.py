@@ -1,11 +1,14 @@
+# coding=utf-8
+
 from utils import *
 
 import threading
 import time
 
-class ControllerStateTimedBuffer(object):
-    def __init__(self, controllerState):
-        self.controllerState = controllerState
+class Pianette(object):
+    def __init__(self, piano_state, psx_controller_state):
+        self.piano_state = piano_state
+        self.psx_controller_state = psx_controller_state
 
         self.stateBuffers = {
             "T" : [],
@@ -14,32 +17,32 @@ class ControllerStateTimedBuffer(object):
             "O" : [],
             "UP" : [],
             "DOWN" : [],
-            "RIGHT" : [],
             "LEFT" : [],
+            "RIGHT" : [],
             "SELECT" : [],
             "START" : [],
         }
 
-        self._interval = 0.010 # 7 msecs < _interval < 26 msecs
-        Debug.println("INFO", "Timed buffer initialized at %f secs interval" % self._interval)
+        self._interval = 10/1000 # 7 msecs < _interval < 26 msecs
+        popStateBuffersThread = threading.Thread(target=self.popStateBuffersWorker)
+        popStateBuffersThread.daemon = True
+        popStateBuffersThread.start()
+        Debug.println("INFO", "Pianette popStateBuffersWorker initialized at %f secs interval" % self._interval)
 
-    def popStateBuffers(self):
+    def popStateBuffersWorker(self):
         while(True):
-            lock = threading.Lock()
-            lock.acquire()
             for control, controlBuffer in self.stateBuffers.items():
                 if controlBuffer:
                     cyclesCount = controlBuffer.pop(0)
                     if cyclesCount > 0:
-                        self.controllerState.raiseFlag(control)
+                        self.psx_controller_state.raiseFlag(control)
                         cyclesCount-= 1
                         controlBuffer.insert(0, cyclesCount)
                     elif cyclesCount < 0:
-                        self.controllerState.clearFlag(control)
+                        self.psx_controller_state.clearFlag(control)
                         cyclesCount+= 1
                         controlBuffer.insert(0, cyclesCount)
                     else:
-                        self.controllerState.clearFlag(control)
+                        self.psx_controller_state.clearFlag(control)
 
-            lock.release()
             time.sleep(self._interval)
