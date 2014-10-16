@@ -11,7 +11,7 @@ config_file = os.path.join([main_base, "conf.ini"])
 Debug.println("INFO", "Reading configuration file %s ..." % ("/".join(config_file)))
 config.read("/".join(config_file))
 
-# This holds the controller state at any moment
+# This holds the PSX controller state at any moment
 ctrlState = ControllerState(config['DEFAULT']['player'])
 
 # Instantiate the console controller that will send out the state to the console when needed
