@@ -25,7 +25,7 @@ GPIO_PIN_ATTACHMENTS = {
     21: { "note": "A4" },  # "RIGHT"
     20: { "note": "B♭4" }, # "CL3"
     16: { "note": "B4" },  # "RIGHT2"
-    12: { "note": "C" },   # "CL4"
+    12: { "note": "C4" },   # "CL4"
     25: None,
     22: { "pull_up_down": GPIO.PUD_UP, "event": GPIO.FALLING, "command": "RESET" },
 
