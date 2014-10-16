@@ -3,3 +3,4 @@ from models.GPIOController import GPIOController
 from models.ConsoleController import ConsoleController
 from models.ControllerState import ControllerState
 from models.ControllerStateTimedBuffer import ControllerStateTimedBuffer
+from models.PianoState import PianoState

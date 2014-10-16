@@ -11,6 +11,9 @@ config_file = os.path.join([main_base, "conf.ini"])
 Debug.println("INFO", "Reading configuration file %s ..." % ("/".join(config_file)))
 config.read("/".join(config_file))
 
+# This holds the Piano state at any moment
+piano_state = PianoState()
+
 # This holds the PSX controller state at any moment
 ctrlState = ControllerState(config['DEFAULT']['player'])
 
@@ -38,7 +41,7 @@ csTimedBufferThread.start()
 
 # Instanciate the global GPIO Controller
 # Its responsibility is to set piano and controller states based on GPIO inputs
-gpio_controller = GPIOController(None, ctrlState)
+gpio_controller = GPIOController(piano_state, ctrlState)
 
 # Run main loop
 Debug.println("NOTICE", "Entering main loop")
