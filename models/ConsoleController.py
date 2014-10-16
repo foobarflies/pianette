@@ -168,7 +168,4 @@ class ConsoleController:
 
   def sendStateBytesWorker(self):
     while True:
-      lock = threading.Lock()
-      lock.acquire()
       self.sendStateBytes()
-      lock.release()

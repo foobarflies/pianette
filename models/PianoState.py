@@ -55,23 +55,17 @@ class PianoState:
         self._timer_is_running = False
 
     def decrement_notes_cycles(self):
-        lock = threading.Lock()
-        lock.acquire()
         for note in self.notes_state.keys():
             cycles = self.notes_state[note]
             if (cycles > 0):
                 self.notes_state[note] -= 1
-        lock.release()
 
     def __str__(self):
         state_string = ""
 
-        lock = threading.Lock()
-        lock.acquire()
         for note, cycles in self.notes_state.items():
             if (cycles > 0):
                 state_string += ("%s (%d) " % (note, cycles))
-        lock.release()
 
         return state_string
 
@@ -81,7 +75,4 @@ class PianoState:
     """
     def play_note(self, note, duration = 1/10):
         cycles_for_duration = int(duration / self._timer_interval)
-        lock = threading.Lock()
-        lock.acquire()
         self.notes_state[note] = max(cycles_for_duration, self.notes_state[note])
-        lock.release()
