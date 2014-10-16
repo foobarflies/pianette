@@ -1,90 +1,93 @@
+# coding=utf-8
+
 from utils import *
 
 import RPi.GPIO as GPIO
 
-"""
-# Global GPIO Pin to Piano Note Mapping
-"""
-PIANO_NOTE_FOR_GPIO_PIN = {   
-    # Bank 1, Octave -1
-    5: "LEFT",    # Do
-    6: "LEFT2",   # Ré
-    13: "CL",     # Mi
-    19: "DOWN",   # Fa
-    26: "CL2",    # Sol
+GPIO.setmode(GPIO.BCM)
 
-    # Bank 2, Octave -1
-    21: "RIGHT",  # La
-    20: "CL3",    # Sib
-    16: "RIGHT2", # Si
-    12: "CL4",    # Do
+# Just to be sure ...
+# THIS LINE WILL ISSUE A WARNING THAT CAN HOPEFULLY BE IGNORED
+GPIO.cleanup()
+
+"""
+# Global GPIO Pin Mapping
+"""
+GPIO_PIN_ATTACHMENTS = {
+    # Bank 1
+    5: { "note": "C3" },   # "LEFT"
+    6: { "note": "D3" },   # "LEFT2"
+    13: { "note": "E3" },  # "CL"
+    19: { "note": "F3" },  # "DOWN"
+    26: { "note": "G3" },  # "CL2"
+
+    # Bank 2
+    21: { "note": "A4" },  # "RIGHT"
+    20: { "note": "B♭4" }, # "CL3"
+    16: { "note": "B4" },  # "RIGHT2"
+    12: { "note": "C" },   # "CL4"
     25: None,
+    22: { "pull_up_down": GPIO.PUD_UP, "event": GPIO.FALLING, "command": "RESET" },
 
-    # Bank 3, Octave 1
-    24: "S",      # Do
-    23: "O",      # Ré
-    18: "CR",     # Mib
-    15: "X",      # Mi
-    14: "S2",     # Fa
+    # Bank 3
+    24: { "note": "C5" },  # "S"
+    23: { "note": "D5" },  # "O"
+    18: { "note": "E♭5" }, # "CR"
+    15: { "note": "E5" },  # "X"
+    14: { "note": "F5" },  # "S2"
 
-    # Bank 4, Octave 1
-    2: "CR2",     # Solb
-    3: "O2",      # Sol
-    4: "T",       # La
-    17: "CR3",    # Sib
-    27: "T2",     # Si
-
-    # N/A : "SELECT",
-    # N/A : "START",
+    # Bank 4
+    2: { "note": "G♭5" },  # "CR2"
+    3: { "note": "G5" },   # "O2"
+    4: { "note": "A6" },   # "T"
+    17: { "note": "B♭6" }, # "CR3"
+    27: { "note": "B6" },  # "T2"
 }
 
 class GPIOController:
+    def __init__(self, piano_state, controller_state):
+        self.piano_state = piano_state
+        self.controller_state = controller_state
 
-  # GPIO Pin 22 is used for the reset key
-  RESET_KEY = 22
+        # Attach callbacks to pins
+        Debug.println("INFO", "Attaching event callbacks to pins ...")
 
-  def __init__(self, stateController, app):
-    self.stateController = stateController
-    if (app):
-      self.app = app
+        for pin, attachment in GPIO_PIN_ATTACHMENTS.items():
+            if attachment:
+                pull_up_down = attachment.get("pull_up_down", GPIO.PUD_DOWN)
+                event = attachment.get("event", GPIO.RISING)
 
-    Debug.println("INFO", "Attaching pins ...")
+                callback = None
+                callback_description = None
 
-    ## Attach a callback to the RESET pin when it brought LOW
-    Debug.println("SUCCESS", "Pin %s => RESET switch" % self.RESET_KEY )
-    GPIO.setup(self.RESET_KEY, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-    GPIO.add_event_detect(self.RESET_KEY, GPIO.FALLING, callback=self.gpio_reset, bouncetime=300)
+                if "note" in attachment:
+                    callback = self.gpio_pin_note_callback
+                    callback_description = "Note %s" % attachment["note"]
+                elif "command" in attachment:
+                    callback = self.gpio_pin_command_callback
+                    callback_description = "Command %s" % attachment["command"]
+                if callback is None:
+                    Debug.println("FAIL", "Could not attach event callback for pin %2d" % (pin))
+                    raise Exception()
 
-    ## Attach a callback to each INPUT pin
-    for pin, button in PIANO_NOTE_FOR_GPIO_PIN.items():
-      Debug.println("SUCCESS", "Pin %s => %s" % (pin, button) )
-      try:
-        GPIO.setup(pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
-        GPIO.add_event_detect(pin, GPIO.RISING, callback=self.gpio_callback, bouncetime=300)
-      except Exception:
-        Debug.println("FAIL", "Pin %s (%s) already in use." % (pin, button))
+                try:
+                    GPIO.setup(pin, GPIO.IN, pull_up_down = pull_up_down)
+                    GPIO.add_event_detect(pin, event, callback=callback, bouncetime=300)
+                except Exception:
+                    Debug.println("FAIL", "Pin %2d already in use." % (pin))
+                    raise
+                Debug.println("SUCCESS", "Pin %2d attached to %s" % (pin, callback_description) )
+            else:
+                Debug.println("SUCCESS", "Pin %2d not attached" % (pin) )
 
-  # Callback for the RESET button
-  def gpio_reset(self, channel):
+    # Callback method for PSX Controller Commands
+    def gpio_pin_command_callback(self, channel):
+        command = GPIO_PIN_ATTACHMENTS[channel]["command"]
+        Debug.println("INFO", "Pin %2d activated : triggering PSX Controller Command %s" % (channel, command) )
+        self.controller_state.raiseFlag("RESET")
 
-    Debug.println("INFO", "Pin %s activated : RESET" % (channel) )
-    self.stateController.raiseFlag("RESET")
-
-    if (self.app):
-      # Updates the UI to reflect the trigger
-      self.app.updateLabel("RESET")
-      self.app.flashButton("RESET")
-
-  # Callback for all action pins = keys
-  def gpio_callback(self,channel):
-
-    command = PIANO_NOTE_FOR_GPIO_PIN[channel]
-
-    Debug.println("INFO", "Pin %s activated : Button %s" % (channel, command) )
-    self.stateController.raiseFlag(command)
-
-    if (self.app):
-      # Updates the UI to reflect the trigger
-      self.app.updateLabel(command)
-      self.app.flashButton(command)
-
+    # Callback method for Piano Notes
+    def gpio_pin_note_callback(self,channel):
+        note = GPIO_PIN_ATTACHMENTS[channel]["note"]
+        Debug.println("INFO", "Pin %2d activated : triggering Piano Note %s" % (channel, note) )
+        # self.piano_state.play_note(note)

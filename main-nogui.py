@@ -11,14 +11,6 @@ config_file = os.path.join([main_base, "conf.ini"])
 Debug.println("INFO", "Reading configuration file %s ..." % ("/".join(config_file)))
 config.read("/".join(config_file))
 
-# Set GPIO Mode
-import RPi.GPIO as GPIO
-GPIO.setmode(GPIO.BCM)
-
-# Just to be sure ...
-# THIS LINE WILL HOPEFULLY ISSUE A WARNING THAT CAN BE IGNORED
-GPIO.cleanup()
-
 # This holds the controller state at any moment
 ctrlState = ControllerState(config['DEFAULT']['player'])
 
@@ -44,8 +36,9 @@ csTimedBufferThread = threading.Thread(target=csTimedBuffer.popStateBuffers)
 csTimedBufferThread.daemon = True
 csTimedBufferThread.start()
 
-# Now loads the GPIO Controller that will set state flags depending on the GPIO inputs
-gpioCtrl = GPIOController(ctrlState, False)
+# Instanciate the global GPIO Controller
+# Its responsibility is to set piano and controller states based on GPIO inputs
+gpio_controller = GPIOController(None, ctrlState)
 
 # Run main loop
 Debug.println("NOTICE", "Entering main loop")
