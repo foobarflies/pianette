@@ -18,7 +18,7 @@ piano_state = PianoState()
 psx_controller_state = ControllerState(config['DEFAULT']['player'])
 
 # Instantiate the console controller that will send out the state to the console when needed
-consoleCtrl = ConsoleController(psx_controller_state)
+console_controller = ConsoleController(psx_controller_state)
 
 # Start the thread that permantently writes the controller state
 import threading
@@ -26,7 +26,7 @@ def csThreadWorker():
   while True:
     lock = threading.Lock()
     lock.acquire()
-    consoleCtrl.sendStateBytes()
+    console_controller.sendStateBytes()
     lock.release()
 
 csThread = threading.Thread(target=csThreadWorker)
@@ -34,7 +34,7 @@ csThread.daemon = True
 csThread.start()
 
 # Start the timing thread
-csTimedBuffer = ControllerStateTimedBuffer(psx_controller_state, consoleCtrl)
+csTimedBuffer = ControllerStateTimedBuffer(psx_controller_state)
 csTimedBufferThread = threading.Thread(target=csTimedBuffer.popStateBuffers)
 csTimedBufferThread.daemon = True
 csTimedBufferThread.start()

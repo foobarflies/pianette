@@ -4,9 +4,8 @@ import threading
 import time
 
 class ControllerStateTimedBuffer(object):
-    def __init__(self, controllerState, consoleController):
+    def __init__(self, controllerState):
         self.controllerState = controllerState
-        self.consoleController = consoleController
 
         self.stateBuffers = {
             "T" : [],
