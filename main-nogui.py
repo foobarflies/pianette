@@ -20,20 +20,8 @@ psx_controller_state = ControllerState(config['DEFAULT']['player'])
 # Instantiate the console controller that will send out the state to the console when needed
 console_controller = ConsoleController(psx_controller_state)
 
-# Start the thread that permantently writes the controller state
-import threading
-def csThreadWorker():
-  while True:
-    lock = threading.Lock()
-    lock.acquire()
-    console_controller.sendStateBytes()
-    lock.release()
-
-csThread = threading.Thread(target=csThreadWorker)
-csThread.daemon = True
-csThread.start()
-
 # Start the timing thread
+import threading
 csTimedBuffer = ControllerStateTimedBuffer(psx_controller_state)
 csTimedBufferThread = threading.Thread(target=csTimedBuffer.popStateBuffers)
 csTimedBufferThread.daemon = True

@@ -2,7 +2,7 @@ from utils import *
 
 import glob
 import serial
-
+import threading
 import time
 import random
 
@@ -32,6 +32,11 @@ class ConsoleController:
     
     # Seeds random for stage selection
     random.seed()
+
+    # Start the thread that permantently writes the controller state
+    csThread = threading.Thread(target=self.sendStateBytesWorker)
+    csThread.daemon = True
+    csThread.start()
 
   def getSerialPorts(self):
 
@@ -161,3 +166,9 @@ class ConsoleController:
     # else: 
     #  Debug.println("INFO", "Bytes lost %d %d" % (stateByte1, stateByte2))
 
+  def sendStateBytesWorker(self):
+    while True:
+      lock = threading.Lock()
+      lock.acquire()
+      self.sendStateBytes()
+      lock.release()
