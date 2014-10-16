@@ -55,8 +55,6 @@ while (True):
         Debug.println("FAIL", "This key does not correspond to any ControllerState flag")
     if ord(char) == 3: # ^C
       Debug.println("WARNING", "Exiting ...")
-      # Cleanup GPIOs
-      GPIO.cleanup()
       # FIX ME Stop threads ??
       sys.exit()
   pass

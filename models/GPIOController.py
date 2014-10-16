@@ -80,6 +80,10 @@ class GPIOController:
             else:
                 Debug.println("SUCCESS", "Pin %2d not attached" % (pin) )
 
+    def __del__(self):
+        # Cleanup GPIOs on object destruction
+        GPIO.cleanup()
+
     # Callback method for PSX Controller Commands
     def gpio_pin_command_callback(self, channel):
         command = GPIO_PIN_ATTACHMENTS[channel]["command"]
