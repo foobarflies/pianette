@@ -94,4 +94,4 @@ class GPIOController:
     def gpio_pin_note_callback(self,channel):
         note = GPIO_PIN_ATTACHMENTS[channel]["note"]
         Debug.println("INFO", "Pin %2d activated : triggering Piano Note %s" % (channel, note) )
-        # self.piano_state.play_note(note)
+        self.piano_state.play_note(note)
