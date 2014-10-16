@@ -15,10 +15,10 @@ config.read("/".join(config_file))
 piano_state = PianoState()
 
 # This holds the PSX controller state at any moment
-ctrlState = ControllerState(config['DEFAULT']['player'])
+psx_controller_state = ControllerState(config['DEFAULT']['player'])
 
 # Instantiate the console controller that will send out the state to the console when needed
-consoleCtrl = ConsoleController(ctrlState)
+consoleCtrl = ConsoleController(psx_controller_state)
 
 # Start the thread that permantently writes the controller state
 import threading
@@ -34,14 +34,14 @@ csThread.daemon = True
 csThread.start()
 
 # Start the timing thread
-csTimedBuffer = ControllerStateTimedBuffer(ctrlState, consoleCtrl)
+csTimedBuffer = ControllerStateTimedBuffer(psx_controller_state, consoleCtrl)
 csTimedBufferThread = threading.Thread(target=csTimedBuffer.popStateBuffers)
 csTimedBufferThread.daemon = True
 csTimedBufferThread.start()
 
 # Instanciate the global GPIO Controller
 # Its responsibility is to set piano and controller states based on GPIO inputs
-gpio_controller = GPIOController(piano_state, ctrlState)
+gpio_controller = GPIOController(piano_state, psx_controller_state)
 
 # Run main loop
 Debug.println("NOTICE", "Entering main loop")
@@ -53,7 +53,7 @@ while (True):
     if ord(char) > 32:
       Debug.println("INFO", "Key : {}".format(char))
       try:
-        ctrlState.toggleFlag(char)
+        psx_controller_state.toggleFlag(char)
       except Exception:
         Debug.println("FAIL", "This key does not correspond to any ControllerState flag")
     if ord(char) == 3: # ^C
