@@ -64,8 +64,8 @@ A test script is available to verify that all GPIOs can be accessed. Run with `s
 Fighting buttons timings :
 
   - ☓ : 270 ms
-  - ◼ : 200 ms
-  - ▲ : 370 ms
+  - □ : 200 ms
+  - △ : 370 ms
   - ◯ : 400 ms
 
 If two antinomic buttons are pressed at the same time, the following rules apply :
@@ -77,21 +77,21 @@ If two antinomic buttons are pressed at the same time, the following rules apply
 
   - ☓ (Cross) : `0xFF 0xBF`
   - ◯ (Circle) : `0xFF 0xDF`
-  - ◼ (Square) : `0xFF 0x7F`
-  - ▲ (Triangle) : `0xFF 0xEF`
+  - □ (Square) : `0xFF 0x7F`
+  - △ (Triangle) : `0xFF 0xEF`
 
   - START : `xF7 0xFF`
   - SELECT : `xF7 0xFE`
 
-  - ▲ : `0xEF 0xFF`
-  - ▼ : `0xBF 0xFF`
-  - ◀ : `0x7F 0xFF`
-  - ▶ : `0xDF 0xFF`
+  - ↑ : `0xEF 0xFF`
+  - ↓ : `0xBF 0xFF`
+  - ← : `0x7F 0xFF`
+  - → : `0xDF 0xFF`
 
-  - ▼ + ▶ = ◢ : `0x9F 0xFF`
-  - ▼ + ◀ = ◣ : `0x3F 0xFF`
-  - ▲ + ▶ = ◥  : `0xCF 0xFF`
-  - ▲ + ◀ = ◤ : `0x6F 0xFF`
+  - ↓ + → = ↘ : `0x9F 0xFF`
+  - ↓ + ← = ↙ : `0x3F 0xFF`
+  - ↑ + → = ↗  : `0xCF 0xFF`
+  - ↑ + ← = ↖ : `0x6F 0xFF`
 
-  - ▼ + (▶|◀) + ◼ (Hadouken) : _timed combo_
-  - ▼ + (▶|◀) + ☓ (Tatsumaki) : _timed combo_
+  - ↓, (↘|↙), (→|←) + □ (Hadouken) : _timed combo_
+  - ↓, (↙|↘), (←|→) + ☓ (Tatsumaki) : _timed combo_
