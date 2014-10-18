@@ -151,9 +151,40 @@ PIANETTE_BUFFERED_STATES_MAPPINGS = [
     # "B♭6" (AKA "CR3")
 ]
 
-# The disambiguation priority fot this mapping will be calculated as follows:
-#   1- combos with more notes have a higher priority
-#   2- for an equal number of notes, combos declared first have a higher priority
+# Assign a unique, combinable bitid to configured notes
+_NOTE_BITIDS = {}
+
+_current_note_bitid = 0b1
+for buffered_state_mapping in PIANETTE_BUFFERED_STATES_MAPPINGS:
+    for note in buffered_state_mapping["piano"]:
+        if not note in _NOTE_BITIDS:
+            _NOTE_BITIDS[note] = _current_note_bitid
+            _current_note_bitid <<= 1
+del _current_note_bitid
+
+# Structure Buffered States Mapping using Piano "Chords" bitids (combination of Note bitids)
+# Prioritize chords as follows:
+#   1- chords with more notes have a higher priority
+#   2- for an equal number of notes, chords declared first in config have a higher priority
+_PSX_CONTROLLER_BUFFERED_STATES_FOR_CHORD_BITID = {}
+
+_prioritized_chord_bitids_for_note_count = {}
+for buffered_state_mapping in PIANETTE_BUFFERED_STATES_MAPPINGS:
+    chord_bitid = 0b0
+    note_count = len(buffered_state_mapping["piano"])
+
+    for note in buffered_state_mapping["piano"]:
+        chord_bitid |= _NOTE_BITIDS[note]
+
+    _PSX_CONTROLLER_BUFFERED_STATES_FOR_CHORD_BITID[chord_bitid] = buffered_state_mapping["psx_controller"]
+    chord_bitids = _prioritized_chord_bitids_for_note_count.get(note_count, [])
+    chord_bitids.append(chord_bitid)
+    _prioritized_chord_bitids_for_note_count[note_count] = chord_bitids
+
+_PRIORITIZED_CHORD_BITIDS = []
+for note_count in sorted(list(_prioritized_chord_bitids_for_note_count.keys()), reverse = True):
+    _PRIORITIZED_CHORD_BITIDS.extend(_prioritized_chord_bitids_for_note_count[note_count])
+del _prioritized_chord_bitids_for_note_count
 
 class Pianette(object):
     def __init__(self, piano_state, psx_controller_state):
@@ -233,6 +264,9 @@ class Pianette(object):
                 self.piano_state.clear_note(piano_note)
 
         # Process Buffered States
+        # Notes that have reached their last cycle "lead" the combo determination
+        # Other notes may be used to "complement" lead notes.
+        # If complementary notes are actually used, they are discarded from buffer.
         lead_notes = []
         complementary_notes = []
         for piano_note in self.piano_buffered_states.keys():
