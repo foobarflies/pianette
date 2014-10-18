@@ -74,7 +74,7 @@ PIANETTE_BUFFERED_STATES_MAPPINGS = [
     },
     {
         # LEFT1 + CL4 (Do octave) => UP
-        "piano": [ "C3", "E3", "G3" ],
+        "piano": [ "C3", "C4" ],
         "psx_controller": { "UP" : [ 3 ] },
     },
     {
