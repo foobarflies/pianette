@@ -4,8 +4,15 @@ from utils import *
 
 import threading
 
-# Pianette Mappings: Piano Notes => PSX Controller Combo
-# Ranked by descending order of priority
+# Pianette Configuration
+
+# Period of I/O cycle, in seconds
+PIANETTE_CYCLE_PERIOD = 10/1000 # Seems to properly operate between 7 msecs and 26 msecs (PSX observation)
+
+# Number of cycles before Inputs are processed and sent to Output
+PIANETTE_PROCESSING_CYCLES = 2
+
+# Mapping: Piano Notes (input) => PSX Controller Combo (output)
 PIANETTE_BUFFERED_STATES_MAPPINGS = [
     # Single Notes (left hand): Moves
     {
@@ -144,6 +151,10 @@ PIANETTE_BUFFERED_STATES_MAPPINGS = [
     # "B♭6" (AKA "CR3")
 ]
 
+# The disambiguation priority fot this mapping will be calculated as follows:
+#   1- combos with more notes have a higher priority
+#   2- for an equal number of notes, combos declared first have a higher priority
+
 class Pianette(object):
     def __init__(self, piano_state, psx_controller_state):
         self.piano_state = piano_state
@@ -187,7 +198,7 @@ class Pianette(object):
         }
 
         self._timer = None
-        self._timer_interval = 10/1000 # 7 msecs < _interval < 26 msecs for proper PSX controller operation
+        self._timer_interval = PIANETTE_CYCLE_PERIOD
         self._timer_is_running = False
 
         # Start the timer thread that will cycle buffered states at each interval
@@ -216,6 +227,24 @@ class Pianette(object):
 
     def cycle_buffered_states(self):
         # Input Piano Notes to Piano Buffered States
+        for piano_note in self.piano_state.get_notes_keys():
+            if self.piano_state.is_note_raised(piano_note):
+                self.piano_buffered_states.append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
+                self.piano_state.clear_note(piano_note)
+
+        # Process Buffered States
+        lead_notes = []
+        complementary_notes = []
+        for piano_note in self.piano_buffered_states.keys():
+            processed_buffered_states = []
+            for buffered_state in self.piano_buffered_states[piano_note]:
+                if buffered_state["cycles_remaining"] == 0:
+                    lead_notes.append(piano_note)
+                else:
+                    complementary_notes.append(piano_note)
+                    buffered_state["cycles_remaining"] -= 1
+                    processed_buffered_states.append(buffered_state)
+            self.piano_buffered_states[piano_note] = processed_buffered_states
 
         # Output PSX Controller Buffered states to PSX Controller
         for psx_control, buffered_state in self.psx_controller_buffered_states.items():
