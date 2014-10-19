@@ -163,12 +163,12 @@ for buffered_state_mapping in PIANETTE_BUFFERED_STATES_MAPPINGS:
 del _current_note_bitid
 
 # Structure Buffered States Mapping using Piano "Chords" bitids (combination of Note bitids)
-# Prioritize chords as follows:
+# Rank chords as follows:
 #   1- chords with more notes have a higher priority
 #   2- for an equal number of notes, chords declared first in config have a higher priority
-_PSX_CONTROLLER_BUFFERED_STATES_FOR_CHORD_BITID = {}
+_ranked_chord_bitids_for_note_count = {}
 
-_prioritized_chord_bitids_for_note_count = {}
+_BUFFERED_STATES_MAPPING_FOR_CHORD_BITID = {}
 for buffered_state_mapping in PIANETTE_BUFFERED_STATES_MAPPINGS:
     chord_bitid = 0b0
     note_count = len(buffered_state_mapping["piano"])
@@ -176,15 +176,32 @@ for buffered_state_mapping in PIANETTE_BUFFERED_STATES_MAPPINGS:
     for note in buffered_state_mapping["piano"]:
         chord_bitid |= _NOTE_BITIDS[note]
 
-    _PSX_CONTROLLER_BUFFERED_STATES_FOR_CHORD_BITID[chord_bitid] = buffered_state_mapping["psx_controller"]
-    chord_bitids = _prioritized_chord_bitids_for_note_count.get(note_count, [])
+    _BUFFERED_STATES_MAPPING_FOR_CHORD_BITID[chord_bitid] = buffered_state_mapping
+    chord_bitids = _ranked_chord_bitids_for_note_count.get(note_count, [])
     chord_bitids.append(chord_bitid)
-    _prioritized_chord_bitids_for_note_count[note_count] = chord_bitids
+    _ranked_chord_bitids_for_note_count[note_count] = chord_bitids
 
-_PRIORITIZED_CHORD_BITIDS = []
-for note_count in sorted(list(_prioritized_chord_bitids_for_note_count.keys()), reverse = True):
-    _PRIORITIZED_CHORD_BITIDS.extend(_prioritized_chord_bitids_for_note_count[note_count])
-del _prioritized_chord_bitids_for_note_count
+_RANKED_CHORD_BITIDS = []
+for note_count in sorted(list(_ranked_chord_bitids_for_note_count.keys()), reverse = True):
+    _RANKED_CHORD_BITIDS.extend(_ranked_chord_bitids_for_note_count[note_count])
+del _ranked_chord_bitids_for_note_count
+
+def get_notes_chord_bitid(notes):
+    notes_bitids = [ _NOTE_BITIDS[note] for note in notes ]
+    notes_chord_bitid = 0b0
+    for bitid in notes_bitids:
+        notes_chord_bitid |= bitid
+    return notes_chord_bitid
+
+def get_ranked_chord_bitids_including_at_least_one_of_notes(notes, from_chord_bitids_pool = _RANKED_CHORD_BITIDS):
+    notes_chord_bitid = get_notes_chord_bitid(notes)
+
+    ranked_notes_chord_bitids = []
+    for chord_bitid in from_chord_bitids_pool:
+        if (chord_bitid & notes_chord_bitid):
+            ranked_notes_chord_bitids.append(chord_bitid)
+
+    return ranked_notes_chord_bitids
 
 class Pianette(object):
     def __init__(self, piano_state, psx_controller_state):
@@ -263,9 +280,10 @@ class Pianette(object):
                 self.piano_buffered_states.append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
                 self.piano_state.clear_note(piano_note)
 
-        # Process Buffered States
-        # Notes that have reached their last cycle "lead" the combo determination
+        # Process Buffered States: Determine piano note or chord
+        # Notes that have reached their last cycle "lead" the chord determination
         # Other notes may be used to "complement" lead notes.
+        # If a winning chord is found, push corresponding combo to PSX Controller buffer
         # If complementary notes are actually used, they are discarded from buffer.
         lead_notes = []
         complementary_notes = []
@@ -279,6 +297,19 @@ class Pianette(object):
                     buffered_state["cycles_remaining"] -= 1
                     processed_buffered_states.append(buffered_state)
             self.piano_buffered_states[piano_note] = processed_buffered_states
+
+        ranked_chord_bitids = get_ranked_chord_bitids_including_at_least_one_of_notes(lead_notes)
+
+        all_notes_chord_bitid = get_notes_chord_bitid(lead_notes + complementary_notes)
+        ranked_winning_chord_bitids = [chord_bitid for chord_bitid in ranked_chord_bitids if not ((all_notes_chord_bitid & chord_bitid) ^ chord_bitid)]
+
+        if ranked_winning_chord_bitids:
+            winning_chord_bitid = ranked_winning_chord_bitids.pop(0)
+            winning_states_mapping = _BUFFERED_STATES_MAPPING_FOR_CHORD_BITID[winning_chord_bitid]
+
+            # Push piano command to PSX Controller buffer, clearing any pending combo
+            for control in self.psx_controller_buffered_states.keys():
+                self.psx_controller_buffered_states[control] = winning_states_mapping["psx_controller"].get(control, [])
 
         # Output PSX Controller Buffered states to PSX Controller
         for psx_control, buffered_state in self.psx_controller_buffered_states.items():
