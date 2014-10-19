@@ -311,6 +311,12 @@ class Pianette(object):
             for control in self.psx_controller_buffered_states.keys():
                 self.psx_controller_buffered_states[control] = winning_states_mapping["psx_controller"].get(control, [])
 
+            # Clear winning chord notes from the piano buffer
+            for piano_note in self.piano_buffered_states.keys():
+                if _NOTE_BITIDS[piano_note] & winning_chord_bitid:
+                    if self.piano_buffered_states[piano_note]:
+                        self.piano_buffered_states[piano_note] = self.piano_buffered_states[piano_note][1:]
+
         # Output PSX Controller Buffered states to PSX Controller
         for psx_control, buffered_state in self.psx_controller_buffered_states.items():
             if buffered_state:
