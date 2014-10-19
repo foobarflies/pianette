@@ -208,6 +208,9 @@ class Pianette(object):
         self.piano_state = piano_state
         self.psx_controller_state = psx_controller_state
 
+        # Instantiate the console controller that is responsible for sendint out the psx constroller state to the console
+        self.console_controller = ConsoleController(self.psx_controller_state)
+
         # Upcoming state cycles for the Piano Notes (input)
         self.piano_buffered_states = {
             "C3": [],
@@ -331,3 +334,5 @@ class Pianette(object):
                     buffered_state.insert(0, cyclesCount)
                 else:
                     self.psx_controller_state.clearFlag(psx_control)
+
+        self.console_controller.sendStateBytes()

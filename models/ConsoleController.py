@@ -2,7 +2,6 @@ from utils import *
 
 import glob
 import serial
-import threading
 import time
 import random
 
@@ -15,8 +14,8 @@ class ConsoleController:
 
   serialConnection = None;
 
-  def __init__(self, stateController):
-    self.stateController = stateController
+  def __init__(self, psx_controller_state):
+    self.psx_controller_state = psx_controller_state
     # Tries to find correct Serial port
     open_ports = self.getSerialPorts()
 
@@ -32,11 +31,6 @@ class ConsoleController:
     
     # Seeds random for stage selection
     random.seed()
-
-    # Start the thread that permantently writes the controller state
-    csThread = threading.Thread(target=self.sendStateBytesWorker)
-    csThread.daemon = True
-    csThread.start()
 
   def getSerialPorts(self):
 
@@ -118,7 +112,7 @@ class ConsoleController:
 
   def newGameFromVersusMenu(self):
     # Choose random character
-    if (self.stateController.playerOne == True):
+    if (self.psx_controller_state.playerOne == True):
       self.sendRight()
     else:
       self.sendLeft()
@@ -145,19 +139,19 @@ class ConsoleController:
 
   def sendStateBytes(self):
     stateByte1 = (
-      (0b00000001 if self.stateController.state["SELECT"] else 0) |
-      (0b00001000 if self.stateController.state["START"] else 0) |
-      (0b00010000 if self.stateController.state["UP"] else 0) |
-      (0b00100000 if self.stateController.state["RIGHT"] else 0) |
-      (0b01000000 if self.stateController.state["DOWN"] else 0) |
-      (0b10000000 if self.stateController.state["LEFT"] else 0)
+      (0b00000001 if self.psx_controller_state.state["SELECT"] else 0) |
+      (0b00001000 if self.psx_controller_state.state["START"] else 0) |
+      (0b00010000 if self.psx_controller_state.state["UP"] else 0) |
+      (0b00100000 if self.psx_controller_state.state["RIGHT"] else 0) |
+      (0b01000000 if self.psx_controller_state.state["DOWN"] else 0) |
+      (0b10000000 if self.psx_controller_state.state["LEFT"] else 0)
     ) ^ 0xff
 
     stateByte2 = (
-      (0b00010000 if self.stateController.state["T"] else 0) |
-      (0b00100000 if self.stateController.state["O"] else 0) |
-      (0b01000000 if self.stateController.state["X"] else 0) |
-      (0b10000000 if self.stateController.state["S"] else 0)
+      (0b00010000 if self.psx_controller_state.state["T"] else 0) |
+      (0b00100000 if self.psx_controller_state.state["O"] else 0) |
+      (0b01000000 if self.psx_controller_state.state["X"] else 0) |
+      (0b10000000 if self.psx_controller_state.state["S"] else 0)
     ) ^ 0xff
 
     # Send the command out to the Arduino controller through serial connection
@@ -165,7 +159,3 @@ class ConsoleController:
       self.serialConnection.write(bytes([stateByte1, stateByte2]))
     # else: 
     #  Debug.println("INFO", "Bytes lost %d %d" % (stateByte1, stateByte2))
-
-  def sendStateBytesWorker(self):
-    while True:
-      self.sendStateBytes()
