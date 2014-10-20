@@ -17,9 +17,6 @@ piano_state = PianoState()
 # This holds the PSX controller state at any moment
 psx_controller_state = ControllerState(config['DEFAULT']['player'])
 
-# Instantiate the console controller that is responsible for sending out the psx constroller state to the console
-console_controller = ConsoleController(psx_controller_state)
-
 # Start the pianette
 pianette = Pianette(piano_state, psx_controller_state)
 
