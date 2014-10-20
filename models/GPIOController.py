@@ -1,10 +1,14 @@
 # coding=utf-8
 
 from utils import *
+import warnings
 
 import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM)
+
+# We want to be able to catch warnings, expecially the RuntimeWarning when a pin is already attached
+warnings.filterwarnings('error')
 
 # Just to be sure ...
 # THIS LINE WILL ISSUE A WARNING THAT CAN HOPEFULLY BE IGNORED
@@ -74,11 +78,14 @@ class GPIOController:
                     GPIO.setup(pin, GPIO.IN, pull_up_down = pull_up_down)
                     GPIO.add_event_detect(pin, event, callback=callback, bouncetime=300)
                 except Exception:
-                    Debug.println("FAIL", "Pin %2d already in use." % (pin))
-                    raise
+                    if (pin in {14, 15, 18}): # UART Pins, we can override
+                        Debug.println("WARNING", "UART Pin %2d already in use. Overriding ..." % (pin))
+                    else: # Nope nope nope nope, nope.
+                        Debug.println("FAIL", "Pin %2d already in use." % (pin))
+                        raise
                 Debug.println("SUCCESS", "Pin %2d attached to %s" % (pin, callback_description) )
             else:
-                Debug.println("SUCCESS", "Pin %2d not attached" % (pin) )
+                Debug.println("WARNING", "Pin %2d not attached" % (pin) )
 
     def __del__(self):
         # Cleanup GPIOs on object destruction

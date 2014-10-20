@@ -17,7 +17,7 @@ piano_state = PianoState()
 # This holds the PSX controller state at any moment
 psx_controller_state = ControllerState(config['DEFAULT']['player'])
 
-# Instantiate the console controller that is responsible for sendint out the psx constroller state to the console
+# Instantiate the console controller that is responsible for sending out the psx constroller state to the console
 console_controller = ConsoleController(psx_controller_state)
 
 # Start the pianette
@@ -41,7 +41,7 @@ while (True):
       except Exception:
         Debug.println("FAIL", "This key does not correspond to any ControllerState flag")
     if ord(char) == 3: # ^C
-      Debug.println("WARNING", "Exiting ...")
+      Debug.println("WARNING", "Exiting ... Press CTRL+C again to quit.")
       # FIX ME Stop threads ??
       sys.exit()
   pass

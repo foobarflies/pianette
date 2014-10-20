@@ -36,9 +36,36 @@ in `/etc/modprobe.d/raspi-blacklist.conf` :
 
 And to remove modules at boot time in `/etc/modules`, especially sound-related modules.
 
+### Disabling Serial port pins (UART)
+
+In order to properly use pins `14`, `15`, and `18` that are used for `UART`, we must disable the boot up and diagnostic output to the serial port :
+
+    sudo vi /boot/cmdline.txt
+
+This :
+
+    dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait fbcon=map:10 4dpi.sclk=48000000 4dpi.compress=1
+
+becomes :
+
+    dwc_otg.lpm_enable=0 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait fbcon=map:10 4dpi.sclk=48000000 4dpi.compress=1
+
+Second, we need to disable the login prompt :
+
+    sudo vi /etc/inittab
+
+And comment out the last line :
+
+    #Spawn a getty on Raspberry Pi serial line
+    # T0:23:respawn:/sbin/getty -L ttyAMA0 115200 vt100
+
+Let's reboot and the serial port will now be free for our exclusive use. Note that Python will still issue a `RuntimeWarning` to indicate that you are overriding the pin's default state. This is ok, and taken into account in `GPIOController.py` anyway. 
+
+>  Thanks to **Ted B Hale** for that : _http://raspberrypihobbyist.blogspot.fr/2012/08/raspberry-pi-serial-port.html_
+
 ### Run
 
-`sudo`is required to have access to GPIO pins on the Raspberry Pi.
+`sudo` is required to have access to GPIO pins on the Raspberry Pi.
 
 In command line, run :
 
