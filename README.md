@@ -63,6 +63,12 @@ Let's reboot and the serial port will now be free for our exclusive use. Note th
 
 >  Thanks to **Ted B Hale** for that : _http://raspberrypihobbyist.blogspot.fr/2012/08/raspberry-pi-serial-port.html_
 
+### Update
+
+To update the repository on a target Raspberry Pi, just run:
+
+    ./update.sh
+
 ### Run
 
 `sudo` is required to have access to GPIO pins on the Raspberry Pi.

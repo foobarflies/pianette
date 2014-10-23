@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 
+from models import *
+from utils import *
+
 Debug.println("INFO", " ################################## ")
 Debug.println("INFO", " |             PIANETTE            |")
 Debug.println("INFO", " ################################## ")
 Debug.println("INFO", " ")
-
-
-
-from models import *
-from utils import *
 
 # Read config
 import configparser, os
