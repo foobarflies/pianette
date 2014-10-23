@@ -36,6 +36,8 @@ Arduino pin |  AVR pin | PSX pin
 
 #define DATA_LEN 5
 
+#define LED_PIN 7
+
 #define _DEBUG 0
 
 char control_data[2] = {0xFF,0xFF};
@@ -73,6 +75,24 @@ void setup() {
   SPDR=0xFF;
   
   sei(); // Enable global interrupts.
+
+  // Indicate Reset
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, HIGH);
+  delay(500);
+  digitalWrite(LED_PIN, LOW);
+  delay(70);
+  digitalWrite(LED_PIN, HIGH);
+  delay(70);
+  digitalWrite(LED_PIN, LOW);
+  delay(70);
+  digitalWrite(LED_PIN, HIGH);
+  delay(70);
+  digitalWrite(LED_PIN, LOW);
+  delay(70);
+  digitalWrite(LED_PIN, HIGH);
+  delay(70);
+  digitalWrite(LED_PIN, LOW);
 
   if (_DEBUG) {
     Serial.println("");
@@ -141,6 +161,13 @@ void loop() {
     data_buff[2] = lowByte(control_data[0]);
     data_buff[3] = lowByte(control_data[1]);
 
+    // Led
+    if (lowByte(control_data[0]) != 255 || lowByte(control_data[1]) != 255){
+      digitalWrite(LED_PIN, HIGH);
+    } else {
+      digitalWrite(LED_PIN, LOW);
+    }
+    
   }
 
 }
