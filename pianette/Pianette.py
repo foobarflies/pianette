@@ -329,12 +329,12 @@ class Pianette(object):
             if buffered_state:
                 cyclesCount = buffered_state.pop(0)
                 if cyclesCount > 0:
-                    Debug.println("INFO", "Triggering PSX Control %s" % psx_control)
+                    Debug.println("INFO", "Keeping PSX Control %s Triggered for %d cycles" % (psx_control, cyclesCount))
                     self.psx_controller_state.raiseFlag(psx_control)
                     cyclesCount-= 1
                     buffered_state.insert(0, cyclesCount)
                 elif cyclesCount < 0:
-                    Debug.println("INFO", "Keeping PSX Control %s Clear" % psx_control)
+                    Debug.println("INFO", "Keeping PSX Control %s Cleared for %d cycles" % (psx_control, -cyclesCount))
                     self.psx_controller_state.clearFlag(psx_control)
                     cyclesCount+= 1
                     buffered_state.insert(0, cyclesCount)

@@ -4,8 +4,8 @@ from pianette.ControllerState import ControllerState
 from pianette.GPIOController import GPIOController
 from pianette.Pianette import Pianette
 from pianette.PianoState import PianoState
+from pianette.cmd import PianetteCmd
 from pianette.utils import Debug
-from pianette.utils import ReadChar
 
 Debug.println("INFO", " ################################## ")
 Debug.println("INFO", " |            PIANETTE            | ")
@@ -35,19 +35,4 @@ gpio_controller = GPIOController(piano_state, psx_controller_state)
 
 # Run main loop
 Debug.println("NOTICE", "Entering main loop")
-
-while (True):
-  with ReadChar() as rc:
-    char = rc
-    # FIX ME FIX ME if char in {allowed_chars} ??
-    if ord(char) > 32:
-      Debug.println("INFO", "Key : {}".format(char))
-      try:
-        psx_controller_state.toggleFlag(char)
-      except Exception:
-        Debug.println("FAIL", "This key does not correspond to any ControllerState flag")
-    if ord(char) == 3: # ^C
-      Debug.println("WARNING", "Exiting ... Press CTRL+C again to quit.")
-      # FIX ME Stop threads ??
-      sys.exit()
-  pass
+PianetteCmd(piano_state, psx_controller_state).cmdloop()
