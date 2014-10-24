@@ -4,28 +4,21 @@ class ControllerState:
 
   # Mapping
   state = {
-            # Single buttons
-            "T" : False,
-            "S" : False,
-            "S2" : False,
-            "X" : False,
-            "O" : False,
-            "O2" : False,
+            # Directions
             "UP" : False,
             "DOWN" : False,
             "RIGHT" : False,
-            "RIGHT2" : False,
             "LEFT" : False,
-            "LEFT2" : False,
 
-            # Combo enablers, left and right
-            "CR" : False,
-            "CR2" : False,
-            "CR3" : False,
-            "CR4" : False,
-            "CL" : False,
-            "CL2" : False,
-            "CL3" : False,
+            # Buttons
+            "T" : False,
+            "S" : False,
+            "X" : False,
+            "O" : False,
+            "R1" : False,
+            "L1" : False,
+            "R2" : False,
+            "L2" : False,
 
             # Control buttons
             "SELECT" : False,

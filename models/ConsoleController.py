@@ -54,6 +54,10 @@ class ConsoleController:
     ) ^ 0xff
 
     stateByte2 = (
+      (0b00000001 if self.psx_controller_state.state["L2"] else 0) |
+      (0b00000010 if self.psx_controller_state.state["R2"] else 0) |
+      (0b00000100 if self.psx_controller_state.state["L1"] else 0) |
+      (0b00001000 if self.psx_controller_state.state["R1"] else 0) |
       (0b00010000 if self.psx_controller_state.state["T"] else 0) |
       (0b00100000 if self.psx_controller_state.state["O"] else 0) |
       (0b01000000 if self.psx_controller_state.state["X"] else 0) |
