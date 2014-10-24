@@ -258,7 +258,7 @@ class Pianette(object):
         Debug.println("INFO", "Pianette buffered states timer thread started at %f secs interval" % self._timer_interval)
 
     def __del__(self):
-        if _timer in self:
+        if hasattr(self, '_timer'):
             self.stop_timer()
 
     def _run_timer(self):
