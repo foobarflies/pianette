@@ -1,9 +1,11 @@
-from utils import *
+# coding: utf-8
 
 import glob
 import serial
 import time
 import random
+
+from pianette.utils import Debug
 
 # Number of µsecs that we need to wait between commands from controller
 usecs_between_data = 1

@@ -1,7 +1,5 @@
 # coding: utf-8
 
-from utils import *
-
 class PianoState:
 
     def __init__(self):

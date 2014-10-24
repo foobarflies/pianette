@@ -1,6 +1,6 @@
-# coding=utf-8
+# coding: utf-8
 
-from utils import *
+from pianette.utils import Debug
 import warnings
 
 import RPi.GPIO as GPIO

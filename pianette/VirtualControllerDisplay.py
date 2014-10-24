@@ -1,4 +1,6 @@
-from utils import *
+# coding: utf-8
+
+from pianette.utils import Debug
 from tkinter import *
 
 class VirtualControllerDisplay(Frame):

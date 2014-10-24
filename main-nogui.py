@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 
-from models import *
-from utils import *
+from pianette.ControllerState import ControllerState
+from pianette.GPIOController import GPIOController
+from pianette.Pianette import Pianette
+from pianette.PianoState import PianoState
+from pianette.utils import Debug
+from pianette.utils import ReadChar
 
 Debug.println("INFO", " ################################## ")
 Debug.println("INFO", " |            PIANETTE            | ")

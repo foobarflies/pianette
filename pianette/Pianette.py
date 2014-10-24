@@ -1,8 +1,8 @@
 # coding=utf-8
 
 from copy import deepcopy
-from utils import *
-from models import ConsoleController
+from pianette.ConsoleController import ConsoleController
+from pianette.utils import Debug
 
 import threading
 
