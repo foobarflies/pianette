@@ -242,6 +242,10 @@ class Pianette(object):
             "S" : [],
             "X" : [],
             "O" : [],
+            "R1": [],
+            "L1": [],
+            "R2": [],
+            "L2": [],
             "UP" : [],
             "DOWN" : [],
             "LEFT" : [],
@@ -340,7 +344,8 @@ class Pianette(object):
                     buffered_state.insert(0, cyclesCount)
                 else:
                     Debug.println("INFO", "Clearing PSX Control %s" % psx_control)
-                    Debug
                     self.psx_controller_state.clearFlag(psx_control)
+            else:
+                self.psx_controller_state.clearFlag(psx_control)
 
         self.console_controller.sendStateBytes()
