@@ -28,9 +28,9 @@ for key in config['LAYOUT']:
   if (config['LAYOUT'][key] is not None):
     notes_state[config['LAYOUT'][key]] = False
     GPIO_PIN_ATTACHMENTS[key] = { "note": config['LAYOUT'][key] }
-    
+
 # Add reset pin
- GPIO_PIN_ATTACHMENTS[config['RESET']['pin']] = { "pull_up_down": GPIO.PUD_UP, "event": GPIO.FALLING, "command": "RESET" }
+GPIO_PIN_ATTACHMENTS[config['RESET']['pin']] = { "pull_up_down": GPIO.PUD_UP, "event": GPIO.FALLING, "command": "RESET" }
 
 # This holds the Piano state at any moment
 piano_state = PianoState(notes_state)
