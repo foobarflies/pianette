@@ -12,8 +12,20 @@ class PianetteCmd(cmd.Cmd):
         self.piano_state = piano_state
         self.psx_controller_state = psx_controller_state
 
+    # play_note
+
     def do_play_note(self, note):
         self.piano_state.raise_note(note)
+
+    def complete_play_note(self, text, line, begidx, endidx):
+        if not text:
+            completions = self.piano_state.get_notes_keys()
+        else:
+            completions = [ f
+                            for f in self.piano_state.get_notes_keys()
+                            if f.startswith(text)
+                            ]
+        return completions
 
     def do_play_chord(self, notes_string):
         notes = notes_string.split(',')
