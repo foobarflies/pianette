@@ -340,7 +340,8 @@ class Pianette(object):
                     buffered_state.insert(0, cyclesCount)
                 else:
                     Debug.println("INFO", "Clearing PSX Control %s" % psx_control)
-                    Debug
                     self.psx_controller_state.clearFlag(psx_control)
+            else:
+                self.psx_controller_state.clearFlag(psx_control)
 
         self.console_controller.sendStateBytes()
