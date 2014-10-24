@@ -19,23 +19,23 @@ PIANETTE_BUFFERED_STATES_MAPPINGS = [
     # Single Notes (left hand): Moves
     {
         "piano": [ "C3" ],
-        "psx_controller": { "LEFT": [ 3 ] },
+        "psx_controller": { "LEFT": [ 10 ] },
     },
     {
         "piano": [ "D3" ],
-        "psx_controller": { "LEFT": [ 3 ] },
+        "psx_controller": { "LEFT": [ 5 ] },
     },
     {
         "piano": [ "F3" ],
-        "psx_controller": { "DOWN": [ 3 ] },
+        "psx_controller": { "DOWN": [ 10 ] },
     },
     {
         "piano": [ "A4" ],
-        "psx_controller": { "RIGHT": [ 3 ] },
+        "psx_controller": { "RIGHT": [ 5 ] },
     },
     {
         "piano": [ "B4" ],
-        "psx_controller": { "RIGHT": [ 3 ] },
+        "psx_controller": { "RIGHT": [ 10 ] },
     },
 
     # Single Notes (right hand): Simple Strikes
@@ -115,12 +115,12 @@ PIANETTE_BUFFERED_STATES_MAPPINGS = [
     {
         # S1 + X1 + O1 (Do majeur) => Tatsukami
         "piano": [ "C5", "E5", "D5" ],
-        "psx_controller": { "DOWN" : [ 1, 3 ],  "LEFT" : [ -1, 3, 3 ], "X" : [ -1, -3, -3, 10] },
+        "psx_controller": { "DOWN" : [ 1, 3 ],  "RIGHT" : [ -1, 3, 3 ], "X" : [ -1, -3, -3, 10] },
     },
     {
         # S1 + X1 + O1 + CR3 (Do 7e) => Hadouken
         "piano": [ "C5", "E5", "D5", "B♭6" ],
-        "psx_controller": { "DOWN" : [ 1, 3 ],  "LEFT" : [ -1, 3, 3 ], "X" : [ -1, -3, -3, 10] },
+        "psx_controller": { "DOWN" : [ 1, 3 ],  "LEFT" : [ -1, 3, 3 ], "S" : [ -1, -3, -3, 10] },
     },
     {
         # S1 + S2 + T1 (Do 6) => ?
@@ -304,6 +304,7 @@ class Pianette(object):
             self.piano_buffered_states[piano_note] = processed_buffered_states
 
         if lead_notes:
+            Debug.println("INFO", "Processing Piano Notes: lead=%s, complementary=%s" % (lead_notes, complementary_notes))
             ranked_chord_bitids = get_ranked_chord_bitids_including_at_least_one_of_notes(lead_notes)
 
             all_notes_chord_bitid = get_notes_chord_bitid(lead_notes + complementary_notes)
