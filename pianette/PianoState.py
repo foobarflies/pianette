@@ -12,7 +12,7 @@ class PianoState:
             "A4": False,
             "B♭4": False,
             "B4": False,
-            "C": False,
+            "C4": False,
             "C5": False,
             "D5": False,
             "E♭5": False,
