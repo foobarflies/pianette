@@ -222,7 +222,7 @@ class Pianette(object):
             "A4": [],
             "B♭4": [],
             "B4": [],
-            "C": [],
+            "C4": [],
             "C5": [],
             "D5": [],
             "E♭5": [],
@@ -281,7 +281,7 @@ class Pianette(object):
         # Input Piano Notes to Piano Buffered States
         for piano_note in self.piano_state.get_notes_keys():
             if self.piano_state.is_note_raised(piano_note):
-                self.piano_buffered_states.append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
+                self.piano_buffered_states[piano_note].append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
                 self.piano_state.clear_note(piano_note)
 
         # Process Buffered States: Determine piano note or chord
@@ -326,10 +326,12 @@ class Pianette(object):
             if buffered_state:
                 cyclesCount = buffered_state.pop(0)
                 if cyclesCount > 0:
+                    Debug.println("INFO", "Triggering PSX Control %s" % psx_control)
                     self.psx_controller_state.raiseFlag(psx_control)
                     cyclesCount-= 1
                     buffered_state.insert(0, cyclesCount)
                 elif cyclesCount < 0:
+                    Debug.println("INFO", "Clearing PSX Control %s" % psx_control)
                     self.psx_controller_state.clearFlag(psx_control)
                     cyclesCount+= 1
                     buffered_state.insert(0, cyclesCount)
