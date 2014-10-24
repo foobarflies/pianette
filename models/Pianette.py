@@ -1,5 +1,6 @@
 # coding=utf-8
 
+from copy import deepcopy
 from utils import *
 from models import ConsoleController
 
@@ -276,11 +277,11 @@ class Pianette(object):
         self._timer.cancel()
         self._timer_is_running = False
 
-
     def cycle_buffered_states(self):
         # Input Piano Notes to Piano Buffered States
         for piano_note in self.piano_state.get_notes_keys():
             if self.piano_state.is_note_raised(piano_note):
+                Debug.println("INFO", "Processing Piano Note %s" % (piano_note))
                 self.piano_buffered_states[piano_note].append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
                 self.piano_state.clear_note(piano_note)
 
@@ -302,24 +303,25 @@ class Pianette(object):
                     processed_buffered_states.append(buffered_state)
             self.piano_buffered_states[piano_note] = processed_buffered_states
 
-        ranked_chord_bitids = get_ranked_chord_bitids_including_at_least_one_of_notes(lead_notes)
+        if lead_notes:
+            ranked_chord_bitids = get_ranked_chord_bitids_including_at_least_one_of_notes(lead_notes)
 
-        all_notes_chord_bitid = get_notes_chord_bitid(lead_notes + complementary_notes)
-        ranked_winning_chord_bitids = [chord_bitid for chord_bitid in ranked_chord_bitids if not ((all_notes_chord_bitid & chord_bitid) ^ chord_bitid)]
+            all_notes_chord_bitid = get_notes_chord_bitid(lead_notes + complementary_notes)
+            ranked_winning_chord_bitids = [chord_bitid for chord_bitid in ranked_chord_bitids if not ((all_notes_chord_bitid & chord_bitid) ^ chord_bitid)]
 
-        if ranked_winning_chord_bitids:
-            winning_chord_bitid = ranked_winning_chord_bitids.pop(0)
-            winning_states_mapping = _BUFFERED_STATES_MAPPING_FOR_CHORD_BITID[winning_chord_bitid]
+            if ranked_winning_chord_bitids:
+                winning_chord_bitid = ranked_winning_chord_bitids[0]
+                winning_states_mapping = deepcopy(_BUFFERED_STATES_MAPPING_FOR_CHORD_BITID[winning_chord_bitid])
 
-            # Push piano command to PSX Controller buffer, clearing any pending combo
-            for control in self.psx_controller_buffered_states.keys():
-                self.psx_controller_buffered_states[control] = winning_states_mapping["psx_controller"].get(control, [])
+                # Push piano command to PSX Controller buffer, clearing any pending combo
+                for control in self.psx_controller_buffered_states.keys():
+                    self.psx_controller_buffered_states[control] = winning_states_mapping["psx_controller"].get(control, [])
 
-            # Clear winning chord notes from the piano buffer
-            for piano_note in self.piano_buffered_states.keys():
-                if _NOTE_BITIDS[piano_note] & winning_chord_bitid:
-                    if self.piano_buffered_states[piano_note]:
-                        self.piano_buffered_states[piano_note] = self.piano_buffered_states[piano_note][1:]
+                # Clear winning chord notes from the piano buffer
+                for piano_note in self.piano_buffered_states.keys():
+                    if _NOTE_BITIDS[piano_note] & winning_chord_bitid:
+                        if self.piano_buffered_states[piano_note]:
+                            self.piano_buffered_states[piano_note] = self.piano_buffered_states[piano_note][1:]
 
         # Output PSX Controller Buffered states to PSX Controller
         for psx_control, buffered_state in self.psx_controller_buffered_states.items():
@@ -331,11 +333,13 @@ class Pianette(object):
                     cyclesCount-= 1
                     buffered_state.insert(0, cyclesCount)
                 elif cyclesCount < 0:
-                    Debug.println("INFO", "Clearing PSX Control %s" % psx_control)
+                    Debug.println("INFO", "Keeping PSX Control %s Clear" % psx_control)
                     self.psx_controller_state.clearFlag(psx_control)
                     cyclesCount+= 1
                     buffered_state.insert(0, cyclesCount)
                 else:
+                    Debug.println("INFO", "Clearing PSX Control %s" % psx_control)
+                    Debug
                     self.psx_controller_state.clearFlag(psx_control)
 
         self.console_controller.sendStateBytes()
