@@ -14,44 +14,14 @@ warnings.filterwarnings('error')
 # THIS LINE WILL ISSUE A WARNING THAT CAN HOPEFULLY BE IGNORED
 # GPIO.cleanup()
 
-"""
 # Global GPIO Pin Mapping
-"""
-GPIO_PIN_ATTACHMENTS = {
-    # Bank 1
-    5: { "note": "C3" },
-    6: { "note": "D3" },
-    13: { "note": "E3" },
-    19: { "note": "F3" },
-    26: { "note": "G3" },
-
-    # Bank 2
-    21: { "note": "A4" },
-    20: { "note": "B♭4" },
-    16: { "note": "B4" },
-    12: { "note": "C4" },
-    25: None,
-    22: { "pull_up_down": GPIO.PUD_UP, "event": GPIO.FALLING, "command": "RESET" },
-
-    # Bank 3
-    24: { "note": "C5" },
-    23: { "note": "D5" },
-    18: { "note": "E♭5" },
-    15: { "note": "E5" },
-    14: { "note": "F5" },
-
-    # Bank 4
-    2: { "note": "G♭5" },
-    3: { "note": "G5" },
-    4: { "note": "A6" },
-    17: { "note": "B♭6" },
-    27: { "note": "B6" },
-}
+GPIO_PIN_ATTACHMENTS = None
 
 class GPIOController:
-    def __init__(self, piano_state, controller_state):
+    def __init__(self, piano_state, controller_state, GPIO_PIN_ATTACHMENTS):
         self.piano_state = piano_state
         self.controller_state = controller_state
+        self.GPIO_PIN_ATTACHMENTS = GPIO_PIN_ATTACHMENTS
 
         # Attach callbacks to pins
         Debug.println("INFO", "Attaching event callbacks to pins ...")

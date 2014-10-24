@@ -85,11 +85,6 @@ If you have a graphical environment, you can run:
 
     sudo cp ~/.Xauthority /root/home/.
 
-
-### Test Script
-
-A test script is available to verify that all GPIOs can be accessed. Run with `sudo ./testGPIO.py` and trigger each pin to see if it calls back.
-
 ### Street Fighter Alpha 3 Specifics
 
 #### Timing

@@ -1,2 +1,37 @@
-[DEFAULT]
+[GAMEPLAY]
 player = 2
+
+[RESET]
+gpio = 22
+
+[LAYOUT]
+# Bank 1
+5 : C1
+6 : G1
+13 : C2
+19 : None
+26 : None
+
+# Bank 2
+21 : C3
+20 : D♭3
+16 : D3
+12 : E♭3
+25 : E3 
+
+# Bank 3
+24 : F3
+23 : G♭3
+18 : None
+15 : G3
+14 : A♭3
+
+# Bank 4
+2 : A3
+3 : B♭3
+4 : B3
+17 : None
+27 : C4
+
+[COMBOS]
+C1+E3+G3: ""
