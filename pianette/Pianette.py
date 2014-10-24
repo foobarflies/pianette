@@ -18,96 +18,88 @@ PIANETTE_PROCESSING_CYCLES = 2
 PIANETTE_BUFFERED_STATES_MAPPINGS = [
     # Single Notes (left hand): Moves
     {
-        "piano": [ "C3" ],
-        "psx_controller": { "LEFT": [ 10 ] },
+        "piano": [ "C1" ],
+        "psx_controller": { "LEFT": [ 9 ] },
     },
     {
-        "piano": [ "D3" ],
-        "psx_controller": { "LEFT": [ 5 ] },
+        "piano": [ "G1" ],
+        "psx_controller": { "DOWN": [ 9 ] },
     },
     {
-        "piano": [ "F3" ],
-        "psx_controller": { "DOWN": [ 10 ] },
-    },
-    {
-        "piano": [ "A4" ],
-        "psx_controller": { "RIGHT": [ 5 ] },
-    },
-    {
-        "piano": [ "B4" ],
-        "psx_controller": { "RIGHT": [ 10 ] },
+        "piano": [ "C2" ],
+        "psx_controller": { "RIGHT": [ 9 ] },
     },
 
     # Single Notes (right hand): Simple Strikes
+    # SQUARE
     {
-        "piano": [ "C5" ],
+        "piano": [ "C3" ],
         "psx_controller": { "S": [ 3 ] },
     },
     {
-        "piano": [ "D5" ],
+        "piano": [ "D♭3" ],
+        "psx_controller": { "S": [ 3 ] },
+    },
+    {
+        "piano": [ "D3" ],
+        "psx_controller": { "S": [ 3 ] },
+    },
+    {
+        "piano": [ "E♭3" ],
+        "psx_controller": { "S": [ 3 ] },
+    },
+    # TRIANGLE
+    {
+        "piano": [ "E3" ],
+        "psx_controller": { "T": [ 3 ] },
+    },
+    {
+        "piano": [ "F3" ],
+        "psx_controller": { "T": [ 3 ] },
+    },
+    {
+        "piano": [ "G♭3" ],
+        "psx_controller": { "T": [ 3 ] },
+    },
+    # O
+    {
+        "piano": [ "G3" ],
         "psx_controller": { "O": [ 3 ] },
     },
     {
-        "piano": [ "E5" ],
+        "piano": [ "A♭3" ],
+        "psx_controller": { "O": [ 3 ] },
+    },
+    {
+        "piano": [ "A3" ],
+        "psx_controller": { "O": [ 3 ] },
+    },
+    # X
+    {
+        "piano": [ "B♭3" ],
         "psx_controller": { "X": [ 3 ] },
     },
     {
-        "piano": [ "F5" ],
-        "psx_controller": { "S": [ 3 ] },
+        "piano": [ "B3" ],
+        "psx_controller": { "X": [ 3 ] },
     },
     {
-        "piano": [ "G5" ],
-        "psx_controller": { "O": [ 3 ] },
+        "piano": [ "C4" ],
+        "psx_controller": { "X": [ 3 ] },
     },
-    {
-        "piano": [ "A6" ],
-        "psx_controller": { "T": [ 3 ] },
-    },
-    {
-        "piano": [ "B6" ],
-        "psx_controller": { "T": [ 3 ] },
-    },
-
+  
     # Chords (left hand): Combo Moves!
     {
-        # LEFT1 + CL1 + CL2 (Do majeur) => UP
-        "piano": [ "C3", "E3", "G3" ],
+        "piano": [ "C1", "G1", "C2" ],
         "psx_controller": { "UP" : [ 3 ] },
     },
     {
-        # LEFT1 + CL4 (Do octave) => UP
-        "piano": [ "C3", "C4" ],
-        "psx_controller": { "UP" : [ 3 ] },
+        "piano": [ "C1", "G1" ],
+        "psx_controller": { "UP" : [ 3 ], "LEFT": [ 3 ] },
     },
     {
-        # LEFT1 + CL1 + CL2 + CL3 (Do majeur 7e) => UP + Kick droit (ou gauche suivant player)
-        "piano": [ "C3", "E3", "G3", "B♭4" ],
-        "psx_controller": { "UP" : [ 3 ], "X": [ -1, 3 ] },
-    },
-    {
-        # CL1 + CL2 + CL4 (Do Majeur premier renversement) => UP+RIGHT
-        "piano": [ "E3", "G3", "C4" ],
-        "psx_controller": { "RIGHT" : [ 3 ], "UP": [ -1, 3 ] },
-    },
-    {
-        # LEFT1 + DOWN (Do Dim 4) => DOWN+LEFT
-        "piano": [ "C3", "F3" ],
-        "psx_controller": { "DOWN" : [ 3 ], "LEFT": [ 3 ] },
-    },
-    {
-        # LEFT2 + DOWN (Ré Min) => DOWN+LEFT
-        "piano": [ "D3", "F3" ],
-        "psx_controller": { "DOWN" : [ 3 ], "LEFT": [ 3 ] },
-    },
-    {
-        # RIGHT1 + DOWN (Ré min) => RIGHT+DOWN
-        "piano": [ "A4", "F3" ],
-        "psx_controller": { "DOWN" : [ 3 ], "RIGHT": [ 3 ] },
-    },
-    {
-        # RIGHT2 + DOWN (Si) => RIGHT+DOWN
-        "piano": [ "B4", "F3" ],
-        "psx_controller": { "DOWN" : [ 3 ], "RIGHT": [ 3 ] },
+        "piano": [ "G1", "C2" ],
+        "psx_controller": { "UP" : [ 3 ], "RIGHT": [ 3 ] },
     },
 
     # Chords (right hand): Combo Strikes!
@@ -143,14 +135,6 @@ PIANETTE_BUFFERED_STATES_MAPPINGS = [
         "psx_controller": {},
     },
 
-    # "Combo Enabler" keys, no direct mapping
-    # "E3" (AKA "CL1")
-    # "G3" (AKA "CL2")
-    # "B♭4" (AKA "CL3")
-    # "C4" (AKA "CL4")
-    # "E♭5" (AKA "CR1")
-    # "G♭5" (AKA "CR2")
-    # "B♭6" (AKA "CR3")
 ]
 
 # Assign a unique, combinable bitid to configured notes
