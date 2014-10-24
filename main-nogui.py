@@ -4,7 +4,7 @@ from models import *
 from utils import *
 
 Debug.println("INFO", " ################################## ")
-Debug.println("INFO", " |             PIANETTE            |")
+Debug.println("INFO", " |            PIANETTE            | ")
 Debug.println("INFO", " ################################## ")
 Debug.println("INFO", " ")
 
