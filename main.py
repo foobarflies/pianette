@@ -4,7 +4,7 @@ from pianette.ControllerState import ControllerState
 from pianette.GPIOController import GPIOController
 from pianette.Pianette import Pianette
 from pianette.PianoState import PianoState
-from pianette.cmd import PianetteCmd
+from pianette.PianetteCmd import PianetteCmd
 from pianette.utils import Debug
 
 Debug.println("INFO", " ")

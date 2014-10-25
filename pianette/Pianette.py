@@ -104,6 +104,7 @@ PIANETTE_BUFFERED_STATES_MAPPINGS = [
 
     # Chords (right hand): Combo Strikes!
 
+# FIX ME
     {
         # S1 + X1 + O1 (Do majeur) => Tatsukami
         "piano": [ "C5", "E5", "D5" ],
@@ -134,7 +135,7 @@ PIANETTE_BUFFERED_STATES_MAPPINGS = [
         "piano": [ "C5", "E5", "G♭5", "B♭6" ],
         "psx_controller": {},
     },
-
+# FIX ME 
 ]
 
 # Assign a unique, combinable bitid to configured notes
