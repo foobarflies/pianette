@@ -14,10 +14,12 @@ warnings.filterwarnings('error')
 # THIS LINE WILL ISSUE A WARNING THAT CAN HOPEFULLY BE IGNORED
 # GPIO.cleanup()
 
-# Global GPIO Pin Mapping
-GPIO_PIN_ATTACHMENTS = None
 
 class GPIOController:
+    
+    # Global GPIO Pin Mapping
+    GPIO_PIN_ATTACHMENTS = None
+
     def __init__(self, piano_state, controller_state, GPIO_PIN_ATTACHMENTS):
         self.piano_state = piano_state
         self.controller_state = controller_state
@@ -26,7 +28,7 @@ class GPIOController:
         # Attach callbacks to pins
         Debug.println("INFO", "Attaching event callbacks to pins ...")
 
-        for pin, attachment in GPIO_PIN_ATTACHMENTS.items():
+        for pin, attachment in self.GPIO_PIN_ATTACHMENTS.items():
             if attachment:
                 pull_up_down = attachment.get("pull_up_down", GPIO.PUD_DOWN)
                 event = attachment.get("event", GPIO.RISING)
@@ -66,7 +68,7 @@ class GPIOController:
 
     # Check pin function
     def gpio_check(self):
-        for pin, attachment in GPIO_PIN_ATTACHMENTS.items():
+        for pin, attachment in self.GPIO_PIN_ATTACHMENTS.items():
             mode = GPIO.gpio_function(pin)
             if (mode == GPIO.IN):
                 Debug.println("INFO", "Pin %2d : INPUT" % pin)
@@ -91,12 +93,12 @@ class GPIOController:
 
     # Callback method for PSX Controller Commands
     def gpio_pin_command_callback(self, channel):
-        command = GPIO_PIN_ATTACHMENTS[channel]["command"]
+        command = self.GPIO_PIN_ATTACHMENTS[channel]["command"]
         Debug.println("INFO", "Pin %2d activated : triggering PSX Controller Command %s" % (channel, command) )
         self.controller_state.raiseFlag("RESET")
 
     # Callback method for Piano Notes
     def gpio_pin_note_callback(self,channel):
-        note = GPIO_PIN_ATTACHMENTS[channel]["note"]
+        note = self.GPIO_PIN_ATTACHMENTS[channel]["note"]
         Debug.println("INFO", "Pin %2d activated : triggering Piano Note %s" % (channel, note) )
         self.piano_state.raise_note(note)
