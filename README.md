@@ -1,6 +1,6 @@
 # Virtual & GPIO Game Console Controller
 
-A graphical emulator of a Game Pad Controller that asynchronously listens to GPIO `EDGE_RISING` inputs from sensors and sends Serial commands to an `ATMEGA328P` acting as a fake SPI Slave for the Console.
+A command-line emulator of a Game Pad Controller that asynchronously listens to GPIO `EDGE_RISING` inputs from sensors and sends Serial commands to an `ATMEGA328P` acting as a fake SPI Slave for the Console.
 
 _Written in Python 3._
 
@@ -76,14 +76,6 @@ To update the repository on a target Raspberry Pi, just run:
 In command line, run :
 
     sudo ./main-nogui.py
-
-If you have a graphical environment, you can run:
-
-    sudo ./main.py
-
-> NB : if you are running an X server over an SSH connection, you must first copy your `.Xauthority` file to root's home :
-
-    sudo cp ~/.Xauthority /root/home/.
 
 ### Street Fighter Alpha 3 Specifics
 

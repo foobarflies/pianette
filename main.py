@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 
+# Virtual & GPIO Game Console Controller
+
+# A command-line emulator of a Game Pad Controller 
+# that asynchronously listens to GPIO EDGE_RISING
+# inputs from sensors and sends Serial commands to 
+# an ATMEGA328P acting as a fake SPI Slave for the Console.
+
+# Written in Python 3.
+
+
 from pianette.ControllerState import ControllerState
 from pianette.GPIOController import GPIOController
 from pianette.Pianette import Pianette
