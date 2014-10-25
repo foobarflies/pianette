@@ -9,8 +9,8 @@ gpio = 22
 5 : C1
 6 : G1
 13 : C2
-19 : None
-26 : None
+#19 : None
+#26 : None
 
 # Bank 2
 21 : C3
@@ -22,7 +22,7 @@ gpio = 22
 # Bank 3
 24 : F3
 23 : G♭3
-18 : None
+#18 : None
 15 : G3
 14 : A♭3
 
@@ -30,7 +30,7 @@ gpio = 22
 2 : A3
 3 : B♭3
 4 : B3
-17 : None
+#17 : None
 27 : C4
 
 [COMBOS]

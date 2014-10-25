@@ -25,9 +25,8 @@ config.read("/".join(config_file))
 notes_state = {}
 GPIO_PIN_ATTACHMENTS = {}
 for key in config['LAYOUT']:
-  if (config['LAYOUT'][key] is not None):
-    notes_state[config['LAYOUT'][key]] = False
-    GPIO_PIN_ATTACHMENTS[int(key)] = { "note": config['LAYOUT'][key] }
+  notes_state[config['LAYOUT'][key]] = False
+  GPIO_PIN_ATTACHMENTS[int(key)] = { "note": config['LAYOUT'][key] }
 
 # Add reset pin
 GPIO_PIN_ATTACHMENTS[int(config['RESET']['gpio'])] = { "pull_up_down": 22, "event": 32, "command": "RESET" }

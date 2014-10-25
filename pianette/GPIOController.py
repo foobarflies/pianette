@@ -14,7 +14,6 @@ warnings.filterwarnings('error')
 # THIS LINE WILL ISSUE A WARNING THAT CAN HOPEFULLY BE IGNORED
 # GPIO.cleanup()
 
-
 class GPIOController:
     
     # Global GPIO Pin Mapping
