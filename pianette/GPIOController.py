@@ -70,26 +70,8 @@ class GPIOController:
     def gpio_check(self):
         for pin, attachment in self.GPIO_PIN_ATTACHMENTS.items():
             mode = GPIO.gpio_function(pin)
-            if (mode == GPIO.IN):
-                Debug.println("INFO", "Pin %2d : INPUT" % pin)
-
-            if (mode == GPIO.OUT):
-                Debug.println("INFO", "Pin %2d : OUTPUT" % pin)
-
-            if (mode == GPIO.I2C):
-                Debug.println("INFO", "Pin %2d : I2C" % pin)
-
-            if (mode == GPIO.SPI):
-                Debug.println("INFO", "Pin %2d : SPI" % pin)
-
-            if (mode == GPIO.HARD_PWM):
-                Debug.println("INFO", "Pin %2d : HARD_PWM" % pin)
-
-            if (mode == GPIO.SERIAL):
-                Debug.println("INFO", "Pin %2d : SERIAL" % pin)
-
-            if (mode == GPIO.UNKNOWN):
-                Debug.println("INFO", "Pin %2d : UNKNOWN" % pin)
+            if (mode != GPIO.IN):
+                Debug.println("FAIL", "Pin %2d in mode %d" % (pin, mode))
 
     # Callback method for PSX Controller Commands
     def gpio_pin_command_callback(self, channel):

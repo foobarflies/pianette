@@ -36,7 +36,7 @@ GPIO_PIN_ATTACHMENTS[int(config['RESET']['gpio'])] = { "pull_up_down": 22, "even
 piano_state = PianoState(notes_state)
 
 # This holds the PSX controller state at any moment
-psx_controller_state = ControllerState(config['GAMEPLAY']['player'])
+psx_controller_state = ControllerState(int(config['GAMEPLAY']['player']))
 
 # Start the pianette
 pianette = Pianette(piano_state, psx_controller_state)
