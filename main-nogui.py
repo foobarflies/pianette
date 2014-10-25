@@ -23,9 +23,11 @@ config.read("/".join(config_file))
 
 # Parse config for GPIO
 notes_state = {}
+piano_buffered_states = {}
 GPIO_PIN_ATTACHMENTS = {}
 for key in config['LAYOUT']:
   notes_state[config['LAYOUT'][key]] = False
+  piano_buffered_states[config['LAYOUT'][key]] = []
   GPIO_PIN_ATTACHMENTS[int(key)] = { "note": config['LAYOUT'][key] }
 
 # Add reset pin
@@ -38,7 +40,7 @@ piano_state = PianoState(notes_state)
 psx_controller_state = ControllerState(int(config['GAMEPLAY']['player']))
 
 # Start the pianette
-pianette = Pianette(piano_state, psx_controller_state)
+pianette = Pianette(piano_state, psx_controller_state, piano_buffered_states)
 
 # Instanciate the global GPIO Controller
 # Its responsibility is to set piano and controller states based on GPIO inputs

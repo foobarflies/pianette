@@ -190,7 +190,7 @@ def get_ranked_chord_bitids_including_at_least_one_of_notes(notes, from_chord_bi
     return ranked_notes_chord_bitids
 
 class Pianette(object):
-    def __init__(self, piano_state, psx_controller_state):
+    def __init__(self, piano_state, psx_controller_state, piano_buffered_states):
         self.piano_state = piano_state
         self.psx_controller_state = psx_controller_state
 
@@ -198,27 +198,7 @@ class Pianette(object):
         self.console_controller = ConsoleController(self.psx_controller_state)
 
         # Upcoming state cycles for the Piano Notes (input)
-        self.piano_buffered_states = {
-            "C3": [],
-            "D3": [],
-            "E3": [],
-            "F3": [],
-            "G3": [],
-            "A4": [],
-            "B♭4": [],
-            "B4": [],
-            "C4": [],
-            "C5": [],
-            "D5": [],
-            "E♭5": [],
-            "E5": [],
-            "F5": [],
-            "G♭5": [],
-            "G5": [],
-            "A6": [],
-            "B♭6": [],
-            "B6": [],
-        }
+        self.piano_buffered_states = piano_buffered_states
 
         # Upcoming state cycles for the PSX Controller (output)
         self.psx_controller_buffered_states = {
