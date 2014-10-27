@@ -49,7 +49,7 @@ class GPIOController:
                     GPIO.setup(pin, GPIO.IN, pull_up_down = pull_up_down)
                     GPIO.add_event_detect(pin, event, callback=callback, bouncetime=300)
                 except Exception:
-                    if (pin in {14, 15, 18}): # UART Pins, we can override
+                    if pin in (14, 15, 18): # UART Pins, we can override
                         Debug.println("WARNING", "UART Pin %2d already in use. Overriding ..." % (pin))
                     else: # Nope nope nope nope, nope.
                         Debug.println("FAIL", "Pin %2d already in use." % (pin))
