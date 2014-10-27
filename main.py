@@ -9,6 +9,7 @@
 
 # Written in Python 3.
 
+import pianette.config
 
 from pianette.ControllerState import ControllerState
 from pianette.GPIOController import GPIOController
@@ -23,13 +24,7 @@ Debug.println("INFO", " |            PIANETTE            | ")
 Debug.println("INFO", " ################################## ")
 Debug.println("INFO", " ")
 
-# Read config
-import configparser, os
-config = configparser.ConfigParser()
-main_base = os.path.dirname(__file__)
-config_file = os.path.join([main_base, "conf.ini"])
-Debug.println("INFO", "Reading configuration file %s ..." % ("/".join(config_file)))
-config.read("/".join(config_file))
+configobj = pianette.config.get_configobj('street-fighter-alpha-3', 'player2')
 
 # Parse config for GPIO
 notes_state = {}
