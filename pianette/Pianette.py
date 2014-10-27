@@ -190,7 +190,7 @@ def get_ranked_chord_bitids_including_at_least_one_of_notes(notes, from_chord_bi
 
     return ranked_notes_chord_bitids
 
-class Pianette(object):
+class Pianette:
     def __init__(self, piano_state, psx_controller_state, piano_buffered_states):
         self.piano_state = piano_state
         self.psx_controller_state = psx_controller_state
