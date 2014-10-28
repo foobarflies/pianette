@@ -11,7 +11,7 @@
 
 import pianette.config
 
-#from pianette.GPIOController import GPIOController
+from pianette.GPIOController import GPIOController
 from pianette.Pianette import Pianette
 from pianette.PianetteCmd import PianetteCmd
 from pianette.utils import Debug
