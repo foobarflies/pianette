@@ -2,6 +2,8 @@
 
 from copy import deepcopy
 from pianette.ConsoleController import ConsoleController
+from pianette.ControllerState import ControllerState
+from pianette.PianoState import PianoState
 from pianette.utils import Debug
 
 import threading
@@ -191,34 +193,30 @@ def get_ranked_chord_bitids_including_at_least_one_of_notes(notes, from_chord_bi
     return ranked_notes_chord_bitids
 
 class Pianette:
-    def __init__(self, piano_state, psx_controller_state, piano_buffered_states):
-        self.piano_state = piano_state
-        self.psx_controller_state = psx_controller_state
+    def __init__(self, configobj=None):
+        self.configobj = configobj
+
+        self.piano_state = PianoState(configobj=self.configobj)
+        self.psx_controller_state = ControllerState(configobj=self.configobj)
 
         # Instantiate the console controller that is responsible for sendint out the psx constroller state to the console
-        self.console_controller = ConsoleController(self.psx_controller_state)
+        self.console_controller = ConsoleController(self.psx_controller_state, configobj=self.configobj)
 
         # Upcoming state cycles for the Piano Notes (input)
-        self.piano_buffered_states = piano_buffered_states
+        self.piano_buffered_states = {}
+        try:
+            self.piano_buffered_states = { k: [] for k in self.configobj['Piano']['supported-notes'] }
+        except KeyError:
+            pass
 
-        # Upcoming state cycles for the PSX Controller (output)
-        self.psx_controller_buffered_states = {
-            "T" : [],
-            "S" : [],
-            "X" : [],
-            "O" : [],
-            "R1": [],
-            "L1": [],
-            "R2": [],
-            "L2": [],
-            "UP" : [],
-            "DOWN" : [],
-            "LEFT" : [],
-            "RIGHT" : [],
-            "SELECT" : [],
-            "START" : [],
-        }
+        # Upcoming state cycles for the Console Controls (output)
+        self.psx_controller_buffered_states = {}
+        try:
+            self.psx_controller_buffered_states = { k: [] for k in self.configobj['Console']['supported-controls'] }
+        except KeyError:
+            pass
 
+        # Run the Pianette!
         self._timer = None
         self._timer_interval = PIANETTE_CYCLE_PERIOD
         self._timer_is_running = False

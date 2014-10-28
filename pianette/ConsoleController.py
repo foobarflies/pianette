@@ -14,7 +14,9 @@ class ConsoleController:
 
   serialConnection = None;
 
-  def __init__(self, psx_controller_state):
+  def __init__(self, psx_controller_state, configobj=None):
+    self.configobj = configobj
+
     self.psx_controller_state = psx_controller_state
     # Tries to find correct Serial port
     open_ports = self.getSerialPorts()
@@ -47,23 +49,23 @@ class ConsoleController:
 
   def sendStateBytes(self):
     stateByte1 = (
-      (0b00000001 if self.psx_controller_state.state["SELECT"] else 0) |
-      (0b00001000 if self.psx_controller_state.state["START"] else 0) |
-      (0b00010000 if self.psx_controller_state.state["UP"] else 0) |
-      (0b00100000 if self.psx_controller_state.state["RIGHT"] else 0) |
-      (0b01000000 if self.psx_controller_state.state["DOWN"] else 0) |
-      (0b10000000 if self.psx_controller_state.state["LEFT"] else 0)
+      (0b00000001 if self.psx_controller_state.state.get("SELECT", False) else 0) |
+      (0b00001000 if self.psx_controller_state.state.get("START", False) else 0) |
+      (0b00010000 if self.psx_controller_state.state.get("↑", False) else 0) |
+      (0b00100000 if self.psx_controller_state.state.get("→", False) else 0) |
+      (0b01000000 if self.psx_controller_state.state.get("↓", False) else 0) |
+      (0b10000000 if self.psx_controller_state.state.get("←", False) else 0)
     ) ^ 0xff
 
     stateByte2 = (
-      (0b00000001 if self.psx_controller_state.state["L2"] else 0) |
-      (0b00000010 if self.psx_controller_state.state["R2"] else 0) |
-      (0b00000100 if self.psx_controller_state.state["L1"] else 0) |
-      (0b00001000 if self.psx_controller_state.state["R1"] else 0) |
-      (0b00010000 if self.psx_controller_state.state["T"] else 0) |
-      (0b00100000 if self.psx_controller_state.state["O"] else 0) |
-      (0b01000000 if self.psx_controller_state.state["X"] else 0) |
-      (0b10000000 if self.psx_controller_state.state["S"] else 0)
+      (0b00000001 if self.psx_controller_state.state.get("L2", False) else 0) |
+      (0b00000010 if self.psx_controller_state.state.get("R2", False) else 0) |
+      (0b00000100 if self.psx_controller_state.state.get("L1", False) else 0) |
+      (0b00001000 if self.psx_controller_state.state.get("R1", False) else 0) |
+      (0b00010000 if self.psx_controller_state.state.get("△", False) else 0) |
+      (0b00100000 if self.psx_controller_state.state.get("◯", False) else 0) |
+      (0b01000000 if self.psx_controller_state.state.get("✕", False) else 0) |
+      (0b10000000 if self.psx_controller_state.state.get("□", False) else 0)
     ) ^ 0xff
 
     # Send the command out to the Arduino controller through serial connection

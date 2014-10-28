@@ -83,7 +83,7 @@ In command line, run :
 
 Fighting buttons timings :
 
-  - ☓ : 270 ms
+  - ✕ : 270 ms
   - □ : 200 ms
   - △ : 370 ms
   - ◯ : 400 ms
@@ -95,7 +95,7 @@ If two antinomic buttons are pressed at the same time, the following rules apply
 
 #### List of keys and combos
 
-  - ☓ (Cross) : `0xFF 0xBF`
+  - ✕ (Cross) : `0xFF 0xBF`
   - ◯ (Circle) : `0xFF 0xDF`
   - □ (Square) : `0xFF 0x7F`
   - △ (Triangle) : `0xFF 0xEF`
@@ -114,4 +114,4 @@ If two antinomic buttons are pressed at the same time, the following rules apply
   - ↑ + ← = ↖ : `0x6F 0xFF`
 
   - ↓, (↘|↙), (→|←) + □ (Hadouken) : _timed combo_
-  - ↓, (↙|↘), (←|→) + ☓ (Tatsumaki) : _timed combo_
+  - ↓, (↙|↘), (←|→) + ✕ (Tatsumaki) : _timed combo_
