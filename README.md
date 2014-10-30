@@ -85,41 +85,7 @@ To reset all gpio states on boot to limit electric pressure on the bus, add the 
 
     @reboot sudo /home/pi/pianette/reset_GPIO_on_reboot.py
 
-### Street Fighter Alpha 3 Specifics
+### Team
 
-#### Timing
-
-Fighting buttons timings :
-
-  - ☓ : 270 ms
-  - □ : 200 ms
-  - △ : 370 ms
-  - ◯ : 400 ms
-
-If two antinomic buttons are pressed at the same time, the following rules apply :
-
-  - Up & Down => Up will be triggered
-  - Right & Left => Left will be triggered
-
-#### List of keys and combos
-
-  - ☓ (Cross) : `0xFF 0xBF`
-  - ◯ (Circle) : `0xFF 0xDF`
-  - □ (Square) : `0xFF 0x7F`
-  - △ (Triangle) : `0xFF 0xEF`
-
-  - START : `xF7 0xFF`
-  - SELECT : `xF7 0xFE`
-
-  - ↑ : `0xEF 0xFF`
-  - ↓ : `0xBF 0xFF`
-  - ← : `0x7F 0xFF`
-  - → : `0xDF 0xFF`
-
-  - ↓ + → = ↘ : `0x9F 0xFF`
-  - ↓ + ← = ↙ : `0x3F 0xFF`
-  - ↑ + → = ↗  : `0xCF 0xFF`
-  - ↑ + ← = ↖ : `0x6F 0xFF`
-
-  - ↓, (↘|↙), (→|←) + □ (Hadouken) : _timed combo_
-  - ↓, (↙|↘), (←|→) + ☓ (Tatsumaki) : _timed combo_
+  - Coox — [http://coox.org](http://coox.org)
+  - Tchap — [http://tchap.me](http://tchap.me)
