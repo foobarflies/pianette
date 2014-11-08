@@ -35,4 +35,4 @@ gpio_controller = GPIOController(configobj=configobj, pianette=pianette)
 
 # Run the main loop of interactive Pianette
 Debug.println("NOTICE", "Entering main loop")
-#PianetteCmd(configobj=configobj, pianette=pianette).cmdloop()
+PianetteCmd(configobj=configobj, pianette=pianette).cmdloop()

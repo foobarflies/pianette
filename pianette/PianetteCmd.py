@@ -1,40 +1,111 @@
 # coding: utf-8
 
 import cmd
-import random
+import pianette.errors
 import time
+
+class PianetteCmdUtil:
+
+    # Namespaces
+
+    supported_cmd_namespaces = [ "console", "game", "piano", "time" ]
+
+    @staticmethod
+    def is_supported_cmd_namespace(cmd_namespace):
+        return cmd_namespace in PianetteCmdUtil.supported_cmd_namespaces
+
 
 class PianetteCmd(cmd.Cmd):
     prompt = 'pianette: '
 
-    def __init__(self, piano_state, psx_controller_state):
-        super().__init__()
-        self.piano_state = piano_state
-        self.psx_controller_state = psx_controller_state
+    def __init__(self, configobj=None, pianette=None, **kwargs):
+        super().__init__(**kwargs)
+        self.configobj = configobj
+        self.pianette = pianette
 
-    # play_note
+    def parseline(self, line):
+        # Pianette-specific command parser
+        command, arg, line = super().parseline(line)
 
-    def do_play_note(self, note):
-        self.piano_state.raise_note(note)
+        if command and command != "EOF":
+            command = command.lower()
 
-    def complete_play_note(self, text, line, begidx, endidx):
-        if not text:
-            completions = self.piano_state.get_notes_keys()
+        # Rewrite namespaced commands for cmd to properly map them
+        # The default parser would interpret "namespace.do-stuff arg1 arg2" as the "namespace" command with arguments ".do-stuff", "arg1", "arg2"
+        # What we want instead, is the "namespace__do_stuff" command with arguments "arg1", "arg2"
+        namespace = None
+
+        if command and PianetteCmdUtil.is_supported_cmd_namespace(command):
+            if arg:
+                arg_list = arg.split()
+                if arg_list and len(arg_list[0]) > 1 and arg_list[0][0] == ".":
+                    namespace = command
+                    command += "__"
+                    command += arg_list[0][1:].replace("-", "_")
+                    arg_list.pop(0)
+                    arg = " ".join(arg_list)
+
+
+        if namespace == "piano":
+            # Assume that some arguments in piano commands include aliases for harder-to type characters
+            arg = arg.replace("b", "♭")
+            arg = arg.replace("#", "♯")
+
+        if namespace == "console":
+            arg = arg.upper()
+
+            # Assume that some arguments in console commands include aliases for harder-to type characters
+            arg = arg.replace("UP", "↑")
+            arg = arg.replace("RIGHT", "→")
+            arg = arg.replace("DOWN", "↓")
+            arg = arg.replace("LEFT", "←")
+
+            arg = arg.replace("SQUARE", "□")
+            arg = arg.replace("TRIANGLE", "△")
+            arg = arg.replace("CROSS", "✕")
+            arg = arg.replace("CIRCLE", "◯")
+
+            # Assume that some arguments in console commands include aliases for longer-to type arguments
+            arg = arg.replace("↖", "← + ↑")
+            arg = arg.replace("↗", "↑ + →")
+            arg = arg.replace("↘", "→ + ↓")
+            arg = arg.replace("↙", "↓ + ←")
+
+        return command, arg, line
+
+    def do_EOF(self, arg):
+        return False
+
+    # Commands
+
+    def do_console__play(self, args):
+        pass
+
+    def do_console__reset(self, args):
+        pass
+
+    def do_game__select(self, args):
+        pass
+
+    def do_game__select_character(self, args):
+        self.onecmd("console.play □")
+        pass
+
+    def do_game__select_fighting_style(self, args):
+        pass
+
+    def do_game__select_location(self, args):
+        pass
+
+    def do_game__select_mode(self, args):
+        pass
+
+    def do_piano__play(self, args):
+        pass
+
+    def do_time__sleep(self, args):
+        args_list = args.split()
+        if args_list:
+            time.sleep(float(args_list[0]))
         else:
-            completions = [ f
-                            for f in self.piano_state.get_notes_keys()
-                            if f.startswith(text)
-                            ]
-        return completions
-
-    def do_play_chord(self, notes_string):
-        notes = notes_string.split(',')
-        for note in notes:
-            self.piano_state.raise_note(note)
-            time.sleep(random.randint(0,10)/1000)
-
-    def do_EOF(self, line):
-        return True
-
-    def postloop(self):
-        print()
+            raise pianette.errors.PianetteCmdError("No argument provided for time.sleep")
