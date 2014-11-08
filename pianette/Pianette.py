@@ -194,6 +194,13 @@ def get_ranked_chord_bitids_including_at_least_one_of_notes(notes, from_chord_bi
     return ranked_notes_chord_bitids
 
 class Pianette:
+    def push_console_controls(self, controls_string):
+        self.psx_controller_buffered_states[controls_string] = [ 3 ]
+        pass
+
+    def push_piano_notes(self, notes_string):
+        pass
+
     def __init__(self, configobj=None):
         self.configobj = configobj
 
