@@ -1,8 +1,24 @@
-# Virtual & GPIO Game Console Controller
+# Pianette = Piano + Manette
 
-A command-line emulator of a Game Pad Controller that asynchronously listens to GPIO `EDGE_RISING` inputs from sensors and sends Serial commands to an `ATMEGA328P` acting as a fake SPI Slave for the Console.
+A command-line emulator of a Playstation 2 Game Pad Controller that asynchronously listens to GPIO `EDGE_RISING` inputs from sensors and sends Serial commands to an `ATMEGA328P` acting as a fake SPI Slave for the Console running Street Fighter Alpha 3.
 
 _Written in Python 3._
+
+## Update
+
+To update the repository on a target **Raspberry Pi B+**, `cd` to the repository folder and just run:
+
+    ./update.sh
+
+## Run
+
+`sudo` is required to have access to GPIO pins on the **Raspberry Pi B+**.
+
+In command line, run :
+
+    sudo ./main.py
+
+> The initialisation process is quite verbose to display all warnings and errors encountered.
 
 ## Installation
 
@@ -63,55 +79,13 @@ Let's reboot and the serial port will now be free for our exclusive use. Note th
 
 >  Thanks to **Ted B Hale** for that : _http://raspberrypihobbyist.blogspot.fr/2012/08/raspberry-pi-serial-port.html_
 
-### Update
+### Reset GPIO state on reboot
 
-To update the repository on a target Raspberry Pi, just run:
+To reset all gpio states on boot to limit electric pressure on the bus, add the following cron to the `root` crontab (`sudo crontab -e`) :
 
-    ./update.sh
+    @reboot sudo /home/pi/pianette/reset_GPIO_on_reboot.py
 
-### Run
+### Team
 
-`sudo` is required to have access to GPIO pins on the Raspberry Pi.
-
-In command line, run :
-
-    sudo ./main-nogui.py
-
-### Street Fighter Alpha 3 Specifics
-
-#### Timing
-
-Fighting buttons timings :
-
-  - ✕ : 270 ms
-  - □ : 200 ms
-  - △ : 370 ms
-  - ◯ : 400 ms
-
-If two antinomic buttons are pressed at the same time, the following rules apply :
-
-  - Up & Down => Up will be triggered
-  - Right & Left => Left will be triggered
-
-#### List of keys and combos
-
-  - ✕ (Cross) : `0xFF 0xBF`
-  - ◯ (Circle) : `0xFF 0xDF`
-  - □ (Square) : `0xFF 0x7F`
-  - △ (Triangle) : `0xFF 0xEF`
-
-  - START : `xF7 0xFF`
-  - SELECT : `xF7 0xFE`
-
-  - ↑ : `0xEF 0xFF`
-  - ↓ : `0xBF 0xFF`
-  - ← : `0x7F 0xFF`
-  - → : `0xDF 0xFF`
-
-  - ↓ + → = ↘ : `0x9F 0xFF`
-  - ↓ + ← = ↙ : `0x3F 0xFF`
-  - ↑ + → = ↗  : `0xCF 0xFF`
-  - ↑ + ← = ↖ : `0x6F 0xFF`
-
-  - ↓, (↘|↙), (→|←) + □ (Hadouken) : _timed combo_
-  - ↓, (↙|↘), (←|→) + ✕ (Tatsumaki) : _timed combo_
+  - Coox — [http://coox.org](http://coox.org)
+  - Tchap — [http://tchap.me](http://tchap.me)
