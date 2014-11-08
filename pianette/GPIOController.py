@@ -118,7 +118,7 @@ class GPIOController:
         if not gpio_configobj:
             raise PianetteConfigError("Undefined GPIO section in configobj")
 
-        # Without a channel labeling, we can't configure anything eles, so we're done
+        # Without a channel labeling, we can't configure anything else, so we're done
         channel_labeling = gpio_configobj.get("channel-labeling")
         if not channel_labeling:
             Debug.println("NOTICE", "GPIO Channel Labeling not defined, skipping configobj" % (channel))
