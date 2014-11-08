@@ -197,8 +197,42 @@ def get_ranked_chord_bitids_including_at_least_one_of_notes(notes, from_chord_bi
     return ranked_notes_chord_bitids
 
 class Pianette:
-    def __init__(self, configobj=None):
+    def __init_using_configobj(self, configobj=None):
         self.configobj = configobj
+
+        if not configobj:
+            raise PianetteConfigError("Undefined configobj")
+
+        # Global
+        pianette_configobj = configobj.get("Pianette")
+        if not pianette_configobj:
+            raise PianetteConfigError("Undefined Pianette section in configobj")
+
+        # Mappings: Piano Notes (input) => PSX Controller Combo (output)
+        pianette_mappings_configobj = pianette_configobj.get("Mappings")
+        if not pianette_configobj:
+            raise PianetteConfigError("Undefined Mappings section in Pianette configobj")
+
+        self.pianette_buffered_states_mappings = []
+
+        for notes_string, controls_string in pianette_mappings_configobj.items():
+            if not isinstance(controls_string, str):
+                # Not a string, probably a configuration sub-section
+                pass
+            else:
+                # Assume that some arguments in console commands include aliases for longer-to type arguments
+                controls_string = controls_string.replace("↖", "← + ↑")
+                controls_string = controls_string.replace("↗", "↑ + →")
+                controls_string = controls_string.replace("↘", "→ + ↓")
+                controls_string = controls_string.replace("↙", "↓ + ←")
+
+                self.pianette_buffered_states_mappings .append({
+                    "piano": notes_string.replace("+", " ").split(),
+                    "psx_controller": Pianette.get_buffered_states_for_controls_string(controls_string)
+                })
+
+    def __init__(self, configobj=None):
+        self.__init_using_configobj(configobj=configobj)
 
         self.piano_state = PianoState(configobj=self.configobj)
         self.psx_controller_state = ControllerState(configobj=self.configobj)
