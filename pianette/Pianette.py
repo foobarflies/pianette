@@ -201,28 +201,28 @@ class Pianette:
         controls_buffered_states = {}
         time_index = 0
 
-        for char in controls_string:
-            if char == "+":
+        for control in controls_string.split():
+            if control == "+":
                 time_index -= PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
             else:
-                if char in controls_buffered_states:
+                if control in controls_buffered_states:
                     buffer_duration = 0
-                    for duration in controls_buffered_states[char]:
+                    for duration in controls_buffered_states[control]:
                         buffer_duration += abs(duration)
 
                     if time_index - buffer_duration > 0:
-                        controls_buffered_states[char].append(-time_index + buffer_duration)
-                        controls_buffered_states[char].append(PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
+                        controls_buffered_states[control].append(-time_index + buffer_duration)
+                        controls_buffered_states[control].append(PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
                     else:
-                        controls_buffered_states[char][0] += PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
+                        controls_buffered_states[control][-1] += PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
 
                 else:
-                    controls_buffered_states[char] = []
+                    controls_buffered_states[control] = []
 
                     if time_index > 0:
-                        controls_buffered_states[char].append(-time_index)
+                        controls_buffered_states[control].append(-time_index)
 
-                    controls_buffered_states[char].append(PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
+                    controls_buffered_states[control].append(PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
 
                 time_index += PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
 
@@ -232,6 +232,7 @@ class Pianette:
             self.psx_controller_buffered_states[control] = buffered_states
 
     def push_piano_notes(self, notes_string):
+        self.piano_buffered_states[piano_note].append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
         pass
 
     def __init__(self, configobj=None):

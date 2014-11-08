@@ -90,7 +90,7 @@ class PianetteCmd(cmd.Cmd):
         self.onecmd("console.play START + SELECT")
 
     def do_game__select(self, args):
-        self.onecmd("console.play ↓ ✕")
+        self.onecmd("console.play ✕")
 
     def do_game__select_character(self, args):
         self.onecmd("console.play ✕")
@@ -105,7 +105,7 @@ class PianetteCmd(cmd.Cmd):
         self.onecmd("console.play " + (random.randint(1, 20) * "→") + "✕")
 
     def do_game__select_mode(self, args):
-        self.onecmd("console.play ✕")
+        self.onecmd("console.play → ✕")
 
     def do_piano__play(self, args):
         Debug.println("INFO", "running command: piano.play" + " " + args)
