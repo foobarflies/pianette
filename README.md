@@ -72,7 +72,7 @@ Second, we need to disable the login prompt :
 
 And comment out the last line :
 
-    #Spawn a getty on Raspberry Pi serial line
+    # Spawn a getty on Raspberry Pi serial line
     # T0:23:respawn:/sbin/getty -L ttyAMA0 115200 vt100
 
 Let's reboot and the serial port will now be free for our exclusive use. Note that Python will still issue a `RuntimeWarning` to indicate that you are overriding the pin's default state. This is ok, and taken into account in `GPIOController.py` anyway. 
