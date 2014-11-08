@@ -2,6 +2,8 @@
 
 import cmd
 import pianette.errors
+import random
+import re
 import time
 
 from pianette.utils import Debug
@@ -73,6 +75,9 @@ class PianetteCmd(cmd.Cmd):
             arg = arg.replace("↘", "→ + ↓")
             arg = arg.replace("↙", "↓ + ←")
 
+        # Insert safe spaces around "+" signs
+        arg = re.sub('\s*\+\s*',' + ', arg)
+
         return command, arg, line
 
     def do_EOF(self, arg):
@@ -82,15 +87,11 @@ class PianetteCmd(cmd.Cmd):
 
     def do_console__play(self, args):
         Debug.println("INFO", "running command: console.play" + " " + args)
-        self.pianette.psx_controller_state.raiseFlag(args)
+        self.pianette.push_console_controls(args)
 
     def do_console__reset(self, args):
         Debug.println("INFO", "running command: console.reset" + " " + args)
-        self.pianette.psx_controller_state.raiseFlag("START")
-        self.pianette.psx_controller_state.raiseFlag("SELECT")
-        time.sleep(0.2)
-        self.pianette.psx_controller_state.clearFlag("START")
-        self.pianette.psx_controller_state.clearFlag("SELECT")
+        self.onecmd("console.play START + SELECT")
 
     def do_game__select(self, args):
         self.onecmd("console.play ✕")
@@ -98,18 +99,21 @@ class PianetteCmd(cmd.Cmd):
     def do_game__select_character(self, args):
         self.onecmd("console.play ✕")
 
+    def do_game__select_fighting_handicap(self, args):
+        self.onecmd("console.play ✕")
+
     def do_game__select_fighting_style(self, args):
         self.onecmd("console.play ✕")
 
     def do_game__select_location(self, args):
-        self.onecmd("console.play ✕")
+        self.onecmd("console.play " + (random.randint(1, 20) * "→") + "✕")
 
     def do_game__select_mode(self, args):
-        self.onecmd("console.play ✕")
+        self.onecmd("console.play → ✕")
 
     def do_piano__play(self, args):
         Debug.println("INFO", "running command: piano.play" + " " + args)
-        self.pianette.piano_state.raise_note(args)
+        self.pianette.push_piano_notes(args)
 
     def do_time__sleep(self, args):
         Debug.println("INFO", "running command: time.sleep" + " " + args)

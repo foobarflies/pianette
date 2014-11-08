@@ -153,8 +153,6 @@ class GPIOController:
                 warnings.filterwarnings('error', category=RuntimeWarning)
                 try:
                     # Attempt to set channel as Input
-                    Debug.println("INFO", "Attempting to setup GPIO Channel '%s' with %s" % (channel, gpio_setup_kargs))
-
                     RPi.GPIO.setup(rpi_gpio_channel, RPi.GPIO.IN, **gpio_setup_kargs)
                     # Allow potential RuntimeWarning to be thrown while within the try statement
                     time.sleep(0.025)

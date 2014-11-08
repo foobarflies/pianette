@@ -17,6 +17,9 @@ PIANETTE_CYCLE_PERIOD = 10/1000 # Seems to properly operate between 7 msecs and 
 # Number of cycles before Inputs are processed and sent to Output
 PIANETTE_PROCESSING_CYCLES = 2
 
+# Number of cycles for the duration of a single console.play
+PIANETTE_CONSOLE_PLAY_DURATION_CYCLES = 3
+
 # Mapping: Piano Notes (input) => PSX Controller Combo (output)
 PIANETTE_BUFFERED_STATES_MAPPINGS = [
     # Single Notes (left hand): Moves
@@ -232,6 +235,46 @@ class Pianette:
     def __del__(self):
         if hasattr(self, '_timer'):
             self.stop_timer()
+
+    def push_console_controls(self, controls_string):
+        controls_buffered_states = {}
+        time_index = 0
+
+        for control in controls_string.split():
+            if control == "+":
+                time_index -= PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
+            else:
+                if control in controls_buffered_states:
+                    buffer_duration = 0
+                    for duration in controls_buffered_states[control]:
+                        buffer_duration += abs(duration)
+
+                    if time_index - buffer_duration > 0:
+                        controls_buffered_states[control].append(-time_index + buffer_duration)
+                        controls_buffered_states[control].append(PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
+                    else:
+                        controls_buffered_states[control][-1] += PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
+
+                else:
+                    controls_buffered_states[control] = []
+
+                    if time_index > 0:
+                        controls_buffered_states[control].append(-time_index)
+
+                    controls_buffered_states[control].append(PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
+
+                time_index += PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
+
+        print(controls_buffered_states)
+
+        for control, buffered_states in controls_buffered_states.items():
+            self.psx_controller_buffered_states[control] = buffered_states
+
+    def push_piano_notes(self, notes_string):
+        for note in notes_string.split():
+            self.piano_state.raise_note(note)
+
+    # Timer Methods
 
     def _run_timer(self):
         self._timer_is_running = False
