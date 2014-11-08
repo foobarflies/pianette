@@ -197,44 +197,6 @@ def get_ranked_chord_bitids_including_at_least_one_of_notes(notes, from_chord_bi
     return ranked_notes_chord_bitids
 
 class Pianette:
-    def push_console_controls(self, controls_string):
-        controls_buffered_states = {}
-        time_index = 0
-
-        for control in controls_string.split():
-            if control == "+":
-                time_index -= PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
-            else:
-                if control in controls_buffered_states:
-                    buffer_duration = 0
-                    for duration in controls_buffered_states[control]:
-                        buffer_duration += abs(duration)
-
-                    if time_index - buffer_duration > 0:
-                        controls_buffered_states[control].append(-time_index + buffer_duration)
-                        controls_buffered_states[control].append(PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
-                    else:
-                        controls_buffered_states[control][-1] += PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
-
-                else:
-                    controls_buffered_states[control] = []
-
-                    if time_index > 0:
-                        controls_buffered_states[control].append(-time_index)
-
-                    controls_buffered_states[control].append(PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
-
-                time_index += PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
-
-        print(controls_buffered_states)
-
-        for control, buffered_states in controls_buffered_states.items():
-            self.psx_controller_buffered_states[control] = buffered_states
-
-    def push_piano_notes(self, notes_string):
-        for note in notes_string.split():
-            self.piano_state.raise_note(note)
-
     def __init__(self, configobj=None):
         self.configobj = configobj
 
@@ -273,6 +235,46 @@ class Pianette:
     def __del__(self):
         if hasattr(self, '_timer'):
             self.stop_timer()
+
+    def push_console_controls(self, controls_string):
+        controls_buffered_states = {}
+        time_index = 0
+
+        for control in controls_string.split():
+            if control == "+":
+                time_index -= PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
+            else:
+                if control in controls_buffered_states:
+                    buffer_duration = 0
+                    for duration in controls_buffered_states[control]:
+                        buffer_duration += abs(duration)
+
+                    if time_index - buffer_duration > 0:
+                        controls_buffered_states[control].append(-time_index + buffer_duration)
+                        controls_buffered_states[control].append(PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
+                    else:
+                        controls_buffered_states[control][-1] += PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
+
+                else:
+                    controls_buffered_states[control] = []
+
+                    if time_index > 0:
+                        controls_buffered_states[control].append(-time_index)
+
+                    controls_buffered_states[control].append(PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
+
+                time_index += PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
+
+        print(controls_buffered_states)
+
+        for control, buffered_states in controls_buffered_states.items():
+            self.psx_controller_buffered_states[control] = buffered_states
+
+    def push_piano_notes(self, notes_string):
+        for note in notes_string.split():
+            self.piano_state.raise_note(note)
+
+    # Timer Methods
 
     def _run_timer(self):
         self._timer_is_running = False
