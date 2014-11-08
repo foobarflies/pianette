@@ -10,6 +10,7 @@
 # Written in Python 3.
 
 import pianette.config
+import sys
 
 from pianette.GPIOController import GPIOController
 from pianette.Pianette import Pianette
@@ -23,7 +24,7 @@ Debug.println("INFO", " ################################## ")
 Debug.println("INFO", " ")
 
 configobj = pianette.config.get_configobj('street-fighter-alpha-3', 'player2')
-print(configobj)
+
 # Instanciate the global Pianette
 # Its responsibility is to translate Piano actions to Console actions
 pianette = Pianette(configobj=configobj)
@@ -32,14 +33,6 @@ pianette = Pianette(configobj=configobj)
 # Its responsibility is to feed the Pianette based on GPIO inputs
 gpio_controller = GPIOController(configobj=configobj, pianette=pianette)
 
-# Parse config for GPIO
-GPIO_PIN_ATTACHMENTS = {}
-for key in config['LAYOUT']:
-  GPIO_PIN_ATTACHMENTS[int(key)] = { "note": config['LAYOUT'][key] }
-
-# Add reset pin
-GPIO_PIN_ATTACHMENTS[int(config['RESET']['gpio'])] = { "pull_up_down": 22, "event": 32, "command": "RESET" }
-
 # Run the main loop of interactive Pianette
 Debug.println("NOTICE", "Entering main loop")
-PianetteCmd(configobj=configobj, pianette=pianette).cmdloop()
+#PianetteCmd(configobj=configobj, pianette=pianette).cmdloop()
