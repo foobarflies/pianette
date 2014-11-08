@@ -56,3 +56,8 @@ OLD COMBOS
     time.sleep(2)
 
     # FIGHT !!!!
+
+# Install
+
+* Allow easy install with `setup.py`
+* Make virtualenv-friendly?

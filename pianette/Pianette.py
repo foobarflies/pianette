@@ -3,6 +3,7 @@
 from copy import deepcopy
 from pianette.ConsoleController import ConsoleController
 from pianette.ControllerState import ControllerState
+from pianette.PianetteCmd import PianetteCmd
 from pianette.PianoState import PianoState
 from pianette.utils import Debug
 
@@ -224,6 +225,9 @@ class Pianette:
         # Start the timer thread that will cycle buffered states at each interval
         self.start_timer()
         Debug.println("INFO", "Pianette buffered states timer thread started at %f secs interval" % self._timer_interval)
+
+        # Create pianette command interface
+        self.cmd = PianetteCmd(configobj=configobj, pianette=self)
 
     def __del__(self):
         if hasattr(self, '_timer'):

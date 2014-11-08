@@ -80,6 +80,31 @@ class GPIOConfigUtil:
 
         return GPIOConfigUtil.rpi_gpio_pull_up_down_for_resistor.get(resistor, None)
 
+    # Events
+
+    EVENT_FALLING = "Falling"
+    EVENT_RISING = "Rising"
+
+    supported_events = [ EVENT_FALLING, EVENT_RISING ]
+
+    @staticmethod
+    def is_supported_event(event):
+        return event in GPIOConfigUtil.supported_events
+
+    rpi_gpio_event_for_event = {
+        EVENT_FALLING: RPi.GPIO.FALLING,
+        EVENT_RISING: RPi.GPIO.RISING,
+    }
+
+    @staticmethod
+    def get_rpi_gpio_event_for_event(event):
+        if not GPIOConfigUtil.is_supported_event(event):
+            raise PianetteGPIOConfigError("Unsupported GPIO event '%s'" % (event))
+
+        if event not in GPIOConfigUtil.rpi_gpio_event_for_event.keys():
+            raise PianetteGPIOConfigError("Undefined GPIO event for event '%s'" % (event))
+
+        return GPIOConfigUtil.rpi_gpio_event_for_event.get(event, None)
 
 class GPIOController:
     def __init_using_configobj(self, configobj=None):
@@ -128,7 +153,9 @@ class GPIOController:
                 warnings.filterwarnings('error', category=RuntimeWarning)
                 try:
                     # Attempt to set channel as Input
-                    RPi.GPIO.setup(rpi_gpio_channel, RPi.GPIO.IN)
+                    Debug.println("INFO", "Attempting to setup GPIO Channel '%s' with %s" % (channel, gpio_setup_kargs))
+
+                    RPi.GPIO.setup(rpi_gpio_channel, RPi.GPIO.IN, **gpio_setup_kargs)
                     # Allow potential RuntimeWarning to be thrown while within the try statement
                     time.sleep(0.025)
 
@@ -154,6 +181,17 @@ class GPIOController:
 
                 Debug.println("SUCCESS", "GPIO Channel '%s' set as Input" % (channel) )
 
+            # Input events
+            gpio_input_events_configobj = gpio_input_configobj.get("Events", {})
+
+            for event in gpio_input_events_configobj.keys():
+                rpi_gpio_event = GPIOConfigUtil.get_rpi_gpio_event_for_event(event)
+
+                for channel, commands in gpio_input_events_configobj[event].items():
+                    rpi_gpio_channel = GPIOConfigUtil.get_rpi_gpio_channel(channel, channel_labeling)
+
+                    RPi.GPIO.add_event_detect(rpi_gpio_channel, rpi_gpio_event, callback=self.define_command_callback(commands), bouncetime=300)
+
         # Output
         gpio_output_configobj = gpio_configobj.get("Output")
         if gpio_output_configobj:
@@ -168,14 +206,10 @@ class GPIOController:
         # Cleanup GPIOs on object destruction
         RPi.GPIO.cleanup()
 
-    # # Callback method for PSX Controller Commands
-    # def gpio_pin_command_callback(self, channel):
-    #     command = self.GPIO_PIN_ATTACHMENTS[channel]["command"]
-    #     Debug.println("INFO", "Pin %2d activated : triggering PSX Controller Command %s" % (channel, command) )
-    #     self.pianette.controller_state.raiseFlag("RESET")
+    # Callback method for Piano Notes
+    def define_command_callback(self, commands):
+        def command_callback(channel):
+            for command in commands.split("\n"):
+                self.pianette.cmd.onecmd(command)
 
-    # # Callback method for Piano Notes
-    # def gpio_pin_note_callback(self,channel):
-    #     note = self.GPIO_PIN_ATTACHMENTS[channel]["note"]
-    #     Debug.println("INFO", "Pin %2d activated : triggering Piano Note %s" % (channel, note) )
-    #     self.pianette.piano_state.raise_note(note)
+        return command_callback

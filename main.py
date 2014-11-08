@@ -14,7 +14,6 @@ import sys
 
 from pianette.GPIOController import GPIOController
 from pianette.Pianette import Pianette
-from pianette.PianetteCmd import PianetteCmd
 from pianette.utils import Debug
 
 Debug.println("INFO", " ")
@@ -23,7 +22,7 @@ Debug.println("INFO", " |            PIANETTE            | ")
 Debug.println("INFO", " ################################## ")
 Debug.println("INFO", " ")
 
-configobj = pianette.config.get_configobj('street-fighter-alpha-3', 'player2')
+configobj = pianette.config.get_configobj('street-fighter-alpha-3', 'player1')
 
 # Instanciate the global Pianette
 # Its responsibility is to translate Piano actions to Console actions
@@ -35,4 +34,4 @@ gpio_controller = GPIOController(configobj=configobj, pianette=pianette)
 
 # Run the main loop of interactive Pianette
 Debug.println("NOTICE", "Entering main loop")
-PianetteCmd(configobj=configobj, pianette=pianette).cmdloop()
+pianette.cmd.cmdloop()
