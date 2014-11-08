@@ -3,6 +3,7 @@
 import cmd
 import pianette.errors
 import random
+import re
 import time
 
 from pianette.utils import Debug
@@ -73,6 +74,9 @@ class PianetteCmd(cmd.Cmd):
             arg = arg.replace("↗", "↑ + →")
             arg = arg.replace("↘", "→ + ↓")
             arg = arg.replace("↙", "↓ + ←")
+
+        # Insert safe spaces around "+" signs
+        arg = re.sub('\s*\+\s*',' + ', arg)
 
         return command, arg, line
 

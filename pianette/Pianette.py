@@ -232,8 +232,8 @@ class Pianette:
             self.psx_controller_buffered_states[control] = buffered_states
 
     def push_piano_notes(self, notes_string):
-        self.piano_buffered_states[piano_note].append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
-        pass
+        for note in notes_string.split():
+            self.piano_state.raise_note(note)
 
     def __init__(self, configobj=None):
         self.configobj = configobj
