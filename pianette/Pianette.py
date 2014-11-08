@@ -236,7 +236,8 @@ class Pianette:
         if hasattr(self, '_timer'):
             self.stop_timer()
 
-    def push_console_controls(self, controls_string):
+    @staticmethod
+    def get_buffered_states_for_controls_string(controls_string):
         controls_buffered_states = {}
         time_index = 0
 
@@ -265,7 +266,10 @@ class Pianette:
 
                 time_index += PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
 
-        print(controls_buffered_states)
+        return controls_buffered_states
+
+    def push_console_controls(self, controls_string):
+        controls_buffered_states = Pianette.get_buffered_states_for_controls_string(controls_string)
 
         for control, buffered_states in controls_buffered_states.items():
             self.psx_controller_buffered_states[control] = buffered_states
