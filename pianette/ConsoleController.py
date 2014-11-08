@@ -7,9 +7,6 @@ import random
 
 from pianette.utils import Debug
 
-# Number of µsecs that we need to wait between commands from controller
-usecs_between_data = 1
-
 class ConsoleController:
 
   serialConnection = None;
