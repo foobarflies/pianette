@@ -106,7 +106,7 @@ class PianetteCmd(cmd.Cmd):
         self.onecmd("console.play ✕")
 
     def do_game__select_location(self, args):
-        self.onecmd("console.play " + (random.randint(1, 20) * "→") + "✕")
+        self.onecmd("console.play " + (random.randint(1, 20) * "→ ") + "✕")
 
     def do_game__select_mode(self, args):
         self.onecmd("console.play → ✕")
