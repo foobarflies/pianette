@@ -48,6 +48,8 @@ volatile uint8_t command_buff[DATA_LEN]={0x01,0x42,0x00,0x00,0x00};
 volatile uint8_t curr_byte=0;
 volatile uint8_t next_byte=0;
 
+bool data_available = true;
+
 void setup();
 void loop();
 
@@ -110,7 +112,7 @@ ISR(SPI_STC_vect) {
   uint8_t inbyte = SPDR;
   
   // FIX ME : Manage other cases ? (other commands from the master?)
-  if (inbyte == command_buff[curr_byte]) {
+  if (inbyte == command_buff[curr_byte] && data_available == true) {
 
     // We put the next byte in the buffer, to be send along the next clock cycle
     SPDR = data_buff[curr_byte];
@@ -157,9 +159,13 @@ void loop() {
       Serial.println("");
     }
     
+    data_available = false;
+
     // We store the new commands in the data_buff buffer
     data_buff[2] = lowByte(control_data[0]);
     data_buff[3] = lowByte(control_data[1]);
+
+    data_available = true;
 
     // Led
     if (lowByte(control_data[0]) != 255 || lowByte(control_data[1]) != 255){
