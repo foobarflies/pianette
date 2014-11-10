@@ -85,6 +85,10 @@ class PianetteCmd(cmd.Cmd):
 
     # Commands
 
+    def do_console__hit(self, args):
+        Debug.println("INFO", "running command: console.hit" + " " + args)
+        self.pianette.push_console_controls(args, duration_cycles=1)
+
     def do_console__play(self, args):
         Debug.println("INFO", "running command: console.play" + " " + args)
         self.pianette.push_console_controls(args)
@@ -106,10 +110,12 @@ class PianetteCmd(cmd.Cmd):
         self.onecmd("console.play ✕")
 
     def do_game__select_location(self, args):
-        self.onecmd("console.play " + (random.randint(1, 20) * "→ ") + "✕")
+        self.onecmd("console.play " + (random.randint(1, 50) * "→ ") + "✕")
 
     def do_game__select_mode(self, args):
-        self.onecmd("console.play → ✕")
+        self.onecmd("console.play →")
+        self.onecmd("time.sleep 0.5")
+        self.onecmd("console.play ✕")
 
     def do_pianette__disable_source(self, args):
         Debug.println("INFO", "running command: pianette.disable_source" + " " + args)
