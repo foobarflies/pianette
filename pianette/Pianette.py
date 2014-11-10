@@ -13,7 +13,7 @@ import time
 # Pianette Configuration
 
 # Period of I/O cycle, in seconds
-PIANETTE_CYCLE_PERIOD = 10/1000 # Seems to properly operate between 7 msecs and 26 msecs (PSX observation)
+PIANETTE_CYCLE_PERIOD = 15/1000 # Seems to properly operate between 7 msecs and 26 msecs (PSX observation)
 
 # Number of cycles before Inputs are processed and sent to Output
 PIANETTE_PROCESSING_CYCLES = 2
