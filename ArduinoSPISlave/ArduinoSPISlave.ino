@@ -12,7 +12,6 @@ Arduino pin |  AVR pin | PSX pin
 12 MISO     |    18    | 1 DATA    (brown)
 13 SCK      |    19    | 7 CLOCK   (blue)
                        | 4 GND
-
 */
 
 #include "Arduino.h"
