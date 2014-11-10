@@ -188,7 +188,7 @@ class GPIOController:
                 for channel, commands in gpio_input_events_configobj[event].items():
                     rpi_gpio_channel = GPIOConfigUtil.get_rpi_gpio_channel(channel, channel_labeling)
 
-                    RPi.GPIO.add_event_detect(rpi_gpio_channel, rpi_gpio_event, callback=self.define_command_callback(commands), bouncetime=300)
+                    RPi.GPIO.add_event_detect(rpi_gpio_channel, rpi_gpio_event, callback=self.define_command_callback(commands), bouncetime=50)
 
         # Output
         gpio_output_configobj = gpio_configobj.get("Output")
