@@ -32,6 +32,9 @@ pianette = Pianette(configobj=configobj)
 # Its responsibility is to feed the Pianette based on GPIO inputs
 gpio_controller = GPIOController(configobj=configobj, pianette=pianette)
 
+# Make the Pianette object listen to GPIO inputs
+pianette.enable_source("gpio")
+
 # Run the main loop of interactive Pianette
 Debug.println("NOTICE", "Entering main loop")
 pianette.cmd.cmdloop()

@@ -12,7 +12,7 @@ class PianetteCmdUtil:
 
     # Namespaces
 
-    supported_cmd_namespaces = [ "console", "game", "piano", "time" ]
+    supported_cmd_namespaces = [ "console", "game", "piano", "pianette", "time" ]
 
     @staticmethod
     def is_supported_cmd_namespace(cmd_namespace):
@@ -110,6 +110,14 @@ class PianetteCmd(cmd.Cmd):
 
     def do_game__select_mode(self, args):
         self.onecmd("console.play → ✕")
+
+    def do_pianette__disable_source(self, args):
+        Debug.println("INFO", "running command: pianette.disable_source" + " " + args)
+        self.pianette.disable_source(args)
+
+    def do_pianette__enable_source(self, args):
+        Debug.println("INFO", "running command: pianette.enable_source" + " " + args)
+        self.pianette.enable_source(args)
 
     def do_piano__play(self, args):
         Debug.println("INFO", "running command: piano.play" + " " + args)

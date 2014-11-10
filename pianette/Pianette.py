@@ -113,6 +113,8 @@ class Pianette:
         self.piano_state = PianoState(configobj=self.configobj)
         self.psx_controller_state = ControllerState(configobj=self.configobj)
 
+        self.enabled_sources = {}
+
         # Instantiate the console controller that is responsible for sendint out the psx constroller state to the console
         self.console_controller = ConsoleController(self.psx_controller_state, configobj=self.configobj)
 
@@ -145,6 +147,16 @@ class Pianette:
     def __del__(self):
         if hasattr(self, '_timer'):
             self.stop_timer()
+
+    def inputcmd(self, command, source=None):
+        if source is not None and source in self.enabled_sources.keys() and self.enabled_sources[source] is True:
+            self.cmd.onecmd(command)
+
+    def enable_source(self, source):
+        self.enabled_sources[source] = True
+
+    def disable_source(self, source):
+        self.enabled_sources[source] = False
 
     @staticmethod
     def get_buffered_states_for_controls_string(controls_string):

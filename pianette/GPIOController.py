@@ -208,6 +208,6 @@ class GPIOController:
     def define_command_callback(self, commands):
         def command_callback(channel):
             for command in commands.split("\n"):
-                self.pianette.cmd.onecmd(command)
+                self.pianette.inputcmd(command, source="gpio")
 
         return command_callback
