@@ -155,9 +155,9 @@ class Pianette:
             for command in commands.split("\n"):
                 if command.strip():
                     self.cmd.onecmd(command)
-                    time.sleep(0.1)
+                    time.sleep(0.25)
         else:
-            Debug.println("WARN", "Ignoring commands from source '%s'" % (source))
+            Debug.println("WARNING", "Ignoring commands from source '%s'" % (source))
 
     def enable_source(self, source):
         Debug.println("INFO", "Enabling Pianette source '%s'" % (source))
@@ -168,13 +168,16 @@ class Pianette:
         self.enabled_sources[source] = False
 
     @staticmethod
-    def get_buffered_states_for_controls_string(controls_string):
+    def get_buffered_states_for_controls_string(controls_string, duration_cycles = None):
+        if duration_cycles is None:
+            duration_cycles = PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
+
         controls_buffered_states = {}
         time_index = 0
 
         for control in controls_string.split():
             if control == "+":
-                time_index -= PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
+                time_index -= duration_cycles
             else:
                 if control in controls_buffered_states:
                     buffer_duration = 0
@@ -183,9 +186,9 @@ class Pianette:
 
                     if time_index - buffer_duration > 0:
                         controls_buffered_states[control].append(-time_index + buffer_duration)
-                        controls_buffered_states[control].append(PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
+                        controls_buffered_states[control].append(duration_cycles)
                     else:
-                        controls_buffered_states[control][-1] += PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
+                        controls_buffered_states[control][-1] += duration_cycles
 
                 else:
                     controls_buffered_states[control] = []
@@ -193,14 +196,14 @@ class Pianette:
                     if time_index > 0:
                         controls_buffered_states[control].append(-time_index)
 
-                    controls_buffered_states[control].append(PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
+                    controls_buffered_states[control].append(duration_cycles)
 
-                time_index += PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
+                time_index += duration_cycles
 
         return controls_buffered_states
 
-    def push_console_controls(self, controls_string):
-        controls_buffered_states = Pianette.get_buffered_states_for_controls_string(controls_string)
+    def push_console_controls(self, controls_string, duration_cycles = None):
+        controls_buffered_states = Pianette.get_buffered_states_for_controls_string(controls_string, duration_cycles)
 
         for control, buffered_states in controls_buffered_states.items():
             self.psx_controller_buffered_states[control] = buffered_states
