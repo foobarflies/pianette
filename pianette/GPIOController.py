@@ -188,7 +188,10 @@ class GPIOController:
                 for channel, commands in gpio_input_events_configobj[event].items():
                     rpi_gpio_channel = GPIOConfigUtil.get_rpi_gpio_channel(channel, channel_labeling)
 
-                    RPi.GPIO.add_event_detect(rpi_gpio_channel, rpi_gpio_event, callback=self.define_command_callback(commands), bouncetime=50)
+                    bouncetime = 50
+                    if rpi_gpio_channel == 22:
+                        bouncetime = 2000 # HACK
+                    RPi.GPIO.add_event_detect(rpi_gpio_channel, rpi_gpio_event, callback=self.define_command_callback(commands), bouncetime=bouncetime)
 
         # Output
         gpio_output_configobj = gpio_configobj.get("Output")
@@ -207,7 +210,6 @@ class GPIOController:
     # Callback method for Piano Notes
     def define_command_callback(self, commands):
         def command_callback(channel):
-            for command in commands.split("\n"):
-                self.pianette.inputcmd(command, source="gpio")
+            self.pianette.inputcmds(commands, source="gpio")
 
         return command_callback

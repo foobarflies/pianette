@@ -109,7 +109,9 @@ class PianetteCmd(cmd.Cmd):
         self.onecmd("console.play " + (random.randint(1, 20) * "→ ") + "✕")
 
     def do_game__select_mode(self, args):
-        self.onecmd("console.play → ✕")
+        self.onecmd("console.play →")
+        self.onecmd("time.sleep 0.5")
+        self.onecmd("console.play ✕")
 
     def do_pianette__disable_source(self, args):
         Debug.println("INFO", "running command: pianette.disable_source" + " " + args)

@@ -8,6 +8,7 @@ from pianette.PianoState import PianoState
 from pianette.utils import Debug
 
 import threading
+import time
 
 # Pianette Configuration
 
@@ -148,14 +149,22 @@ class Pianette:
         if hasattr(self, '_timer'):
             self.stop_timer()
 
-    def inputcmd(self, command, source=None):
+    def inputcmds(self, commands, source=None):
         if source is not None and source in self.enabled_sources.keys() and self.enabled_sources[source] is True:
-            self.cmd.onecmd(command)
+            Debug.println("INFO", "Running commands from source '%s'" % (source))
+            for command in commands.split("\n"):
+                if command.strip():
+                    self.cmd.onecmd(command)
+                    time.sleep(0.1)
+        else:
+            Debug.println("WARN", "Ignoring commands from source '%s'" % (source))
 
     def enable_source(self, source):
+        Debug.println("INFO", "Enabling Pianette source '%s'" % (source))
         self.enabled_sources[source] = True
 
     def disable_source(self, source):
+        Debug.println("INFO", "Disabling Pianette source '%s'" % (source))
         self.enabled_sources[source] = False
 
     @staticmethod
