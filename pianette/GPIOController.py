@@ -190,7 +190,7 @@ class GPIOController:
 
                     bouncetime = 250
                     if rpi_gpio_channel == 22:
-                        bouncetime = 2000 # HACK
+                        bouncetime = 2000 # HACK to prevent multiple console.reset events
                     RPi.GPIO.add_event_detect(rpi_gpio_channel, rpi_gpio_event, callback=self.define_command_callback(commands), bouncetime=bouncetime)
 
         # Output
