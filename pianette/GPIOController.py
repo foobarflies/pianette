@@ -188,10 +188,12 @@ class GPIOController:
                 for channel, commands in gpio_input_events_configobj[event].items():
                     rpi_gpio_channel = GPIOConfigUtil.get_rpi_gpio_channel(channel, channel_labeling)
 
-                    bouncetime = 250
                     if rpi_gpio_channel == 22:
                         bouncetime = 500 # HACK to prevent multiple console.reset events
-                    RPi.GPIO.add_event_detect(rpi_gpio_channel, rpi_gpio_event, callback=self.define_command_callback(commands), bouncetime=bouncetime)
+                        RPi.GPIO.add_event_detect(rpi_gpio_channel, rpi_gpio_event, callback=self.define_red_button_callback(commands), bouncetime=bouncetime)
+                    else:
+                        bouncetime = 250
+                        RPi.GPIO.add_event_detect(rpi_gpio_channel, rpi_gpio_event, callback=self.define_command_callback(commands), bouncetime=bouncetime)
 
         # Output
         gpio_output_configobj = gpio_configobj.get("Output")
@@ -202,6 +204,7 @@ class GPIOController:
     def __init__(self, configobj=None, pianette=None):
         self.__init_using_configobj(configobj=configobj)
         self.pianette = pianette
+        self.can_reset = False
 
     def __del__(self):
         # Cleanup GPIOs on object destruction
@@ -213,3 +216,15 @@ class GPIOController:
             self.pianette.inputcmds(commands, source="gpio")
 
         return command_callback
+ 
+    # Callback method for Red Button
+    def define_red_button_callback(self, commands):
+        def red_button_callback(channel):
+            if self.can_reset == True:
+                self.can_reset = False
+                self.pianette.inputcmds(commands, source="gpio")
+            else:
+                Debug.println("INFO", "Waiting for second Button event ..." )
+                self.can_reset = True
+
+        return red_button_callback

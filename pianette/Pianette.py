@@ -155,7 +155,7 @@ class Pianette:
             for command in commands.split("\n"):
                 if command.strip():
                     self.cmd.onecmd(command)
-                    time.sleep(0.25)
+                    #time.sleep(0.25)
         else:
             Debug.println("WARNING", "Ignoring commands from source '%s'" % (source))
 
