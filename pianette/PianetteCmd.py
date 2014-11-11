@@ -26,6 +26,7 @@ class PianetteCmd(cmd.Cmd):
         super().__init__(**kwargs)
         self.configobj = configobj
         self.pianette = pianette
+        self.must_reset = false
 
     def parseline(self, line):
         # Pianette-specific command parser
@@ -94,8 +95,13 @@ class PianetteCmd(cmd.Cmd):
         self.pianette.push_console_controls(args)
 
     def do_console__reset(self, args):
-        Debug.println("INFO", "running command: console.reset" + " " + args)
-        self.onecmd("console.play START + SELECT")
+        if (self.must_reset == true):
+            Debug.println("INFO", "running command: console.reset" + " " + args)
+            self.must_reset = false
+            self.onecmd("console.play START + SELECT")
+        else:
+            Debug.println("INFO", "waiting for second event: console.reset" + " " + args)
+            self.must_reset = true
 
     def do_game__select(self, args):
         self.onecmd("console.play ✕")
