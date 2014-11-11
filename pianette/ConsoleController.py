@@ -20,7 +20,7 @@ class ConsoleController:
 
     # Opens first port available
     try:
-      self.serialConnection = serial.Serial(open_ports[0], 115200)
+      self.serialConnection = serial.Serial(open_ports[0], 38400)
       Debug.println("INFO", "SPI Slave detected at %s, waiting for the port to initialize." % open_ports[0])
       time.sleep(3) # DIRTY but apparently required for the serial port to get fully ready
       Debug.println("SUCCESS", "SPI Slave initialized.")

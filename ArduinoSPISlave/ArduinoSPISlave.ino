@@ -53,7 +53,7 @@ void loop();
 void setup() {
   
   // Begin Serial communication with Pi
-  Serial.begin(115200);
+  Serial.begin(38400);
     
   //SPI_PORT setup. 
   SPI_DDR |= (1<<ACK_PIN); // output
