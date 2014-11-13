@@ -22,6 +22,7 @@ Debug.println("INFO", " |            PIANETTE            | ")
 Debug.println("INFO", " ################################## ")
 Debug.println("INFO", " ")
 
+# FIX ME - introduce sys.argv[1] to choose player AND game?
 configobj = pianette.config.get_configobj('street-fighter-alpha-3', 'player1')
 
 # Instanciate the global Pianette
