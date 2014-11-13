@@ -58,8 +58,9 @@ class GPIOConfigUtil:
 
     RESISTOR_PULL_DOWN = "pull-down"
     RESISTOR_PULL_UP = "pull-up"
+    RESISTOR_NONE = "none"
 
-    supported_resistors = [ RESISTOR_PULL_DOWN, RESISTOR_PULL_UP ]
+    supported_resistors = [ RESISTOR_PULL_DOWN, RESISTOR_PULL_UP, RESISTOR_NONE ]
 
     @staticmethod
     def is_supported_resistor(resistor):
@@ -68,6 +69,7 @@ class GPIOConfigUtil:
     rpi_gpio_pull_up_down_for_resistor = {
         RESISTOR_PULL_DOWN: RPi.GPIO.PUD_DOWN,
         RESISTOR_PULL_UP: RPi.GPIO.PUD_UP,
+        RESISTOR_NONE: None,
     }
 
     @staticmethod

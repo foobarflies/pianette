@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-# Virtual & GPIO Game Console Controller
+# Pianette
 
-# A command-line emulator of a Game Pad Controller 
+# A command-line emulator of a PS2 Game Pad Controller 
 # that asynchronously listens to GPIO EDGE_RISING
 # inputs from sensors and sends Serial commands to 
 # an ATMEGA328P acting as a fake SPI Slave for the Console.
