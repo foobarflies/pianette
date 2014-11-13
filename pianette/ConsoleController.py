@@ -3,7 +3,6 @@
 import glob
 import serial
 import time
-import random
 
 from pianette.utils import Debug
 
@@ -27,9 +26,6 @@ class ConsoleController:
     except Exception:
       self.serialConnection = None
       Debug.println("WARNING", "No ConsoleController SPI Slave detected.")
-    
-    # Seeds random for stage selection
-    random.seed()
 
   def getSerialPorts(self):
 
