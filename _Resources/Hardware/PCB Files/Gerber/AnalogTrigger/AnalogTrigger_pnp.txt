@@ -1,0 +1,38 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=AnalogTrigger
+*Date=22:59:59
+*CreatedBy=Fritzing 0.9.0b.06.11.da4e
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;;THT;50.777;-11.5008;0;Bottom;J1
+2;;;8.34942;-22.8741;0;Bottom;TXT7
+3;;DIP8 [THT];31.727;-11.5516;180;Bottom;COMP
+4;;;55.8569;-2.61085;0;Bottom;Hole3
+5;;;55.8864;-12.5016;0;Bottom;TXT3
+6;;;21.898;-4.08119;0;Bottom;TXT4
+7;;;55.8756;-9.84272;0;Bottom;TXT3
+8;;;2.51701;-22.9308;0;Bottom;Hole2
+9;;;31.8927;-11.5944;-90;Bottom;TXT2
+10;;THT;8.99401;-12.7708;0;Bottom;J2
+11;;3 mm [THT];20.988;-7.69069;90;Bottom;TRIGGER
+12;;;15.3417;-10.0289;0;Bottom;TXT1
+13;;;55.8569;-22.9308;0;Bottom;Hole1
+14;;300 mil [THT];45.697;-11.4754;-90;Bottom;ZENER 5.1V
+15;;;2.51701;-2.61085;0;Bottom;Hole4
+16;;;15.3417;-15.131;0;Bottom;TXT1
+17;;;46.7118;-21.3237;0;Bottom;IMG1
+18;;;40.1911;-21.2272;0;Bottom;IMG2
+19;;;15.3417;-12.5924;0;Bottom;TXT1
+20;;;8.82867;-3.46446;0;Bottom;TXT5
+21;;;53.5327;-6.06373;0;Bottom;TXT5
+22;1M;THT;40.617;-12.7708;-90;Bottom;R 1M
+23;;;35.5631;-5.25389;0;Bottom;TXT6
