@@ -89,3 +89,7 @@ To reset all gpio states on boot to limit electric pressure on the bus, add the 
 
   - Coox — [http://coox.org](http://coox.org)
   - Tchap — [http://tchap.me](http://tchap.me)
+
+### License
+
+MIT. See License file.
