@@ -4,6 +4,8 @@ A command-line emulator of a Playstation 2 Game Pad Controller that asynchronous
 
 _Written in Python 3._
 
+You can find more info on [this article](http://www.foobarflies.io/pianette/) we wrote and on the corresponding [hacknernews discussion](https://news.ycombinator.com/item?id=9071205).
+
 ## Update
 
 To update the repository on a target **Raspberry Pi B+**, `cd` to the repository folder and just run:
