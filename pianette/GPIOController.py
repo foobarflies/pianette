@@ -9,7 +9,7 @@ from pianette.utils import Debug
 
 is_gpio_available = False
 try:
-    import RPi.GPIO as GPIO
+    import RPi.GPIO
 except ImportError:
     Debug.println("WARNING", "Could not import RPi.GPIO")
 else:
