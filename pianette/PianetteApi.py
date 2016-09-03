@@ -32,4 +32,4 @@ class PianetteApi:
         t.start()
 
     def startApi(self):
-        app.run(debug=False, threaded=True)
+        app.run(debug=False, threaded=True, host=0.0.0.0)
