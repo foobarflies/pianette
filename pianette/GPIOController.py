@@ -11,7 +11,7 @@ is_gpio_available = False
 try:
     import RPi.GPIO as GPIO
 except ImportError:
-    Debug.println("FAIL", "Could not import RPi.GPIO")
+    Debug.println("WARNING", "Could not import RPi.GPIO")
 else:
     is_gpio_available = True
 
