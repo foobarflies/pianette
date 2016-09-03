@@ -1,6 +1,5 @@
 # coding: utf-8
 
-import RPi.GPIO
 import pianette.errors
 import re
 import time
@@ -8,8 +7,17 @@ import warnings
 
 from pianette.utils import Debug
 
-RPi.GPIO.setwarnings(True)
-RPi.GPIO.cleanup()
+is_gpio_available = False
+try:
+    import RPi.GPIO as GPIO
+except ImportError:
+    Debug.println("FAIL", "Could not import RPi.GPIO")
+else:
+    is_gpio_available = True
+
+if is_gpio_available:
+    RPi.GPIO.setwarnings(True)
+    RPi.GPIO.cleanup()
 
 class GPIOConfigUtil:
 
@@ -24,7 +32,7 @@ class GPIOConfigUtil:
         return channel_labeling in GPIOConfigUtil.supported_channel_labelings
 
     rpi_gpio_mode_for_channel_labeling = {
-        CHANNEL_LABELING_BCM: RPi.GPIO.BCM,
+        CHANNEL_LABELING_BCM: RPi.GPIO.BCM if is_gpio_available else None,
     }
 
     @staticmethod
@@ -67,8 +75,8 @@ class GPIOConfigUtil:
         return resistor in GPIOConfigUtil.supported_resistors
 
     rpi_gpio_pull_up_down_for_resistor = {
-        RESISTOR_PULL_DOWN: RPi.GPIO.PUD_DOWN,
-        RESISTOR_PULL_UP: RPi.GPIO.PUD_UP,
+        RESISTOR_PULL_DOWN: RPi.GPIO.PUD_DOWN if is_gpio_available else None,
+        RESISTOR_PULL_UP: RPi.GPIO.PUD_UP if is_gpio_available else None,
         RESISTOR_NONE: None,
     }
 
@@ -94,8 +102,8 @@ class GPIOConfigUtil:
         return event in GPIOConfigUtil.supported_events
 
     rpi_gpio_event_for_event = {
-        EVENT_FALLING: RPi.GPIO.FALLING,
-        EVENT_RISING: RPi.GPIO.RISING,
+        EVENT_FALLING: RPi.GPIO.FALLING if is_gpio_available else None,
+        EVENT_RISING: RPi.GPIO.RISING if is_gpio_available else None,
     }
 
     @staticmethod
@@ -202,12 +210,14 @@ class GPIOController:
             raise PianetteGPIOConfigError("GPIO Channels could not be set as Output")
 
     def __init__(self, configobj=None, pianette=None):
-        self.__init_using_configobj(configobj=configobj)
+        if (is_gpio_available):
+            self.__init_using_configobj(configobj=configobj)
         self.pianette = pianette
 
     def __del__(self):
-        # Cleanup GPIOs on object destruction
-        RPi.GPIO.cleanup()
+        if (is_gpio_available):
+            # Cleanup GPIOs on object destruction
+            RPi.GPIO.cleanup()
 
     # Callback method for Piano Notes
     def define_command_callback(self, commands):
