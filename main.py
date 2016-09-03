@@ -14,6 +14,7 @@ import sys
 
 from pianette.GPIOController import GPIOController
 from pianette.Pianette import Pianette
+from pianette.PianetteApi import PianetteApi
 from pianette.utils import Debug
 
 Debug.println("INFO", " ")
@@ -33,8 +34,12 @@ pianette = Pianette(configobj=configobj)
 # Its responsibility is to feed the Pianette based on GPIO inputs
 gpio_controller = GPIOController(configobj=configobj, pianette=pianette)
 
-# Make the Pianette object listen to GPIO inputs
+# Create pianette api
+api_controller = PianetteApi(configobj=configobj, pianette=pianette)
+
+# Make the Pianette object listen to GPIO inputs and API (http)
 pianette.enable_source("gpio")
+pianette.enable_source("api")
 
 # Run the main loop of interactive Pianette
 Debug.println("NOTICE", "Entering main loop")

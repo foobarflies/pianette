@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Pianette — Virtual controller</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            html, body {
+                background: #424347;
+            }
+            body.controller {
+                background: url("./background.png") no-repeat center center #424347;
+                background-size: contain;
+            }
+            button {
+                position: relative;
+                height: 2.5em;
+                width: 2.5em;
+                color: white;
+                text-transform: lowercase;
+                font-size: 2em;
+                font-weight: bold;
+                background: #383838;
+                border: 1px solid black;
+                border-radius: 0.5em;
+                cursor: pointer;
+            }
+
+            button.select, button.start {
+                height: 2em;
+                width: 6em;
+                font-size: 1em;
+                font-family: Courier, sans-serif;
+                text-transform: uppercase;
+            }
+
+            button.up {
+                border-radius: 0.5em 0.5em 3em 3em; 
+            }
+            button.down {
+                border-radius: 3em 3em 0.5em 0.5em; 
+            }
+            button.left {
+                border-radius: 0.5em 3em 3em 0.5em; 
+            }
+            button.right {
+                border-radius: 3em 0.5em 0.5em  3em; 
+            }
+
+            button.L1, button.L2, button.R1, button.R2 {
+                width: 5em;
+                height: 2em;
+            }
+
+            div.direction {
+
+            }
+            div.suppl_L {
+
+            }
+            div.suppl_R {
+
+            }
+            div.menu {
+
+            }
+
+        </style>
+    </head>
+    <body class="controller">
+
+        <div class="suppl_L">
+            <button data-command="L1" class="L1">1</button>
+            <button data-command="L2" class="L2">2</button>
+        </div>
+
+        <div class="suppl_R">
+            <button data-command="R1" class="R1">1</button>
+            <button data-command="R2" class="R2">2</button>
+        </div>
+
+        <div class="direction">
+            <button data-command="↑" class="up">↑</button>
+            <button data-command="→" class="right">→</button>
+            <button data-command="↓" class="down">↓</button>
+            <button data-command="←" class="left">←</button>
+        </div>
+
+        <div class="menu">
+            <button data-command="SELECT" class="select">SELECT</button>
+            <button data-command="START" class="start">START</button>
+        </div>
+
+        <div class="action">
+            <button data-command="□" class="square">□</button>
+            <button data-command="✕" class="cross">✕</button>
+            <button data-command="◯" class="circle">◯</button>
+            <button data-command="△" class="triangle">△</button>
+        </div>
+
+
+        <script type="text/javascript">
+
+            function sendCommand(command) {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+                        if (xmlhttp.status == 200) {
+                            console.log("-> Done sending " + command);
+                        }
+                    }
+                };
+                xmlhttp.open("POST", "{{ url_root }}console/play", true);
+                xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+                xmlhttp.send('command=' + encodeURIComponent(command));
+            }
+
+            var buttons =document.getElementsByTagName("button");
+
+            for(var i =0; i < buttons.length; i++){
+                var elem = buttons[i];   
+                elem.onclick = (function(){
+                    var command = elem.getAttribute('data-command');
+                    return function() { 
+                        sendCommand(command);
+                        return false;
+                    }
+                })();
+            }
+
+            console.log("Done registering buttons");
+
+        </script>
+    </body>
+</html>

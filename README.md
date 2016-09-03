@@ -2,9 +2,19 @@
 
 A command-line emulator of a Playstation 2 Game Pad Controller that asynchronously listens to GPIO `EDGE_RISING` inputs from sensors and sends Serial commands to an `ATMEGA328P` acting as a fake SPI Slave for the Console running Street Fighter Alpha 3.
 
-_Written in Python 3._
+_Written in Python 3.3.6_
 
 You can find more info on [this article](http://www.foobarflies.io/pianette/) we wrote and on the corresponding [hacknernews discussion](https://news.ycombinator.com/item?id=9071205).
+
+## Using Python 3.3.6
+
+For Flask, we need Python3.3.6. It is recommended to use pyenv to use it :
+
+    curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
+
+then :
+
+    pyenv install 3.3.6
 
 ## Update
 
