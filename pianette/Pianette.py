@@ -179,6 +179,9 @@ class Pianette:
         Debug.println("INFO", "Unselecting Game")
         self.select_game = None
 
+    def get_selected_game(self):
+        return self.selected_game
+
     @staticmethod
     def get_buffered_states_for_controls_string(controls_string, duration_cycles = None):
         if duration_cycles is None:
