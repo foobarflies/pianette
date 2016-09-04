@@ -38,9 +38,10 @@ sources = {
     "api": PianetteApi, # feed the Pianette from HTTP requests
     "gpio": GPIOController, # feed the Pianette from GPIO inputs
 }
-for source in args.enabled_sources:
-    sources[source](configobj=configobj, pianette=pianette)
-    pianette.enable_source(source)
+if args.enabled_sources is not None:
+    for source in args.enabled_sources:
+        sources[source](configobj=configobj, pianette=pianette)
+        pianette.enable_source(source)
 
 # Run the main loop of interactive Pianette
 Debug.println("NOTICE", "Entering main loop")
