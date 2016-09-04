@@ -26,8 +26,16 @@
 
     </head>
     <body class="controller">
+        <h1>Pianette admin console</h1>
+        <div class="admin">
+            <button data-namespace="console" data-command="play" data-args="START" class="safe">START</button>
+            <button data-namespace="console" data-command="reset" data-args="" class="neutral">Console Reset</button>
 
-        <button data-namespace="console" data-command="reset" data-args="">Reset</button>
+            <button data-namespace="console" data-command="reset" data-args="">N/A</button>
+            <button data-namespace="console" data-command="reset" data-args="">N/A</button>
+            <button data-namespace="console" data-command="reset" data-args="">N/A</button>
+            <button data-namespace="console" data-command="reset" data-args="">N/A</button>
+        </div>
 
         <script type="text/javascript">
             var url_root = "{{ url_root }}";
