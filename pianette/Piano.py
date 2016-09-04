@@ -1,5 +1,6 @@
 # coding: utf-8
 
+from configobj import ConfigObj
 from pianette.errors import PianetteConfigError
 from pianette.utils import Debug
 
@@ -8,7 +9,7 @@ class Piano:
     # Private methods: Config
 
     def __init_using_configobj(self, configobj=None):
-        if not configobj.__class__.__name__ == 'ConfigObj':
+        if not isinstance(configobj, ConfigObj):
             raise PianetteConfigError('Unsupported Piano config')
 
         if not 'Piano' in configobj.dict().keys():
