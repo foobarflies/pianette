@@ -173,11 +173,11 @@ class Pianette:
         if game is None:
             return self.unselect_game()
         Debug.println("INFO", "Selecting Game '%s'" % (game))
-        self.select_game = game
+        self.selected_game = game
 
     def unselect_game(self):
         Debug.println("INFO", "Unselecting Game")
-        self.select_game = None
+        self.selected_game = None
 
     def get_selected_game(self):
         return self.selected_game
