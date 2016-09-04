@@ -38,7 +38,7 @@ sources = {
     "api": PianetteApi, # feed the Pianette from HTTP requests
     "gpio": GPIOController, # feed the Pianette from GPIO inputs
 }
-for source in args.enable_source:
+for source in args.enabled_sources:
     sources[source](configobj=configobj, pianette=pianette)
     pianette.enable_source(source)
 
