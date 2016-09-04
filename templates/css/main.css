@@ -1,0 +1,140 @@
+* { padding:0;margin:0;}
+html, body {
+    background: #424347;
+    height: 100%;
+}
+body.controller {
+    position: relative;
+}
+button {
+    position: relative;
+    height: 5em;
+    width: 5em;
+    color: white;
+    text-transform: lowercase;
+    font-size: 2em;
+    font-weight: bold;
+    background: #383838;
+    border: 1px solid black;
+    border-radius: 0.5em;
+    cursor: pointer;
+}
+
+div.menu {
+    position: absolute;
+    left: 50%;
+    top: 67%;
+    width: 20em;
+    margin-left: -10em;
+    text-align: center;
+}
+div.menu div.item {
+    font-family: Courier, sans-serif;
+    font-size: 1.5em;
+    text-transform: uppercase;
+    color: white;
+    display: inline-block;
+    margin: 0 0.2em;
+}
+div.menu button {
+    height: 1em;
+    width: 3em;
+    display: block;
+    margin-top: 0.2em;
+}
+
+div.direction {
+    position: absolute;
+    left: 0%;
+    top: 0%;
+    width: 30em;
+    height: 30em;
+    margin-left: 2em;
+    margin-top: 20em;
+}
+div.direction button {
+    position: absolute;
+}
+button.up {
+    border-radius: 0.5em 0.5em 3em 3em;
+    top: 0%;
+    left: 50%;
+    margin-left: -2.5em; 
+}
+button.down {
+    border-radius: 3em 3em 0.5em 0.5em; 
+    bottom: 0%;
+    left: 50%;
+    margin-left: -2.5em;
+}
+button.left {
+    border-radius: 0.5em 3em 3em 0.5em;
+    top: 50%;
+    left: 0%;
+    margin-top: -2.5em; 
+}
+button.right {
+    border-radius: 3em 0.5em 0.5em  3em; 
+    top: 50%;
+    right: 0%;
+    margin-top: -2.5em;
+}
+
+div.suppl {
+    margin-top: 2em;
+}
+div.suppl button{
+    width: 15em;
+    height: 2.5em;
+    display: block;
+    margin-top: 0.5em;
+}
+div.suppl.suppl_L {
+    position: absolute;
+    left: 0%;
+    top: 0%;
+    margin-left: 2em;
+}
+div.suppl.suppl_R {
+    position: absolute;
+    right: 0%;
+    top: 0%;
+    margin-right: 2em;
+}
+
+div.action {
+    position: absolute;
+    right: 0%;
+    top: 0%;
+    width: 30em;
+    height: 30em;
+    margin-right: 2em;
+    margin-top: 20em;
+}
+div.action button {
+    background-repeat: no-repeat;
+    background-color: #373737;
+    background-position: center center;
+    position: absolute;
+}
+
+button.square {
+    top: 50%;
+    left: 0%;
+    margin-top: -2.5em;
+}
+button.circle {
+    top: 50%;
+    right: 0%;
+    margin-top: -2.5em;
+}
+button.cross {
+    bottom: 0%;
+    left: 50%;
+    margin-left: -2.5em;
+}
+button.triangle {
+    top: 0%;
+    left: 50%;
+    margin-left: -2.5em;
+}

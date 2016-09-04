@@ -5,132 +5,77 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>Pianette — Virtual controller</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
-            html, body {
-                background: #424347;
+        <link rel="apple-touch-icon" sizes="57x57" href="{{ url_for('static', filename='favicons/apple-icon-57x57.png') }}">
+        <link rel="apple-touch-icon" sizes="60x60" href="{{ url_for('static', filename='favicons/apple-icon-60x60.png') }}">
+        <link rel="apple-touch-icon" sizes="72x72" href="{{ url_for('static', filename='favicons/apple-icon-72x72.png') }}">
+        <link rel="apple-touch-icon" sizes="76x76" href="{{ url_for('static', filename='favicons/apple-icon-76x76.png') }}">
+        <link rel="apple-touch-icon" sizes="114x114" href="{{ url_for('static', filename='favicons/apple-icon-114x114.png') }}">
+        <link rel="apple-touch-icon" sizes="120x120" href="{{ url_for('static', filename='favicons/apple-icon-120x120.png') }}">
+        <link rel="apple-touch-icon" sizes="144x144" href="{{ url_for('static', filename='favicons/apple-icon-144x144.png') }}">
+        <link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename='favicons/apple-icon-152x152.png') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicons/apple-icon-180x180.png') }}">
+        <link rel="icon" type="image/png" sizes="192x192"  href="{{ url_for('static', filename='favicons/android-icon-192x192.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicons/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='favicons/favicon-96x96.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicons/favicon-16x16.png') }}">
+        <meta name="msapplication-TileImage" content="{{ url_for('static', filename='favicons/ms-icon-144x144.png') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+        <style>          
+            button.square {
+                background: url("{{ url_for('static', filename='images/square.png') }}");
             }
-            body.controller {
-                background: url("./background.png") no-repeat center center #424347;
-                background-size: contain;
+            button.circle {
+                background: url("{{ url_for('static', filename='images/circle.png') }}");
             }
-            button {
-                position: relative;
-                height: 2.5em;
-                width: 2.5em;
-                color: white;
-                text-transform: lowercase;
-                font-size: 2em;
-                font-weight: bold;
-                background: #383838;
-                border: 1px solid black;
-                border-radius: 0.5em;
-                cursor: pointer;
+            button.cross {
+                background: url("{{ url_for('static', filename='images/cross.png') }}");
             }
-
-            button.select, button.start {
-                height: 2em;
-                width: 6em;
-                font-size: 1em;
-                font-family: Courier, sans-serif;
-                text-transform: uppercase;
+            button.triangle {
+                background: url("{{ url_for('static', filename='images/triangle.png') }}");
             }
-
-            button.up {
-                border-radius: 0.5em 0.5em 3em 3em; 
-            }
-            button.down {
-                border-radius: 3em 3em 0.5em 0.5em; 
-            }
-            button.left {
-                border-radius: 0.5em 3em 3em 0.5em; 
-            }
-            button.right {
-                border-radius: 3em 0.5em 0.5em  3em; 
-            }
-
-            button.L1, button.L2, button.R1, button.R2 {
-                width: 5em;
-                height: 2em;
-            }
-
-            div.direction {
-
-            }
-            div.suppl_L {
-
-            }
-            div.suppl_R {
-
-            }
-            div.menu {
-
-            }
-
         </style>
     </head>
     <body class="controller">
 
-        <div class="suppl_L">
-            <button data-command="L1" class="L1">1</button>
-            <button data-command="L2" class="L2">2</button>
+        <div class="suppl suppl_L">
+            <button data-namespace="console" data-command="play" data-args="L1" class="L1">1</button>
+            <button data-namespace="console" data-command="play" data-args="L2" class="L2">2</button>
         </div>
 
-        <div class="suppl_R">
-            <button data-command="R1" class="R1">1</button>
-            <button data-command="R2" class="R2">2</button>
+        <div class="suppl suppl_R">
+            <button data-namespace="console" data-command="play" data-args="R1" class="R1">1</button>
+            <button data-namespace="console" data-command="play" data-args="R2" class="R2">2</button>
         </div>
 
         <div class="direction">
-            <button data-command="↑" class="up">↑</button>
-            <button data-command="→" class="right">→</button>
-            <button data-command="↓" class="down">↓</button>
-            <button data-command="←" class="left">←</button>
+            <button data-namespace="console" data-command="play" data-args="↑" class="up">↑</button>
+            <button data-namespace="console" data-command="play" data-args="→" class="right">→</button>
+            <button data-namespace="console" data-command="play" data-args="↓" class="down">↓</button>
+            <button data-namespace="console" data-command="play" data-args="←" class="left">←</button>
         </div>
 
         <div class="menu">
-            <button data-command="SELECT" class="select">SELECT</button>
-            <button data-command="START" class="start">START</button>
+            <div class="item">
+                SELECT
+                <button data-namespace="console" data-command="play" data-args="SELECT" class="select"></button>
+            </div>
+             <div class="item">
+                START
+                <button data-namespace="console" data-command="play" data-args="START" class="start"></button>
+            </div>
         </div>
 
         <div class="action">
-            <button data-command="□" class="square">□</button>
-            <button data-command="✕" class="cross">✕</button>
-            <button data-command="◯" class="circle">◯</button>
-            <button data-command="△" class="triangle">△</button>
+            <button data-namespace="console" data-command="play" data-args="□" class="square"></button>
+            <button data-namespace="console" data-command="play" data-args="✕" class="cross"></button>
+            <button data-namespace="console" data-command="play" data-args="◯" class="circle"></button>
+            <button data-namespace="console" data-command="play" data-args="△" class="triangle"></button>
         </div>
 
 
         <script type="text/javascript">
-
-            function sendCommand(command) {
-                var xmlhttp = new XMLHttpRequest();
-                xmlhttp.onreadystatechange = function() {
-                    if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
-                        if (xmlhttp.status == 200) {
-                            console.log("-> Done sending " + command);
-                        }
-                    }
-                };
-                xmlhttp.open("POST", "{{ url_root }}console/play", true);
-                xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-                xmlhttp.send('command=' + encodeURIComponent(command));
-            }
-
-            var buttons =document.getElementsByTagName("button");
-
-            for(var i =0; i < buttons.length; i++){
-                var elem = buttons[i];   
-                elem.onclick = (function(){
-                    var command = elem.getAttribute('data-command');
-                    return function() { 
-                        sendCommand(command);
-                        return false;
-                    }
-                })();
-            }
-
-            console.log("Done registering buttons");
-
+            var url_root = "{{ url_root }}";
         </script>
+        <script src="{{ url_for('static', filename='js/main.js') }}" type="text/javascript"></script>
     </body>
 </html>
