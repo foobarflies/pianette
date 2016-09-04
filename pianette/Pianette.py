@@ -122,11 +122,7 @@ class Pianette:
         self.console_controller = ConsoleController(self.psx_controller_state, configobj=self.configobj)
 
         # Upcoming state cycles for the Piano Notes (input)
-        self.piano_buffered_states = {}
-        try:
-            self.piano_buffered_states = { k: [] for k in self.configobj['Piano']['supported-notes'] }
-        except KeyError:
-            pass
+        self.piano_buffered_states = { note: [] for note in self.piano_state.get_supported_notes() }
 
         # Upcoming state cycles for the Console Controls (output)
         self.psx_controller_buffered_states = {}
