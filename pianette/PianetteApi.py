@@ -35,11 +35,16 @@ def admin():
 @app.route('/<namespace>/<command>', methods = ['POST'])
 def console_play(namespace, command):
     if PianetteCmdUtil.is_supported_cmd_namespace(namespace):
-        full_command = "%s.%s %s" % (namespace, command, request.form.get('args'))
+        full_command = "%s.%s %s" % (namespace, command, request.form.get('data'))
         app.pianette.inputcmds(full_command, source="api")
         return ('1', 200)
     else:
         return ('0', 404)
+
+@app.route('/', methods = ['POST'])
+def raw_command():
+    app.pianette.inputcmds(request.form.get('data'), source="api")
+    return ('1', 200)
 
 
 class PianetteApi:

@@ -27,7 +27,7 @@ body.admin button {
     margin-right: 0.4em;
     margin-bottom: 0.4em;
 }
-body.admin button:after {
+body.admin button.state:after {
     content: "";
     width: 5em;
     height: 0.6em;
@@ -40,17 +40,34 @@ body.admin button:after {
     background: #8B8B8D;
     border-top: 3px solid #D4D4D4;
 }
-body.admin button.safe:after {
+body.admin button.state.safe:after {
     background: #6D8E1B;
     border-top: 3px solid #AACD59;
 }
-body.admin button.neutral:after {
+body.admin button.state.neutral:after {
     background: #38A2BC;
     border-top: 3px solid #79CBE1;
 }
 body.admin div.config,
-body.admin div.actions {
+body.admin div.actions,
+body.admin div.cli {
     margin: 2em;
+    position: relative;
+}
+
+body.admin .cli input {
+    width: 100%;
+    font-size: 2em;
+    line-height: 2em;
+    padding-right: 5em;
+    box-sizing:border-box;
+}
+body.admin .cli button {
+    position: absolute;
+    right: 3px;
+    top: 1px;
+    height: 2em;
+    margin: 0;
 }
 
 h1 {
@@ -61,7 +78,7 @@ h1 {
     font-weight: lighter;
     letter-spacing: 0.1em;
     text-align: center;
-    margin-top: 1em;
+    padding-top: 1em;
 }
 div.menu {
     position: absolute;

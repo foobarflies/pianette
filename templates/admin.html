@@ -30,7 +30,7 @@
         
         <div class="config">
             {% for config in configs %}
-                <button data-namespace="pianette" data-command="switch-config" data-needs-reload="true" data-args="{{ config }}" {% if config == current_config %}class="safe"{% endif %}>{{ config }}</button> 
+                <button data-namespace="pianette" data-command="switch-config" data-needs-reload="true" data-args="{{ config }}" class="state{% if config == current_config %} safe{% endif %}">{{ config }}</button> 
             {% else %}
                 No available configs
             {% endfor %}
@@ -39,13 +39,18 @@
         <h1>Pianette admin console</h1>
 
         <div class="actions">
-            <button data-namespace="console" data-command="play" data-args="START" class="safe">START</button>
-            <button data-namespace="console" data-command="reset" data-args="" class="neutral">Console Reset</button>
+            <button data-namespace="console" data-command="play" data-args="START" class="state neutral">START</button>
+            <button data-namespace="console" data-command="reset" data-args="" class="state neutral">Console Reset</button>
 
+            <button data-namespace="game" data-command="pause" data-args="" class="state">Pause</button>
+            <button data-namespace="game" data-command="resume" data-args="" class="state">Resume</button>
+            
             <button data-namespace="console" data-command="reset" data-args="">N/A</button>
             <button data-namespace="console" data-command="reset" data-args="">N/A</button>
-            <button data-namespace="console" data-command="reset" data-args="">N/A</button>
-            <button data-namespace="console" data-command="reset" data-args="">N/A</button>
+        </div>
+
+        <div class="cli">
+            <input type="text" name="cli" id="cli" value="console.play"><button data-external-sequence="cli">send</button>
         </div>
 
         <script type="text/javascript">
