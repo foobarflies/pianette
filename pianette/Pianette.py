@@ -23,7 +23,11 @@ PIANETTE_CONSOLE_PLAY_DURATION_CYCLES = 3
 
 class Pianette:
     def get_notes_chord_bitid(self, notes):
-        notes_bitids = [ self._note_bitids[note] for note in notes ]
+        notes_bitids = []
+        for note in notes:
+            if note in self._note_bitids:
+                notes_bitids.append(self._note_bitids[note])
+
         notes_chord_bitid = 0b0
         for bitid in notes_bitids:
             notes_chord_bitid |= bitid
@@ -283,9 +287,10 @@ class Pianette:
 
                 # Clear winning chord notes from the piano buffer
                 for piano_note in self.piano_buffered_states.keys():
-                    if self._note_bitids[piano_note] & winning_chord_bitid:
-                        if self.piano_buffered_states[piano_note]:
-                            self.piano_buffered_states[piano_note] = self.piano_buffered_states[piano_note][1:]
+                    if piano_note in self._note_bitids:
+                        if self._note_bitids[piano_note] & winning_chord_bitid:
+                            if self.piano_buffered_states[piano_note]:
+                                self.piano_buffered_states[piano_note] = self.piano_buffered_states[piano_note][1:]
 
         # Output PSX Controller Buffered states to PSX Controller
         for psx_control, buffered_state in self.psx_controller_buffered_states.items():
