@@ -8,7 +8,7 @@ You can find more info on [this article](http://www.foobarflies.io/pianette/) we
 
 ## Using Python 3.3.6
 
-For Flask, we need Python3.3.6. It is recommended to use pyenv to use it :
+For Flask to run correclty, we need Python3.3.6. It is recommended to use **pyenv** to use it, which can be installed via :
 
     curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
 
