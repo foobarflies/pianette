@@ -34,8 +34,8 @@ def admin():
 @app.route('/<namespace>/<command>', methods = ['POST'])
 def console_play(namespace, command):
     if PianetteCmdUtil.is_supported_cmd_namespace(namespace):
-        args = "console.play %s" % (request.form.get('args'))
-        app.pianette.inputcmds(args, source="api")
+        full_command = "%s.%s %s" % (namespace, command, request.form.get('args'))
+        app.pianette.inputcmds(full_command, source="api")
         return ('1', 200)
     else:
         return ('0', 404)
