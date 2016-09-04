@@ -14,6 +14,7 @@ import sys
 
 from pianette.GPIOController import GPIOController
 from pianette.Pianette import Pianette
+from pianette.PianetteArgumentParser import PianetteArgumentParser
 from pianette.PianetteApi import PianetteApi
 from pianette.utils import Debug
 
@@ -24,22 +25,22 @@ Debug.println("INFO", " ################################## ")
 Debug.println("INFO", " ")
 
 # FIX ME - introduce sys.argv[1] to choose player AND game?
-configobj = pianette.config.get_configobj('street-fighter-alpha-3', 'player1')
+configobj = pianette.config.get_configobj('pianette', 'street-fighter-alpha-3', 'player1')
+
+parser = PianetteArgumentParser(configobj=configobj)
+args = parser.parse_args()
 
 # Instanciate the global Pianette
 # Its responsibility is to translate Piano actions to Console actions
 pianette = Pianette(configobj=configobj)
 
-# Instanciate the global GPIO Controller
-# Its responsibility is to feed the Pianette based on GPIO inputs
-gpio_controller = GPIOController(configobj=configobj, pianette=pianette)
-
-# Create pianette api
-api_controller = PianetteApi(configobj=configobj, pianette=pianette)
-
-# Make the Pianette object listen to GPIO inputs and API (http)
-pianette.enable_source("gpio")
-pianette.enable_source("api")
+sources = {
+    "api": PianetteApi, # feed the Pianette from HTTP requests
+    "gpio": GPIOController, # feed the Pianette from GPIO inputs
+}
+for source in args.enable_source:
+    sources[source](configobj=configobj, pianette=pianette)
+    pianette.enable_source(source)
 
 # Run the main loop of interactive Pianette
 Debug.println("NOTICE", "Entering main loop")

@@ -1,7 +1,7 @@
 #!/bin/sh
 case "$1" in
     start)
-        sudo -i PYTHONIOENCODING="utf-8" /home/pi/pianette/main.py
+        sudo -i PYTHONIOENCODING="utf-8" /home/pi/pianette/main.py --enable-source gpio --enable-source api
     ;;
 
     stop)
