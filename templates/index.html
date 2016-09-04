@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>Pianette — Virtual controller</title>
-        <meta name="viewport" content="width=1500">
+        <meta name="viewport" content="width=1500, user-scalable=0">
         <link rel="apple-touch-icon" sizes="57x57" href="{{ url_for('static', filename='favicons/apple-icon-57x57.png') }}">
         <link rel="apple-touch-icon" sizes="60x60" href="{{ url_for('static', filename='favicons/apple-icon-60x60.png') }}">
         <link rel="apple-touch-icon" sizes="72x72" href="{{ url_for('static', filename='favicons/apple-icon-72x72.png') }}">
@@ -19,6 +19,9 @@
         <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='favicons/favicon-96x96.png') }}">
         <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicons/favicon-16x16.png') }}">
         <meta name="msapplication-TileImage" content="{{ url_for('static', filename='favicons/ms-icon-144x144.png') }}">
+        
+        <link rel="manifest" href="{{ url_for('static', filename='manifest/manifest.json') }}">
+
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
         <style>          
             button.square {
@@ -38,13 +41,13 @@
     <body class="controller">
 
         <div class="suppl suppl_L">
-            <button data-namespace="console" data-command="play" data-args="L1" class="L1">1</button>
-            <button data-namespace="console" data-command="play" data-args="L2" class="L2">2</button>
+            <button data-namespace="console" data-command="play" data-args="L1" class="L1">L1</button>
+            <button data-namespace="console" data-command="play" data-args="L2" class="L2">L2</button>
         </div>
 
         <div class="suppl suppl_R">
-            <button data-namespace="console" data-command="play" data-args="R1" class="R1">1</button>
-            <button data-namespace="console" data-command="play" data-args="R2" class="R2">2</button>
+            <button data-namespace="console" data-command="play" data-args="R1" class="R1">R1</button>
+            <button data-namespace="console" data-command="play" data-args="R2" class="R2">R2</button>
         </div>
 
         <div class="direction">

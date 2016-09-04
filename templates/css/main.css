@@ -11,7 +11,6 @@ button {
     height: 5em;
     width: 5em;
     color: white;
-    text-transform: lowercase;
     font-size: 2em;
     font-weight: bold;
     background: #383838;
@@ -23,7 +22,7 @@ button {
 div.menu {
     position: absolute;
     left: 50%;
-    top: 67%;
+    top: 54%;
     width: 20em;
     margin-left: -10em;
     text-align: center;
@@ -34,7 +33,7 @@ div.menu div.item {
     text-transform: uppercase;
     color: white;
     display: inline-block;
-    margin: 0 0.2em;
+    margin: 0 0.25em;
 }
 div.menu button {
     height: 1em;
@@ -50,7 +49,7 @@ div.direction {
     width: 30em;
     height: 30em;
     margin-left: 2em;
-    margin-top: 20em;
+    margin-top: 18em;
 }
 div.direction button {
     position: absolute;
@@ -87,7 +86,8 @@ div.suppl button{
     width: 15em;
     height: 2.5em;
     display: block;
-    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    color: #AAA;
 }
 div.suppl.suppl_L {
     position: absolute;
@@ -109,7 +109,7 @@ div.action {
     width: 30em;
     height: 30em;
     margin-right: 2em;
-    margin-top: 20em;
+    margin-top: 18em;
 }
 div.action button {
     background-repeat: no-repeat;
