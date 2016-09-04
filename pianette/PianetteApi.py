@@ -19,7 +19,7 @@ def send_static(directory, path):
         return ('', 404)
 
 @app.route('/favicon.ico')
-def send_favicon(path):
+def send_favicon():
     return send_from_directory('favicons', 'favicon.ico')
 
 @app.route('/', methods = ['GET'])
@@ -28,7 +28,8 @@ def home():
 
 @app.route('/admin', methods = ['GET'])
 def admin():
-    return render_template('admin.html', url_root=request.url_root)
+    # Let's list available configs
+    return render_template('admin.html', url_root=request.url_root, configs=app.configs, current_config=app.pianette.get_selected_game())
 
 # The main endpoint for issuing a command for Pianette
 @app.route('/<namespace>/<command>', methods = ['POST'])
@@ -46,6 +47,7 @@ class PianetteApi:
     def __init__(self, configobj=None, pianette=None, **kwargs):
         super().__init__(**kwargs)
         app.pianette = pianette
+        app.configs = configobj.get("Game").keys()
 
         Debug.println("INFO", "Starting API thread")
         t = Thread(target=self.startApi)

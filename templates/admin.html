@@ -25,9 +25,20 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
 
     </head>
-    <body class="controller">
+    <body class="controller admin">
+        <h1>Available Game configurations</h1>
+        
+        <div class="config">
+            {% for config in configs %}
+                <button data-namespace="pianette" data-command="switch-config" data-needs-reload="true" data-args="{{ config }}" {% if config == current_config %}class="safe"{% endif %}>{{ config }}</button> 
+            {% else %}
+                No available configs
+            {% endfor %}
+        </div>
+
         <h1>Pianette admin console</h1>
-        <div class="admin">
+
+        <div class="actions">
             <button data-namespace="console" data-command="play" data-args="START" class="safe">START</button>
             <button data-namespace="console" data-command="reset" data-args="" class="neutral">Console Reset</button>
 

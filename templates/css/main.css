@@ -23,15 +23,11 @@ button {
     word-break: normal;
     vertical-align: top;
 }
-
-div.admin {
-    padding: 2em;
-}
-div.admin button {
+body.admin button {
     margin-right: 0.4em;
     margin-bottom: 0.4em;
 }
-div.admin button:after {
+body.admin button:after {
     content: "";
     width: 5em;
     height: 0.6em;
@@ -44,14 +40,19 @@ div.admin button:after {
     background: #8B8B8D;
     border-top: 3px solid #D4D4D4;
 }
-div.admin button.safe:after {
+body.admin button.safe:after {
     background: #6D8E1B;
     border-top: 3px solid #AACD59;
 }
-div.admin button.neutral:after {
+body.admin button.neutral:after {
     background: #38A2BC;
     border-top: 3px solid #79CBE1;
 }
+body.admin div.config,
+body.admin div.actions {
+    margin: 2em;
+}
+
 h1 {
     width: 100%;
     color: white;

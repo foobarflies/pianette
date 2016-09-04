@@ -2,11 +2,14 @@ function constructUrl(namespace, command) {
     return url_root + namespace + "/" + command;
 }
 
-function sendCommand(namespace, command, args) {
+function sendCommand(namespace, command, args, needs_reload) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
             if (xmlhttp.status == 200) {
+                if (needs_reload) {
+                    document.location.reload(true);
+                }
                 console.log("-> Done sending " + namespace + "/" + command + " " + args);
             }
         }
@@ -25,8 +28,9 @@ for(var i =0; i < buttons.length; i++){
         var namespace = elem.getAttribute('data-namespace');
         var command = elem.getAttribute('data-command');
         var args = elem.getAttribute('data-args');
+        var needs_reload = (elem.getAttribute('data-needs-reload') == 'true');
         return function() { 
-            sendCommand(namespace, command, args);
+            sendCommand(namespace, command, args, needs_reload);
             return false;
         }
     })();
