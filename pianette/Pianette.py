@@ -4,7 +4,7 @@ from copy import deepcopy
 from pianette.ConsoleController import ConsoleController
 from pianette.ControllerState import ControllerState
 from pianette.PianetteCmd import PianetteCmd
-from pianette.PianoState import PianoState
+from pianette.Piano import Piano
 from pianette.utils import Debug
 
 import threading
@@ -111,7 +111,7 @@ class Pianette:
     def __init__(self, configobj=None):
         self.__init_using_configobj(configobj=configobj)
 
-        self.piano_state = PianoState(configobj=self.configobj)
+        self.piano = Piano(configobj=self.configobj)
         self.psx_controller_state = ControllerState(configobj=self.configobj)
 
         self.enabled_sources = {}
@@ -122,7 +122,7 @@ class Pianette:
         self.console_controller = ConsoleController(self.psx_controller_state, configobj=self.configobj)
 
         # Upcoming state cycles for the Piano Notes (input)
-        self.piano_buffered_states = { note: [] for note in self.piano_state.get_supported_notes() }
+        self.piano_buffered_states = { note: [] for note in self.piano.get_supported_notes() }
 
         # Upcoming state cycles for the Console Controls (output)
         self.psx_controller_buffered_states = {}
@@ -221,7 +221,7 @@ class Pianette:
 
     def push_piano_notes(self, notes_string):
         for note in notes_string.replace("+", " ").split():
-            self.piano_state.switch_note_on(note)
+            self.piano.switch_note_on(note)
 
     # Timer Methods
 
@@ -242,11 +242,11 @@ class Pianette:
 
     def cycle_buffered_states(self):
         # Input Piano Notes to Piano Buffered States
-        for piano_note in self.piano_state.get_supported_notes():
-            if self.piano_state.is_note_on(piano_note):
+        for piano_note in self.piano.get_supported_notes():
+            if self.piano.is_note_on(piano_note):
                 Debug.println("INFO", "Processing Piano Note %s" % (piano_note))
                 self.piano_buffered_states[piano_note].append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
-                self.piano_state.switch_note_off(piano_note)
+                self.piano.switch_note_off(piano_note)
 
         # Process Buffered States: Determine piano note or chord
         # Notes that have reached their last cycle "lead" the chord determination

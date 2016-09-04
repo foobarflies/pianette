@@ -3,7 +3,7 @@
 from pianette.errors import PianetteConfigError
 from pianette.utils import Debug
 
-class PianoState:
+class Piano:
 
     # Private methods: Config
 
