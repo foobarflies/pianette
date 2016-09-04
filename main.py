@@ -34,6 +34,8 @@ args = parser.parse_args()
 # Its responsibility is to translate Piano actions to Console actions
 pianette = Pianette(configobj=configobj)
 
+pianette.select_game(args.selected_game)
+
 sources = {
     "api": PianetteApi, # feed the Pianette from HTTP requests
     "gpio": GPIOController, # feed the Pianette from GPIO inputs

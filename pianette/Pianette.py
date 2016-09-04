@@ -116,6 +116,8 @@ class Pianette:
 
         self.enabled_sources = {}
 
+        self.selected_game = None
+
         # Instantiate the console controller that is responsible for sendint out the psx constroller state to the console
         self.console_controller = ConsoleController(self.psx_controller_state, configobj=self.configobj)
 
@@ -160,12 +162,22 @@ class Pianette:
             Debug.println("WARNING", "Ignoring commands from source '%s'" % (source))
 
     def enable_source(self, source):
-        Debug.println("INFO", "Enabling Pianette source '%s'" % (source))
+        Debug.println("INFO", "Enabling Source '%s'" % (source))
         self.enabled_sources[source] = True
 
     def disable_source(self, source):
-        Debug.println("INFO", "Disabling Pianette source '%s'" % (source))
+        Debug.println("INFO", "Disabling Source '%s'" % (source))
         self.enabled_sources[source] = False
+
+    def select_game(self, game=None):
+        if game is None:
+            return self.unselect_game()
+        Debug.println("INFO", "Selecting Game '%s'" % (game))
+        self.select_game = game
+
+    def unselect_game(self):
+        Debug.println("INFO", "Unselecting Game")
+        self.select_game = None
 
     @staticmethod
     def get_buffered_states_for_controls_string(controls_string, duration_cycles = None):
