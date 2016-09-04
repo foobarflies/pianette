@@ -225,7 +225,7 @@ class Pianette:
 
     def push_piano_notes(self, notes_string):
         for note in notes_string.replace("+", " ").split():
-            self.piano_state.raise_note(note)
+            self.piano_state.switch_note_on(note)
 
     # Timer Methods
 
@@ -246,11 +246,11 @@ class Pianette:
 
     def cycle_buffered_states(self):
         # Input Piano Notes to Piano Buffered States
-        for piano_note in self.piano_state.get_notes_keys():
-            if self.piano_state.is_note_raised(piano_note):
+        for piano_note in self.piano_state.get_supported_notes():
+            if self.piano_state.is_note_on(piano_note):
                 Debug.println("INFO", "Processing Piano Note %s" % (piano_note))
                 self.piano_buffered_states[piano_note].append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
-                self.piano_state.clear_note(piano_note)
+                self.piano_state.switch_note_off(piano_note)
 
         # Process Buffered States: Determine piano note or chord
         # Notes that have reached their last cycle "lead" the chord determination
