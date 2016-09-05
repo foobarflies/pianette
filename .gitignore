@@ -116,6 +116,11 @@ Icon
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
+ Other stuff we don't want to keep track of in git
+_Press
+_Rework_NY
+
+
 # Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
