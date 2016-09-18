@@ -130,6 +130,14 @@ class PianetteCmd(cmd.Cmd):
         Debug.println("INFO", "running command: piano.play" + " " + args)
         self.pianette.push_piano_notes(args)
 
+    def do_piano__hold(self, args):
+        Debug.println("INFO", "running command: piano.hold" + " " + args)
+        self.pianette.hold_piano_pedals(args)
+
+    def do_piano__release(self, args):
+        Debug.println("INFO", "running command: piano.release" + " " + args)
+        self.pianette.release_piano_pedals(args)
+
     def do_time__sleep(self, args):
         Debug.println("INFO", "running command: time.sleep" + " " + args)
         args_list = args.split()

@@ -126,7 +126,10 @@ class Pianette:
         self.console_controller = ConsoleController(self.psx_controller_state, configobj=self.configobj)
 
         # Upcoming state cycles for the Piano Notes (input)
-        self.piano_buffered_states = { note: [] for note in self.piano.get_supported_notes() }
+        self.piano_buffered_note_states = { note: [] for note in self.piano.get_supported_notes() }
+
+        # Upcoming state cycles for the Piano Pedals (input)
+        self.piano_buffered_pedal_states = { pedal: [] for pedal in self.piano.get_supported_pedals() }
 
         # Upcoming state cycles for the Console Controls (output)
         self.psx_controller_buffered_states = {}
@@ -227,6 +230,14 @@ class Pianette:
         for note in notes_string.replace("+", " ").split():
             self.piano.switch_note_on(note)
 
+    def hold_piano_pedals(self, pedals_string):
+        for pedal in pedals_string.replace("+", " ").split():
+            self.piano.switch_pedal_on(pedal)
+
+    def release_piano_pedals(self, pedals_string):
+        for pedal in pedals_string.replace("+", " ").split():
+            self.piano.switch_pedal_off(pedal)
+
     # Timer Methods
 
     def _run_timer(self):
@@ -248,9 +259,20 @@ class Pianette:
         # Input Piano Notes to Piano Buffered States
         for piano_note in self.piano.get_supported_notes():
             if self.piano.is_note_on(piano_note):
-                Debug.println("INFO", "Processing Piano Note %s" % (piano_note))
-                self.piano_buffered_states[piano_note].append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
+                Debug.println("INFO", "Buffering Piano Note %s" % (piano_note))
+                self.piano_buffered_note_states[piano_note].append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
                 self.piano.switch_note_off(piano_note)
+
+        # Input Piano Pedals to Piano Buffered States
+        for piano_pedal in self.piano.get_supported_pedals():
+            if self.piano.is_pedal_on(piano_pedal):
+                if not self.piano_buffered_pedal_states[piano_pedal]:
+                    Debug.println("INFO", "Buffering Piano Pedal %s" % (piano_pedal))
+                self.piano_buffered_pedal_states[piano_pedal].append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
+            else:
+                if self.piano_buffered_pedal_states[piano_pedal]:
+                    Debug.println("INFO", "Unbuffering Piano Pedal %s" % (piano_pedal))
+                self.piano_buffered_pedal_states[piano_pedal] = []
 
         # Process Buffered States: Determine piano note or chord
         # Notes that have reached their last cycle "lead" the chord determination
@@ -259,16 +281,16 @@ class Pianette:
         # If complementary notes are actually used, they are discarded from buffer.
         lead_notes = []
         complementary_notes = []
-        for piano_note in self.piano_buffered_states.keys():
+        for piano_note in self.piano_buffered_note_states.keys():
             processed_buffered_states = []
-            for buffered_state in self.piano_buffered_states[piano_note]:
+            for buffered_state in self.piano_buffered_note_states[piano_note]:
                 if buffered_state["cycles_remaining"] == 0:
                     lead_notes.append(piano_note)
                 else:
                     complementary_notes.append(piano_note)
                     buffered_state["cycles_remaining"] -= 1
                     processed_buffered_states.append(buffered_state)
-            self.piano_buffered_states[piano_note] = processed_buffered_states
+            self.piano_buffered_note_states[piano_note] = processed_buffered_states
 
         if lead_notes:
             Debug.println("INFO", "Processing Piano Notes: lead=%s, complementary=%s" % (lead_notes, complementary_notes))
@@ -286,11 +308,11 @@ class Pianette:
                     self.psx_controller_buffered_states[control] = winning_states_mapping["psx_controller"].get(control, [])
 
                 # Clear winning chord notes from the piano buffer
-                for piano_note in self.piano_buffered_states.keys():
+                for piano_note in self.piano_buffered_note_states.keys():
                     if piano_note in self._note_bitids:
                         if self._note_bitids[piano_note] & winning_chord_bitid:
-                            if self.piano_buffered_states[piano_note]:
-                                self.piano_buffered_states[piano_note] = self.piano_buffered_states[piano_note][1:]
+                            if self.piano_buffered_note_states[piano_note]:
+                                self.piano_buffered_note_states[piano_note] = self.piano_buffered_note_states[piano_note][1:]
 
         # Output PSX Controller Buffered states to PSX Controller
         for psx_control, buffered_state in self.psx_controller_buffered_states.items():
