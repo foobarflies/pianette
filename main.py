@@ -24,8 +24,8 @@ Debug.println("INFO", " |            PIANETTE            | ")
 Debug.println("INFO", " ################################## ")
 Debug.println("INFO", " ")
 
-# FIX ME - introduce sys.argv[1] to choose player AND game?
-configobj = pianette.config.get_configobj('piano', 'pianette', 'street-fighter-alpha-3', 'player1')
+# FIX ME - use options to to choose inputs (piano, gpio), outputs (console), console, player, game…
+configobj = pianette.config.get_configobj('pianette', 'piano', 'gpio', 'playstation2', 'street-fighter-alpha-3', 'player1')
 
 parser = PianetteArgumentParser(configobj=configobj)
 args = parser.parse_args()
