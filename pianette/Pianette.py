@@ -118,7 +118,7 @@ class Pianette:
         self.piano = Piano(configobj=self.configobj)
         self.psx_controller_state = ControllerState(configobj=self.configobj)
 
-        self.enabled_sources = {}
+        self.sources = {}
 
         self.selected_game = None
 
@@ -155,7 +155,7 @@ class Pianette:
             self.stop_timer()
 
     def inputcmds(self, commands, source=None):
-        if source is not None and source in self.enabled_sources.keys() and self.enabled_sources[source] is True:
+        if source is not None and self.is_source_enabled(source):
             Debug.println("INFO", "Running commands from source '%s'" % (source))
             for command in commands.split("\n"):
                 if command.strip():
@@ -164,13 +164,37 @@ class Pianette:
         else:
             Debug.println("WARNING", "Ignoring commands from source '%s'" % (source))
 
-    def enable_source(self, source):
+    def is_source_enabled(self, source):
+        if (source in self.sources.keys()
+            and 'enabled' in self.sources[source]
+            and self.sources[source]['enabled'] is True):
+            return True
+        return False
+
+    def get_source_instance(self, source):
+        return self.sources[source]['instance']
+
+    def enable_source(self, source, instance):
         Debug.println("INFO", "Enabling Source '%s'" % (source))
-        self.enabled_sources[source] = True
+        self.sources[source] = {
+            'enabled': True,
+            'instance': instance,
+        }
 
     def disable_source(self, source):
         Debug.println("INFO", "Disabling Source '%s'" % (source))
-        self.enabled_sources[source] = False
+        self.sources[source] = {
+            'enabled': False,
+        }
+
+    def poll_enabled_sources(self):
+        for source in self.sources.keys():
+            if self.is_source_enabled(source):
+                instance = self.get_source_instance(source)
+                try:
+                    instance.poll()
+                except AttributeError:
+                    pass
 
     def select_game(self, game=None):
         if game is None:
@@ -256,6 +280,8 @@ class Pianette:
         self._timer_is_running = False
 
     def cycle_buffered_states(self):
+        self.poll_enabled_sources()
+
         # Input Piano Notes to Piano Buffered States
         for piano_note in self.piano.get_supported_notes():
             if self.piano.is_note_on(piano_note):

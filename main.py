@@ -39,7 +39,6 @@ class_names_by_sources = {
     'api': 'PianetteApi', # feed the Pianette from HTTP requests
     'gpio': 'GPIOController', # feed the Pianette from GPIO inputs
 }
-sources = {}
 
 if args.enabled_sources is not None:
     for source in args.enabled_sources:
@@ -49,8 +48,8 @@ if args.enabled_sources is not None:
             raise RuntimeError("Unsupported source '%s'" % (source))
         source_module = importlib.import_module('pianette.' + source_class_name)
         source_class = getattr(source_module, source_class_name)
-        sources[source] = source_class(configobj=configobj, pianette=pianette)
-        pianette.enable_source(source)
+        source_instance = source_class(configobj=configobj, pianette=pianette)
+        pianette.enable_source(source, source_instance)
 
 # Run the main loop of interactive Pianette
 Debug.println("NOTICE", "Entering main loop")
