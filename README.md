@@ -1,28 +1,18 @@
 # Pianette = Piano + Manette
 
-A command-line emulator of a Playstation 2 Game Pad Controller that asynchronously listens to GPIO `EDGE_RISING` inputs from sensors and sends Serial commands to an `ATMEGA328P` acting as a fake SPI Slave for the Console running Street Fighter Alpha 3.
+A full-fledged retro-engineering of a Playstation 2 Game Pad Controller that asynchronously listens to commands from various sources (GPIO, API, etc ...) and sends Serial commands to an `ATMEGA328P` acting as a fake SPI Slave for the Console running any configured game.
 
-_Written in Python 3.3.6_
+_Written in Python_
 
 You can find more info on [this article](http://www.foobarflies.io/pianette/) we wrote and on the corresponding [hacknernews discussion](https://news.ycombinator.com/item?id=9071205).
 
-## Using Python 3.3.6
-
-For Flask to run correclty, we need Python3.3.6. It is recommended to use **pyenv** to use it, which can be installed via :
-
-    curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
-
-then :
-
-    pyenv install 3.3.6
-
-## Run
+## Running Pianette
 
 `sudo` is required to have access to GPIO pins on the **Raspberry Pi B+**.
 
 In command line, run :
 
-    sudo ./main.py
+    sudo -i PYTHONIOENCODING="utf-8" ./main.py --enable-source gpio --enable-source api --select-game 'street-fighter-alpha-3' --select-player 1
 
 > The initialisation process is quite verbose to display all warnings and errors encountered.
 
@@ -35,7 +25,7 @@ All games reside in the `config/games` directory. The following structure must b
 ```
 config/
 |-- games/
-|   |-- this-fantastic-game/
+|   |-- name-of-the-game/
 |   |   |-- __init__.py
 |   |   |-- game.py
 |   |   |-- general.ini
@@ -49,7 +39,7 @@ config/
 
 Any function defined in this file will be accessible in the `game` namespace :
 
-```
+```python
 # file : game.py
 # coding: utf-8
 from pianette.utils import Debug
@@ -61,7 +51,7 @@ def my_function(*args, **kwargs):
   cmd.onecmd("console.play ✕")
 ```
 
-This function can be called with `game.my-function optional-parameter`  or `fame.my_function optional-parameter` (we prefer and encourage the first version using hyphens).
+This function can be called with `game.my-function optional-parameter`  or `game.my_function optional-parameter` (_we prefer and encourage the first version using hyphens_).
 
 The config files (`.ini`) must define a couple of compulsory keys :
 
@@ -79,7 +69,7 @@ In `general.ini` :
 # Can be empty, but the key must be defined
 ```
 
-In `player1.ini` and `player1.ini`2:
+In `player1.ini` and `player1.ini`:
 
 ```ini
 [Game]
@@ -103,9 +93,138 @@ With this structure, you are able to select your game with `--select-game name-o
 
     pianette: pianette.select-game name-of-the-game
 
+## Pianette cycles
+
+A cycle is a **single loop during which Pianette collects events from all its enabled sources to create a complete representation of a sequence of buttons that it then sends to the SPI port of the console**.
+
+This sequence emulates a real console controller.
+
+The timing of the sequence is fixed and has been configured to match the behavior of the console.
+
+To replicate the "combo" functionality (i.e. playing a sequence of buttons in a deterministic order giving a result that is more interesting than the separate playing of each buttons in a row), the loop has a grace period (_configured as a number of Pianette cycles_) during which **Pianette** listens to other incoming events to decide if the current representation should wait on future events before being sent to the console.
+
+## Available namespaces and command
+
+**Pianette** allows for different namespaces of commands to be used : `console`, `game`, `piano`, `pianette` and `time`.
+
+### console
+
+> NB : Some character replacements are available in this namespace for ease of use. Even if actual UTF-8 values are prefered when possible, you can use the replacement without affecting the functionality. 
+> 
+> ↑, ↓, ←, →, □, △, ✕ and ◯ can be replaced with UP, DOWN, LEFT, RIGHT, SQUARE, TRIANGLE, CROSS and CIRCLE respectively
+
+### `console.hit`
+
+Plays a controller button sequence for a single **Pianette** cycle.
+
+**Example** :
+
+    pianette: console.hit ✕ + □
+
+**Note** : The `+` operator is used to create a synchronous sequence of buttons
+
+### `console.play`
+
+Plays a controller button sequence for a full **Pianette** cycle.
+
+**Example** :
+
+    pianette: console.play → + □
+
+### `console.reset`
+
+Sends the **RESET** combo to the console , that is `START + RESET`. In most cases, this will reset the game status in the console and come back to the main starting menu.
+
+This method doesn't accept any arguments.
+
+**Example** :
+
+    pianette: console.reset
+
+### pianette
+
+### `pianette.enable-source`
+
+Enables a configured source. Once enabled, **Pianette** can accept events from the source. Currently supported sources are `api` and `gpio`.
+
+**Example** :
+
+    pianette: pianette.enable-source gpio
+
+### `pianette.disable-source`
+
+Disables a previsouly enabled and configured source. Once enabled, **Pianette** cannot accept events from this source.
+
+> An example use case is to disable the `gpio` source when running a script along side, so the user cannot disturb the script
+
+### `pianette.select-game`
+
+Selects an available game. If the module is not defined or the game not present, it will gracefully fails. If the module is present but that some configuration items are missing, an exception will be raised.
+
+**Example** :
+
+    pianette: pianette.select-game street-fighter-alpha-3
+
+> You must give the exact module / folder name as an argument of this function
+
+### `pianette.dump-state`
+
+Dumps the full state of the configuration. This is mostly a debug function; it accepts no arguments.
+
+**Example** :
+
+    pianette: pianette.dump-state
+
+### piano
+
+> NB : Some character replacements are available in this namespace for ease of use. Even if actual UTF-8 values are prefered when possible, you can use the replacement without affecting the functionality. 
+> 
+> Specifically, ♯ and ♭ can be replaced with # and b.
+> Chords aliases are also defined in the **[[Alias]]** configuration block in `piano.ini`.
+
+### `piano.play`
+
+Plays a chord, a pedal or a single note.
+
+**Example** :
+
+    pianette: piano.play C3 + E♭3 + G3
+
+**Note** : As for the `console` namespace, the `+` operator is used to create a synchronous sequence of keys
+
+### `piano.hold`
+
+Holds a note, a pedal or a chord as long as `piano.release`  is not called on the same sequence. The notes will be then added to every cycle afterwards.
+
+**Example** :
+
+    pianette: piano.hold sostenato
+
+
+### `piano.release`
+
+Release a previously held note, pedal or chord.
+
+**Example** :
+
+    pianette: piano.release sostenato
+
+
+> The hold and release methods are primarily used to take advantage of the pedals.
+
+### game
+
+This namespace is populated with the custom functions defined in `game.py` for each game module. Commands defined in the game's configuration files are also added to this namespace.
+
+> If no game is selected, this namespace doesn't have any command available.
+
+### time
+
+This namespace only provides the `time.sleep {duration_in_seconds}` function that allows to pace the inputs as needed.
+
 ## Installation
 
-### ATMEGA
+### ATMEGA (Arduino)
 
 The `ArduinoSPISlave.ino` sketch must be loaded onto the Arduino, connected via serial. The port is of no consequence as the program will poll the open `/dev/ttyACM*`ports and choose the first one available.
 
@@ -162,17 +281,41 @@ Let's reboot and the serial port will now be free for our exclusive use. Note th
 
 >  Thanks to **Ted B Hale** for that : _http://raspberrypihobbyist.blogspot.fr/2012/08/raspberry-pi-serial-port.html_
 
-### Reset GPIO state on reboot
+### Installing needed pip packages
 
-To reset all gpio states on boot to limit electric pressure on the bus, add the following cron to the `root` crontab (`sudo crontab -e`) :
+The necessary Python packages have been freezed, so you can install them easily with :
 
-    @reboot sudo /home/pi/pianette/reset_GPIO_on_reboot.py
+    pip install -r requirement.txt
 
-### Team
+And additionnally on the Pi :
+    
+    pip install -r requirement-rpi.txt
 
-  - Coox — [http://coox.org](http://coox.org)
-  - Tchap — [http://tchap.me](http://tchap.me)
+### Installing Pianette as a service
 
-### License
+For ease of use, we provide a simple init script to start Pianette as a service on compatible systems :
 
-MIT. See License file.
+    sudo service pianette start|stop|restart|status
+
+See the `pianette_initd_script.sh` script, to put in `/etc/init.d/` or wherever seems adequate.
+
+### Limitations
+
+#### Python version
+
+For [Flask](http://flask.pocoo.org/) to run correctly, we need **Python3.3.6**. It is recommended to use **pyenv** to use it, which can be installed via :
+
+    curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
+
+and then :
+
+    pyenv install 3.3.6
+
+## Team
+
+  - **Coox** — [http://coox.org](http://coox.org)
+  - **Tchap** — [http://tchap.me](http://tchap.me)
+
+## License
+
+**MIT**. See the [License file](https://github.com/tchapi/pianette/blob/master/LICENSE).

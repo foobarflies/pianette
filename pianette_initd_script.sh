@@ -1,3 +1,4 @@
+#!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          pianette
 # Required-Start:    $local_fs $network
@@ -7,7 +8,7 @@
 # Short-Description: pianette
 # Description:       pianette firmware
 ### END INIT INFO
-#!/bin/sh
+
 case "$1" in
     start)
         sudo -i PYTHONIOENCODING="utf-8" /home/pi/pianette/main.py --enable-source gpio --enable-source api --select-game 'street-fighter-alpha-3' --select-player 1
