@@ -103,7 +103,7 @@ The timing of the sequence is fixed and has been configured to match the behavio
 
 To replicate the "combo" functionality (i.e. playing a sequence of buttons in a deterministic order giving a result that is more interesting than the separate playing of each buttons in a row), the loop has a grace period (_configured as a number of Pianette cycles_) during which **Pianette** listens to other incoming events to decide if the current representation should wait on future events before being sent to the console.
 
-## Available namespaces and command
+## Available namespaces and commands
 
 **Pianette** allows for different namespaces of commands to be used : `console`, `game`, `piano`, `pianette` and `time`.
 
@@ -221,6 +221,43 @@ This namespace is populated with the custom functions defined in `game.py` for e
 ### time
 
 This namespace only provides the `time.sleep {duration_in_seconds}` function that allows to pace the inputs as needed.
+
+## The Pianette API
+
+Pianette exposes an API
+
+> The API is considered a source, so in order for it to work, you must enable it at launch or with the command `pianette.enable-source api`.
+
+By default, the API base url is `http://127.0.0.1:5000/`. You can change the port in the configuration (`pianette.ini`).
+
+### Endpoints
+
+#### POST `/`
+
+The endpoint is relatively simple and allows you to send any namespaced command as a POST parameter named `data`:
+
+      curl -X POST -F 'data=console.play START + RESET' /
+
+#### POST `/namespace/command`
+
+This endpoint is a kind of alias for the first one. It allows you to limit the errors and send strongly-namespaced commands more easily.
+
+      curl -X POST -F 'data=crash-nitro-kart' /pianette/select-game
+
+### The web interface
+
+The web interface relies on the API to work, and thus is only available when the API is enabled. It offers a backend to control pianette, as well as virtual controllers that can be used to play remotely on the console.
+
+> In order for the web interface to work properly, the `[[Hosts]]` key of `pianette.ini` must be defined and the IP (or hostname) of the different pianette instances on the network must be set. If you only have one instance, you can define `player-1 = 127.0.0.1` only.
+
+#### The virtual controller
+
+TODO
+
+#### The admin backend
+
+TODO
+
 
 ## Installation
 
