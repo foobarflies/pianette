@@ -4,6 +4,7 @@ from copy import deepcopy
 from pianette.ConsoleController import ConsoleController
 from pianette.ControllerState import ControllerState
 from pianette.PianetteCmd import PianetteCmd
+from pianette.errors import PianetteConfigError
 from pianette.Piano import Piano
 from pianette.utils import Debug
 
