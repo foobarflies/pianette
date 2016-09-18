@@ -2,9 +2,12 @@
 from pianette.utils import Debug
 from pianette.PianetteCmd import PianetteCmdUtil
 from flask import Flask, render_template, request, send_from_directory
+from flask_cors import CORS, cross_origin
+
 from threading import Thread
 
 app = Flask(__name__, template_folder='../templates', static_folder='../templates')
+CORS(app)
 
 import logging
 log = logging.getLogger('werkzeug')
@@ -24,12 +27,19 @@ def send_favicon():
 
 @app.route('/', methods = ['GET'])
 def home():
-    return render_template('index.html', url_root=request.url_root)
+    return render_template('index.html', url_root=request.url_root, hosts=app.hosts, port=app.port)
+
+@app.route('/<player>', methods = ['GET'])
+def controller(player):
+    # check if this player exists in the config
+    if not player in app.hosts:
+        return ("Player '%s' is not configured" % player, 404)
+    return render_template('controller.html', hosts=app.hosts, port=app.port, player=player)
 
 @app.route('/admin', methods = ['GET'])
 def admin():
     # Let's list available configs
-    return render_template('admin.html', url_root=request.url_root, configs=app.configs, current_config=app.pianette.get_selected_game())
+    return render_template('admin.html', configs=app.configs, port=app.port, hosts=app.hosts, current_config=app.pianette.get_selected_game())
 
 # The main endpoint for issuing a command for Pianette
 @app.route('/<namespace>/<command>', methods = ['POST'])
@@ -53,11 +63,16 @@ class PianetteApi:
         super().__init__(**kwargs)
         app.pianette = pianette
         app.configs = configobj.get("Game").keys()
+        app.hosts = configobj.get("Pianette").get('Hosts')
+        app.port = configobj.get("Pianette").get('API').get('port')
 
-        Debug.println("INFO", "Starting API thread")
+        for player, ip in app.hosts.iteritems():
+            Debug.println("NOTICE", "Adding Player '%s' at %s" % (player, ip))
+
+        Debug.println("INFO", "Starting API thread on port %s" % app.port)
         t = Thread(target=self.startApi)
         t.daemon = True
         t.start()
 
     def startApi(self):
-        app.run(debug=False, threaded=True, host="0.0.0.0")
+        app.run(debug=False, threaded=True, host="0.0.0.0", port=app.port)

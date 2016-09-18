@@ -30,31 +30,40 @@
         
         <div class="config">
             {% for config in configs %}
-                <button data-namespace="pianette" data-command="switch-config" data-needs-reload="true" data-args="{{ config }}" class="state{% if config == current_config %} safe{% endif %}">{{ config }}</button> 
+                <button data-namespace="pianette" data-command="switch-config" data-needs-reload="true" data-args="{{ config }}" data-player="*" class="button button-multiline state{% if config == current_config %} safe{% endif %}">{{ config }}</button> 
             {% else %}
                 No available configs
             {% endfor %}
         </div>
 
         <h1>Pianette admin console</h1>
+        {% for host in hosts %}
+        <div class="split-admin-panel" style="width: {{ 100/(hosts|length) - 1 }}%;">
+            <h2>{{ host|upper }}</h2>
 
-        <div class="actions">
-            <button data-namespace="console" data-command="play" data-args="START" class="state neutral">START</button>
-            <button data-namespace="console" data-command="reset" data-args="" class="state neutral">Console Reset</button>
+            <div class="actions">
+                <button data-namespace="console" data-command="play" data-args="START" data-player="{{ host }}" class="button button-multiline state neutral">Console START</button>
+                <button data-namespace="console" data-command="reset" data-args="" data-player="{{ host }}" class="button button-multiline state neutral">Console RESET</button>
+            </div>
+        </div>
+        {% endfor %}
 
-            <button data-namespace="game" data-command="pause" data-args="" class="state">Pause</button>
-            <button data-namespace="game" data-command="resume" data-args="" class="state">Resume</button>
-            
-            <button data-namespace="console" data-command="reset" data-args="">N/A</button>
-            <button data-namespace="console" data-command="reset" data-args="">N/A</button>
+        <h1>Broadcast actions *</h1>
+
+         <div class="actions">
+            <button data-namespace="game" data-command="start" data-args="" data-player="*" class="button button-multiline state neutral">Game START</button>
+            <button data-namespace="game" data-command="flip" data-args="" data-player="*" class="button button-multiline state neutral">Game FLIP</button>
+            <button data-namespace="game" data-command="pause" data-args="" data-player="*" class="button button-multiline state">Game PAUSE</button>
+            <button data-namespace="game" data-command="resume" data-args="" data-player="*" class="button button-multiline state">Game RESUME</button>
         </div>
 
         <div class="cli">
-            <input type="text" name="cli" id="cli" value="console.play"><button data-external-sequence="cli">send</button>
+            <input type="text" name="cli" id="cli" value="console.play"><button data-external-sequence="cli" data-player="*" class="button button-multiline">send</button>
         </div>
 
         <script type="text/javascript">
-            var url_root = "{{ url_root }}";
+            var hosts = {{ hosts|tojson }};
+            var port = {{ port }};
         </script>
         <script src="{{ url_for('static', filename='js/main.js') }}" type="text/javascript"></script>
     </body>

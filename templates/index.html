@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Pianette — Virtual controller</title>
+        <title>Pianette — Administration</title>
         <meta name="viewport" content="width=1500, user-scalable=0">
         <link rel="apple-touch-icon" sizes="57x57" href="{{ url_for('static', filename='favicons/apple-icon-57x57.png') }}">
         <link rel="apple-touch-icon" sizes="60x60" href="{{ url_for('static', filename='favicons/apple-icon-60x60.png') }}">
@@ -19,62 +19,27 @@
         <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='favicons/favicon-96x96.png') }}">
         <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicons/favicon-16x16.png') }}">
         <meta name="msapplication-TileImage" content="{{ url_for('static', filename='favicons/ms-icon-144x144.png') }}">
-        
+
         <link rel="manifest" href="{{ url_for('static', filename='manifest/manifest.json') }}">
 
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-        <style>          
-            button.square {
-                background: url("{{ url_for('static', filename='images/square.png') }}");
-            }
-            button.circle {
-                background: url("{{ url_for('static', filename='images/circle.png') }}");
-            }
-            button.cross {
-                background: url("{{ url_for('static', filename='images/cross.png') }}");
-            }
-            button.triangle {
-                background: url("{{ url_for('static', filename='images/triangle.png') }}");
-            }
-        </style>
+
     </head>
-    <body class="controller">
+    <body class="controller admin">
+        <h1>Choose your player</h1>
 
-        <div class="suppl suppl_L">
-            <button data-namespace="console" data-command="play" data-args="L1" class="L1">L1</button>
-            <button data-namespace="console" data-command="play" data-args="L2" class="L2">L2</button>
+        <div class="actions">
+            {% for player in hosts %}
+                <a href="{{ url_for('controller', player = player) }}" class="button button-large state safe">{{ player|upper }}</a>
+            {% endfor %}
         </div>
+        
+        <h1>Admin interface</h1>
 
-        <div class="suppl suppl_R">
-            <button data-namespace="console" data-command="play" data-args="R1" class="R1">R1</button>
-            <button data-namespace="console" data-command="play" data-args="R2" class="R2">R2</button>
+        <div class="actions">
+            <a href="{{ url_for('admin') }}" class="button state neutral">Admin</a>
+            
         </div>
-
-        <div class="direction">
-            <button data-namespace="console" data-command="play" data-args="↑" class="up">↑</button>
-            <button data-namespace="console" data-command="play" data-args="→" class="right">→</button>
-            <button data-namespace="console" data-command="play" data-args="↓" class="down">↓</button>
-            <button data-namespace="console" data-command="play" data-args="←" class="left">←</button>
-        </div>
-
-        <div class="menu">
-            <div class="item">
-                SELECT
-                <button data-namespace="console" data-command="play" data-args="SELECT" class="select"></button>
-            </div>
-             <div class="item">
-                START
-                <button data-namespace="console" data-command="play" data-args="START" class="start"></button>
-            </div>
-        </div>
-
-        <div class="action">
-            <button data-namespace="console" data-command="play" data-args="□" class="square"></button>
-            <button data-namespace="console" data-command="play" data-args="✕" class="cross"></button>
-            <button data-namespace="console" data-command="play" data-args="◯" class="circle"></button>
-            <button data-namespace="console" data-command="play" data-args="△" class="triangle"></button>
-        </div>
-
 
         <script type="text/javascript">
             var url_root = "{{ url_root }}";

@@ -2,11 +2,12 @@
 html, body {
     background: #424347;
     height: 100%;
+    font-family: Tahoma, Geneva, sans-serif !important;
 }
 body.controller {
     position: relative;
 }
-button {
+.button {
     position: relative;
     height: 5em;
     width: 5em;
@@ -19,17 +20,36 @@ button {
     cursor: pointer;
     box-sizing: content-box;
     word-wrap: break-word;
-    line-height: 1em;
+    line-height: 4.75em;
     word-break: normal;
     vertical-align: top;
+    display: inline-block;
+    text-decoration: none;
+    font-family: Tahoma, Geneva, sans-serif;
+    align-items: flex-start;
+    text-align: center;
 }
-body.admin button {
+.button-multiline {
+    line-height: 1em;
+}
+.button-multiline.state {
+    padding-bottom: 0.5em;
+}
+.button-large {
+    width: 7em;
+}
+
+body.admin .button {
     margin-right: 0.4em;
     margin-bottom: 0.4em;
 }
-body.admin button.state:after {
+body.admin .button.state {
+    padding: 0 10px;
+    padding-bottom: 10px;
+}
+body.admin .button.state:after  {
     content: "";
-    width: 5em;
+    width: 100%;
     height: 0.6em;
     display: block;
     position: absolute;
@@ -39,12 +59,13 @@ body.admin button.state:after {
     box-sizing: border-box;
     background: #8B8B8D;
     border-top: 3px solid #D4D4D4;
+    margin-left: -10px;
 }
-body.admin button.state.safe:after {
+body.admin .button.state.safe:after {
     background: #6D8E1B;
     border-top: 3px solid #AACD59;
 }
-body.admin button.state.neutral:after {
+body.admin .button.state.neutral:after {
     background: #38A2BC;
     border-top: 3px solid #79CBE1;
 }
@@ -53,6 +74,7 @@ body.admin div.actions,
 body.admin div.cli {
     margin: 2em;
     position: relative;
+    text-align: center;
 }
 
 body.admin .cli input {
@@ -62,15 +84,28 @@ body.admin .cli input {
     padding-right: 5em;
     box-sizing:border-box;
 }
-body.admin .cli button {
+body.admin .cli .button {
     position: absolute;
     right: 3px;
     top: 1px;
     height: 2em;
     margin: 0;
 }
+body.admin .split-admin-panel {
+    display: inline-block;
+}
 
 h1 {
+    width: 100%;
+    color: white;
+    text-transform: uppercase;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: lighter;
+    letter-spacing: 0.1em;
+    text-align: center;
+    padding-top: 1em;
+}
+h2 {
     width: 100%;
     color: white;
     text-transform: uppercase;
@@ -84,8 +119,8 @@ div.menu {
     position: absolute;
     left: 50%;
     top: 54%;
-    width: 20em;
-    margin-left: -10em;
+    width: 22em;
+    margin-left: -11em;
     text-align: center;
 }
 div.menu div.item {
@@ -96,7 +131,7 @@ div.menu div.item {
     display: inline-block;
     margin: 0 0.25em;
 }
-div.menu button {
+div.menu .button {
     height: 1em;
     width: 3em;
     display: block;
@@ -112,7 +147,7 @@ div.direction {
     margin-left: 2em;
     margin-top: 18em;
 }
-div.direction button {
+div.direction .button {
     position: absolute;
 }
 button.up {
@@ -143,9 +178,10 @@ button.right {
 div.suppl {
     margin-top: 2em;
 }
-div.suppl button{
+div.suppl .button{
     width: 15em;
     height: 2.5em;
+    line-height: 2.5em;
     display: block;
     margin-bottom: 0.5em;
     color: #AAA;
@@ -172,7 +208,7 @@ div.action {
     margin-right: 2em;
     margin-top: 18em;
 }
-div.action button {
+div.action .button {
     background-repeat: no-repeat;
     background-color: #373737;
     background-position: center center;
