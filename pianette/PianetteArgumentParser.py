@@ -20,14 +20,14 @@ class PianetteArgumentParser(argparse.ArgumentParser):
 
       supported_sources = self.configobj.get("Pianette").get("supported-sources")
       self.add_argument("-s", "--enable-source", type=str, choices=supported_sources,
-                        action="append", dest="enabled_sources", help="enable source")
+                        action="append", dest="enabled_sources", help="Enable a source to be used as an input for Pianette")
 
       self.add_argument("-p", "--select-player", type=int, choices=[1,2],
-                        action=Single, dest="selected_player", help="select player")
+                        action=Single, dest="selected_player", help="Select the actual player, i.e. the port of the console in which this instance is plugged")
 
       available_games = self.configobj.get("Game").keys()
       self.add_argument("-g", "--select-game", type=str, choices=available_games,
-                        action=Single, dest="selected_game", help="select game")
+                        action=Single, dest="selected_game", help="Select the game — games are defined as Python modules and must reside in config/games")
 
   def parse_args(self, *args, **kwargs):
       args = super(PianetteArgumentParser, self).parse_args(*args, **kwargs)

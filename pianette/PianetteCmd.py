@@ -52,8 +52,9 @@ class PianetteCmd(cmd.Cmd):
         if command == "game":
             # Let's sanitize the command name and keep arg a list of arguments
             arg_list = arg.split()
-            arg_list[0] = arg_list[0][1:].replace("-", "_")
-            arg = arg_list
+            if arg_list and len(arg_list[0]) > 1 and arg_list[0][0] == ".":
+                arg_list[0] = arg_list[0][1:].replace("-", "_")
+                arg = arg_list
 
         if namespace == "piano":
             # Assume that some arguments in piano commands include aliases for harder-to type characters
@@ -106,10 +107,14 @@ class PianetteCmd(cmd.Cmd):
     def do_game(self, args):
         module = self.pianette.get_selected_game_module()
         game = self.pianette.get_selected_game()
-        method = args[0]
+        config = self.pianette.get_selected_game_config()
+        player_config = self.pianette.get_selected_player_config()
         try:
+            method = args[0]
             # Call the relevant game method from the loaded module
-            getattr(module, method)(args[1:], cmd=self, config=self.pianette.configobj.get('Game').get(game))
+            getattr(module, method)(args[1:], cmd=self, config=config, player_config=player_config)
+        except IndexError:
+            Debug.println("WARNING", "You must specify a command")
         except AttributeError:
             # Method does not exist, gracefully fail
             Debug.println("WARNING", "Command %s (%s) does not exist for the game '%s'" % (method, args[1:], game))

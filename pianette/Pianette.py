@@ -221,11 +221,17 @@ class Pianette:
             raise PianetteConfigError("Undefined Game '%s' section in configobj" % game)
         if not self.selected_player:
             raise PianetteConfigError("You must select a player first")
+
+        self.selected_game_config = self.configobj.get("Game").get(game)
+        self.selected_player_config = self.selected_game_config.get("Player %s" % self.selected_player)
+
         # Retrieve the mappings
-        game_mappings = self.configobj.get("Game").get(game).get("Mappings")
-        player_mappings = self.configobj.get("Game").get(game).get("Player %s" % self.selected_player).get("Mappings")
+        game_mappings = self.selected_game_config.get("Mappings")
+        player_mappings = self.selected_player_config.get("Mappings")
+
         # Merge the two dictionaries of keys
         game_mappings.update(player_mappings)
+
         # Re-init the mappings
         self.init_mappings(game_mappings)
 
@@ -233,12 +239,20 @@ class Pianette:
         Debug.println("INFO", "Unselecting Game")
         self.selected_game_module = None
         self.selected_game = None
+        self.selected_game_config = None
+        self.selected_player_config = None
 
     def get_selected_game_module(self):
         return self.selected_game_module
 
     def get_selected_game(self):
         return self.selected_game
+
+    def get_selected_game_config(self):
+        return self.selected_game_config
+
+    def get_selected_player_config(self):
+        return self.selected_player_config
 
     def select_player(self, player=None):
         Debug.println("INFO", "Selecting Player %s" % (player))
