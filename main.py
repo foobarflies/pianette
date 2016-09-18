@@ -9,13 +9,12 @@
 
 # Written in Python 3.
 
+import importlib
 import pianette.config
 import sys
 
-from pianette.GPIOController import GPIOController
 from pianette.Pianette import Pianette
 from pianette.PianetteArgumentParser import PianetteArgumentParser
-from pianette.PianetteApi import PianetteApi
 from pianette.utils import Debug
 
 Debug.println("INFO", " ")
@@ -36,13 +35,21 @@ pianette = Pianette(configobj=configobj)
 
 pianette.select_game(args.selected_game)
 
-sources = {
-    "api": PianetteApi, # feed the Pianette from HTTP requests
-    "gpio": GPIOController, # feed the Pianette from GPIO inputs
+class_names_by_sources = {
+    'api': 'PianetteApi', # feed the Pianette from HTTP requests
+    'gpio': 'GPIOController', # feed the Pianette from GPIO inputs
 }
+sources = {}
+
 if args.enabled_sources is not None:
     for source in args.enabled_sources:
-        sources[source](configobj=configobj, pianette=pianette)
+        try:
+            source_class_name = class_names_by_sources[source]
+        except KeyError:
+            raise RuntimeError("Unsupported source '%s'" % (source))
+        source_module = importlib.import_module('pianette.' + source_class_name)
+        source_class = getattr(source_module, source_class_name)
+        sources[source] = source_class(configobj=configobj, pianette=pianette)
         pianette.enable_source(source)
 
 # Run the main loop of interactive Pianette
