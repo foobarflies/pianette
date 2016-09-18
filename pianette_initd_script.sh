@@ -10,7 +10,7 @@
 #!/bin/sh
 case "$1" in
     start)
-        sudo -i PYTHONIOENCODING="utf-8" /home/pi/pianette/main.py --enable-source gpio --enable-source api --select-game 'Street Fighter Alpha 3'
+        sudo -i PYTHONIOENCODING="utf-8" /home/pi/pianette/main.py --enable-source gpio --enable-source api --select-game 'street-fighter-alpha-3' --select-player 1
     ;;
 
     stop)

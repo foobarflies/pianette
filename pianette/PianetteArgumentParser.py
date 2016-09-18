@@ -22,8 +22,11 @@ class PianetteArgumentParser(argparse.ArgumentParser):
       self.add_argument("-s", "--enable-source", type=str, choices=supported_sources,
                         action="append", dest="enabled_sources", help="enable source")
 
-      supported_games = self.configobj.get("Game").keys()
-      self.add_argument("-g", "--select-game", type=str, choices=supported_games,
+      self.add_argument("-p", "--select-player", type=int, choices=[1,2],
+                        action=Single, dest="selected_player", help="select player")
+
+      available_games = self.configobj.get("Game").keys()
+      self.add_argument("-g", "--select-game", type=str, choices=available_games,
                         action=Single, dest="selected_game", help="select game")
 
   def parse_args(self, *args, **kwargs):

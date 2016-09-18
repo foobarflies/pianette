@@ -16,12 +16,6 @@ then :
 
     pyenv install 3.3.6
 
-## Update
-
-To update the repository on a target **Raspberry Pi B+**, `cd` to the repository folder and just run:
-
-    ./update.sh
-
 ## Run
 
 `sudo` is required to have access to GPIO pins on the **Raspberry Pi B+**.
@@ -31,6 +25,83 @@ In command line, run :
     sudo ./main.py
 
 > The initialisation process is quite verbose to display all warnings and errors encountered.
+
+## Adding a new game
+
+Games are actually Python _modules_ that are imported on-demand, with a specific configuration and directory structure.
+
+All games reside in the `config/games` directory. The following structure must be respected :
+
+```
+config/
+|-- games/
+|   |-- this-fantastic-game/
+|   |   |-- __init__.py
+|   |   |-- game.py
+|   |   |-- general.ini
+|   |   |-- player1.py
+|   |   |-- player2.py
+```
+
+`__init__.py` must be present, but it's actually just an empty file. 
+
+`game.py` defines custom functions that may be needed to play the game. It can be empty too. It must define functions in its global scope.
+
+Any function defined in this file will be accessible in the `game` namespace :
+
+```
+# file : game.py
+# coding: utf-8
+from pianette.utils import Debug
+def my_function(*args, **kwargs):
+  cmd = kwargs['cmd']
+  game_configobj = kwargs['config']
+
+  Debug.println("NOTICE", "Just playing a ✕")
+  cmd.onecmd("console.play ✕")
+```
+
+This function can be called with `game.my-function optional-parameter`  or `fame.my_function optional-parameter` (we prefer and encourage the first version using hyphens).
+
+The config files (`.ini`) must define a couple of compulsory keys :
+
+In `general.ini` :
+
+```ini
+[Game]
+
+[[name-of-the-game]]
+
+# Can be empty, but the key must be defined
+
+[[[Mappings]]]
+
+# Can be empty, but the key must be defined
+```
+
+In `player1.ini` and `player1.ini`2:
+
+```ini
+[Game]
+
+[[name-of-the-game]]
+
+[[[Commands]]]
+
+# Can be empty, but the key must be defined
+
+[[[Player 1]]]
+
+[[[[Mappings]]]]
+
+# Can be empty, but the key must be defined
+```
+
+> `name-of-the-game` must be the exact name of the module folder.
+
+With this structure, you are able to select your game with `--select-game name-of-the-game`. And with the console :
+
+    pianette: pianette.select-game name-of-the-game
 
 ## Installation
 

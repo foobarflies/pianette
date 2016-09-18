@@ -11,7 +11,6 @@ from pianette.utils import Debug
 class PianetteCmdUtil:
 
     # Namespaces
-
     supported_cmd_namespaces = [ "console", "game", "piano", "pianette", "time" ]
 
     @staticmethod
@@ -37,10 +36,11 @@ class PianetteCmd(cmd.Cmd):
         # Rewrite namespaced commands for cmd to properly map them
         # The default parser would interpret "namespace.do-stuff arg1 arg2" as the "namespace" command with arguments ".do-stuff", "arg1", "arg2"
         # What we want instead, is the "namespace__do_stuff" command with arguments "arg1", "arg2"
+        # .. Except for the game namespace, where commands are dynamic, so we want to keep the ".do-stuff" as the first argument
         namespace = None
 
         if command and PianetteCmdUtil.is_supported_cmd_namespace(command):
-            if arg:
+            if arg and command != "game":
                 arg_list = arg.split()
                 if arg_list and len(arg_list[0]) > 1 and arg_list[0][0] == ".":
                     namespace = command
@@ -49,6 +49,11 @@ class PianetteCmd(cmd.Cmd):
                     arg_list.pop(0)
                     arg = " ".join(arg_list)
 
+        if command == "game":
+            # Let's sanitize the command name and keep arg a list of arguments
+            arg_list = arg.split()
+            arg_list[0] = arg_list[0][1:].replace("-", "_")
+            arg = arg_list
 
         if namespace == "piano":
             # Assume that some arguments in piano commands include aliases for harder-to type characters
@@ -75,8 +80,8 @@ class PianetteCmd(cmd.Cmd):
             arg = arg.replace("↘", "→ + ↓")
             arg = arg.replace("↙", "↓ + ←")
 
-        # Insert safe spaces around "+" signs
-        if (arg is not None):
+        # Insert safe spaces around "+" signs when arg is a string
+        if (arg is not None and not isinstance(arg, list)):
             arg = re.sub('\s*\+\s*',' + ', arg)
 
         return command, arg, line
@@ -97,26 +102,17 @@ class PianetteCmd(cmd.Cmd):
     def do_console__reset(self, args):
         Debug.println("INFO", "running command: console.reset" + " " + args)
         self.onecmd("console.play START + SELECT")
-       
-    def do_game__select(self, args):
-        self.onecmd("console.play ✕")
 
-    def do_game__select_character(self, args):
-        self.onecmd("console.play ✕")
-
-    def do_game__select_fighting_handicap(self, args):
-        self.onecmd("console.play ✕")
-
-    def do_game__select_fighting_style(self, args):
-        self.onecmd("console.play ✕")
-
-    def do_game__select_location(self, args):
-        self.onecmd("console.play " + (random.randint(1, 50) * "→ ") + "✕")
-
-    def do_game__select_mode(self, args):
-        self.onecmd("console.play →")
-        self.onecmd("time.sleep 0.5")
-        self.onecmd("console.play ✕")
+    def do_game(self, args):
+        module = self.pianette.get_selected_game_module()
+        game = self.pianette.get_selected_game()
+        method = args[0]
+        try:
+            # Call the relevant game method from the loaded module
+            getattr(module, method)(args[1:], cmd=self, config=self.pianette.configobj.get('Game').get(game))
+        except AttributeError:
+            # Method does not exist, gracefully fail
+            Debug.println("WARNING", "Command %s (%s) does not exist for the game '%s'" % (method, args[1:], game))
 
     def do_pianette__disable_source(self, args):
         Debug.println("INFO", "running command: pianette.disable_source" + " " + args)

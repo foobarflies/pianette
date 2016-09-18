@@ -23,8 +23,7 @@ Debug.println("INFO", " |            PIANETTE            | ")
 Debug.println("INFO", " ################################## ")
 Debug.println("INFO", " ")
 
-# FIX ME - use options to to choose inputs (piano, gpio), outputs (console), console, player, game…
-configobj = pianette.config.get_configobj('pianette', 'piano', 'gpio', 'playstation2', 'street-fighter-alpha-3', 'player1')
+configobj = pianette.config.get_all_configobj()
 
 parser = PianetteArgumentParser(configobj=configobj)
 args = parser.parse_args()
@@ -33,6 +32,11 @@ args = parser.parse_args()
 # Its responsibility is to translate Piano actions to Console actions
 pianette = Pianette(configobj=configobj)
 
+# We MUST select a player before we select a game.
+# This allow for per-player mappings
+# The game can be changed afterwards, but not the player, as we don't expect
+# to be able to unplug the controller from the console.
+pianette.select_player(args.selected_player)
 pianette.select_game(args.selected_game)
 
 class_names_by_sources = {

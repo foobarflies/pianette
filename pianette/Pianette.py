@@ -8,6 +8,8 @@ from pianette.errors import PianetteConfigError
 from pianette.Piano import Piano
 from pianette.utils import Debug
 
+import sys
+import importlib
 import threading
 import time
 
@@ -62,9 +64,12 @@ class Pianette:
         if not pianette_configobj:
             raise PianetteConfigError("Undefined Mappings section in Pianette configobj")
 
+        self.init_mappings(pianette_mappings_configobj)
+
+    def init_mappings(self, mappings):
         self.pianette_buffered_states_mappings = []
 
-        for notes_string, controls_string in pianette_mappings_configobj.items():
+        for notes_string, controls_string in mappings.items():
             if not isinstance(controls_string, str):
                 # Not a string, probably a configuration sub-section
                 pass
@@ -201,14 +206,43 @@ class Pianette:
         if game is None:
             return self.unselect_game()
         Debug.println("INFO", "Selecting Game '%s'" % (game))
+        module_name = "config.games.%s.game" % game
+
+        # Let's import the game module, if not previously done
+        if module_name not in sys.modules:
+            self.selected_game_module = importlib.import_module(module_name)
+        else:
+            self.selected_game_module = sys.modules[module_name]
         self.selected_game = game
+        
+        # We have to re-init with the game's mappings
+        # instead of the general mappings :
+        if not self.configobj.get("Game").get(game):
+            raise PianetteConfigError("Undefined Game '%s' section in configobj" % game)
+        if not self.selected_player:
+            raise PianetteConfigError("You must select a player first")
+        # Retrieve the mappings
+        game_mappings = self.configobj.get("Game").get(game).get("Mappings")
+        player_mappings = self.configobj.get("Game").get(game).get("Player %s" % self.selected_player).get("Mappings")
+        # Merge the two dictionaries of keys
+        game_mappings.update(player_mappings)
+        # Re-init the mappings
+        self.init_mappings(game_mappings)
 
     def unselect_game(self):
         Debug.println("INFO", "Unselecting Game")
+        self.selected_game_module = None
         self.selected_game = None
+
+    def get_selected_game_module(self):
+        return self.selected_game_module
 
     def get_selected_game(self):
         return self.selected_game
+
+    def select_player(self, player=None):
+        Debug.println("INFO", "Selecting Player %s" % (player))
+        self.selected_player = player
 
     @staticmethod
     def get_buffered_states_for_controls_string(controls_string, duration_cycles = None):
