@@ -5,6 +5,7 @@ import pianette.errors
 import random
 import re
 import time
+import json
 
 from pianette.utils import Debug
 
@@ -126,6 +127,22 @@ class PianetteCmd(cmd.Cmd):
     def do_pianette__enable_source(self, args):
         Debug.println("INFO", "running command: pianette.enable_source" + " " + args)
         self.pianette.enable_source(args)
+
+    def do_pianette__dump_state(self, args):
+        Debug.println("INFO", "running command: pianette.dump_state")
+        
+        # Dump general info on the pianette instance
+        Debug.println("NOTICE", "Enabled sources: %s" % self.pianette.get_selected_player())
+
+        # Dump general game configuration
+        Debug.println("NOTICE", "Currently selected game: '%s'" % self.pianette.get_selected_game())
+        Debug.println("NOTICE", "Current game config:")
+        print(json.dumps(self.pianette.get_selected_game_config(), sort_keys=True, indent=4))
+        
+        # Dump player specific configuration for this game
+        Debug.println("NOTICE", "Currently selected player: %s" % self.pianette.get_selected_player())
+        Debug.println("NOTICE", "Current player config:")
+        print(json.dumps(self.pianette.get_selected_player_config(), sort_keys=True, indent=4))
 
     def do_piano__play(self, args):
         Debug.println("INFO", "running command: piano.play" + " " + args)

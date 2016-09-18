@@ -248,6 +248,9 @@ class Pianette:
     def get_selected_game(self):
         return self.selected_game
 
+    def get_selected_player(self):
+        return self.selected_player
+
     def get_selected_game_config(self):
         return self.selected_game_config
 
