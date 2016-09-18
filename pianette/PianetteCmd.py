@@ -128,6 +128,10 @@ class PianetteCmd(cmd.Cmd):
         Debug.println("INFO", "running command: pianette.enable_source" + " " + args)
         self.pianette.enable_source(args)
 
+    def do_pianette__select_game(self, args):
+        Debug.println("INFO", "running command: pianette.select_game" + " " + args)
+        self.pianette.select_game(args)
+
     def do_pianette__dump_state(self, args):
         Debug.println("INFO", "running command: pianette.dump_state")
         

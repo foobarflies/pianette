@@ -30,7 +30,7 @@
         
         <div class="config">
             {% for config in configs %}
-                <button data-namespace="pianette" data-command="switch-config" data-needs-reload="true" data-args="{{ config }}" data-player="*" class="button button-multiline state{% if config == current_config %} safe{% endif %}">{{ config }}</button> 
+                <button data-namespace="pianette" data-command="select-game" data-needs-reload="true" data-args="{{ config }}" data-player="*" class="button button-multiline state{% if config == current_config %} safe{% endif %}">{{ config }}</button> 
             {% else %}
                 No available configs
             {% endfor %}
