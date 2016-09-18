@@ -210,7 +210,11 @@ class Pianette:
 
         # Let's import the game module, if not previously done
         if module_name not in sys.modules:
-            self.selected_game_module = importlib.import_module(module_name)
+            try:
+                self.selected_game_module = importlib.import_module(module_name)
+            except ImportError:
+                Debug.println("FAIL", "Game '%s' doesn't have a module in the games folder" % game)
+                return
         else:
             self.selected_game_module = sys.modules[module_name]
         self.selected_game = game
