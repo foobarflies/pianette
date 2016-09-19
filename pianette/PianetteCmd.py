@@ -91,6 +91,10 @@ class PianetteCmd(cmd.Cmd):
     def do_EOF(self, arg):
         return False
 
+    # Overrides
+    def emptyline(self):
+        return
+
     # Commands
 
     def do_console__hit(self, args):
