@@ -7,7 +7,7 @@ import requests
 
 from threading import Thread
 
-app = Flask(__name__, template_folder='../templates', static_folder='../templates')
+app = Flask(__name__, template_folder='../../templates', static_folder='../../templates')
 CORS(app)
 
 import logging
