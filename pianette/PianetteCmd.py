@@ -124,6 +124,15 @@ class PianetteCmd(cmd.Cmd):
         dotext = 'do_' + text.replace(".", "__").replace("-","_")
         return [a[3:].replace("__", ".").replace("_","-") for a in self.get_names() if a.startswith(dotext)]
 
+    def cmdloop(self):
+        try:
+            cmd.Cmd.cmdloop(self)
+        except KeyboardInterrupt as e:
+            print()
+            Debug.println("NOTICE", "Exiting, bye bye!")
+            self.pianette.stop_timer()
+            return True
+
     # Commands
 
     def do_console__hit(self, args):
