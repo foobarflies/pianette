@@ -3,6 +3,7 @@ from pianette.utils import Debug
 from pianette.PianetteCmd import PianetteCmdUtil
 from flask import Flask, render_template, request, send_from_directory
 from flask_cors import CORS, cross_origin
+import requests
 
 from threading import Thread
 
@@ -56,9 +57,15 @@ def raw_command():
     app.pianette.inputcmds(request.form.get('data'), source="api")
     return ('1', 200)
 
+@app.route('/shutdown', methods=['POST'])
+def shutdown():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+    return ''
 
-class PianetteApi:
-
+class api:
     def __init__(self, configobj=None, pianette=None, **kwargs):
         super().__init__(**kwargs)
         app.pianette = pianette
@@ -70,9 +77,12 @@ class PianetteApi:
             Debug.println("NOTICE", "Adding Player '%s' at %s" % (player, ip))
 
         Debug.println("INFO", "Starting API thread on port %s" % app.port)
-        t = Thread(target=self.startApi)
-        t.daemon = True
-        t.start()
+        self.t = Thread(target=self.startApi)
+        self.t.daemon = True
+        self.t.start()
 
     def startApi(self):
         app.run(debug=False, threaded=True, host="0.0.0.0", port=app.port)
+
+    def disable(self):
+        requests.post('http://127.0.0.1:' + app.port + '/shutdown')

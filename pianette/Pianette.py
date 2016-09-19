@@ -180,7 +180,19 @@ class Pianette:
     def get_source_instance(self, source):
         return self.sources[source]['instance']
 
-    def enable_source(self, source, instance):
+    def enable_source(self, source):
+        if source in self.sources and 'instance' in self.sources[source]:
+            Debug.println("WARNING", "Source '%s' is already enabled" % (source))
+            return
+
+        try:
+            source_module = importlib.import_module('pianette.sources.' + source)
+        except ImportError:
+            Debug.println("FAIL", "Unsupported source '%s'" % (source))
+            return
+        source_class = getattr(source_module, source)
+        instance = source_class(configobj=self.configobj, pianette=self)
+
         Debug.println("INFO", "Enabling Source '%s'" % (source))
         self.sources[source] = {
             'enabled': True,
@@ -189,6 +201,12 @@ class Pianette:
 
     def disable_source(self, source):
         Debug.println("INFO", "Disabling Source '%s'" % (source))
+        # Gives a chance for the source to disable itself
+        if source in self.sources and 'instance' in self.sources[source]:
+            try:
+                self.sources[source]['instance'].disable()
+            except AttributeError:
+                pass
         self.sources[source] = {
             'enabled': False,
         }

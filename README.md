@@ -314,7 +314,7 @@ And comment out the last line :
     # Spawn a getty on Raspberry Pi serial line
     # T0:23:respawn:/sbin/getty -L ttyAMA0 115200 vt100
 
-Let's reboot and the serial port will now be free for our exclusive use. Note that Python will still issue a `RuntimeWarning` to indicate that you are overriding the pin's default state. This is ok, and taken into account in `GPIOController.py` anyway. 
+Let's reboot and the serial port will now be free for our exclusive use. Note that Python will still issue a `RuntimeWarning` to indicate that you are overriding the pin's default state. This is ok, and taken into account in `sources/gpio.py` anyway. 
 
 >  Thanks to **Ted B Hale** for that : _http://raspberrypihobbyist.blogspot.fr/2012/08/raspberry-pi-serial-port.html_
 

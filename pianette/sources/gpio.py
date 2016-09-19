@@ -109,7 +109,7 @@ class GPIOConfigUtil:
 
         return GPIOConfigUtil.rpi_gpio_event_for_event.get(event, None)
 
-class GPIOController:
+class gpio:
     def __init_using_configobj(self, configobj=None):
         self.configobj = configobj
 
@@ -207,6 +207,9 @@ class GPIOController:
         self.pianette = pianette
 
     def __del__(self):
+        self.disable()
+
+    def disable(self):
         # Cleanup GPIOs on object destruction
         RPi.GPIO.cleanup()
 

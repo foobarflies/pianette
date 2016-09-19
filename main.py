@@ -39,21 +39,9 @@ pianette = Pianette(configobj=configobj)
 pianette.select_player(args.selected_player)
 pianette.select_game(args.selected_game)
 
-class_names_by_sources = {
-    'api': 'PianetteApi', # feed the Pianette from HTTP requests
-    'gpio': 'GPIOController', # feed the Pianette from GPIO inputs
-}
-
 if args.enabled_sources is not None:
     for source in args.enabled_sources:
-        try:
-            source_class_name = class_names_by_sources[source]
-        except KeyError:
-            raise RuntimeError("Unsupported source '%s'" % (source))
-        source_module = importlib.import_module('pianette.' + source_class_name)
-        source_class = getattr(source_module, source_class_name)
-        source_instance = source_class(configobj=configobj, pianette=pianette)
-        pianette.enable_source(source, source_instance)
+        pianette.enable_source(source)
 
 # Run the main loop of interactive Pianette
 Debug.println("NOTICE", "Entering main loop")
