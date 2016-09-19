@@ -252,7 +252,7 @@ The web interface relies on the API to work, and thus is only available when the
 
 #### The virtual controller
 
-TODO
+The virtual controller is a #TODO
 
 #### The admin backend
 

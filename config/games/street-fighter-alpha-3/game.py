@@ -59,6 +59,8 @@ def select_fighting_style(*args, **kwargs):
         cmd.onecmd("console.play ↓")
     elif style == "X-ISM":
         cmd.onecmd("console.play ↑")
+    elif style == "A-ISM":
+        pass
     else:
         Debug.println("WARNING", "%s is not an available fighting style" % style)
         return

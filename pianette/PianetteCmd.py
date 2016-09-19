@@ -138,7 +138,7 @@ class PianetteCmd(cmd.Cmd):
 
     def do_pianette__dump_state(self, args):
         Debug.println("INFO", "running command: pianette.dump_state")
-        
+
         # Dump general info on the pianette instance
         Debug.println("NOTICE", "Enabled sources: %s" % self.pianette.get_selected_player())
 
