@@ -21,6 +21,7 @@ class PianetteCmdUtil:
 
 class PianetteCmd(cmd.Cmd):
     prompt = 'pianette: '
+    doc_header = 'Available commands'
 
     def __init__(self, configobj=None, pianette=None, **kwargs):
         super().__init__(**kwargs)
@@ -88,28 +89,60 @@ class PianetteCmd(cmd.Cmd):
 
         return command, arg, line
 
-    def do_EOF(self, arg):
-        return False
-
     # Overrides
     def emptyline(self):
         return
 
+    def print_topics(self, header, cmds, cmdlen, maxcol):
+        if cmds:
+            self.stdout.write("%s\n"%str(header))
+            if self.ruler:
+                self.stdout.write("%s\n"%str(self.ruler * len(header)))
+            self.columnize([name.replace("__", ".").replace("_","-") for name in cmds], maxcol-1)
+            self.stdout.write("\n")
+
+    def do_help(self, arg):
+        'List available commands with "help" or detailed help with "help cmd".'
+        if arg:
+            try:
+                func = getattr(self, 'help_' + arg)
+            except AttributeError:
+                try:
+                    doc=getattr(self, 'do_' + arg.replace(".", "__").replace("-","_")).__doc__
+                    if doc:
+                        self.stdout.write("%s\n"%str(doc))
+                        return
+                except AttributeError:
+                    pass
+                self.stdout.write("%s\n"%str(self.nohelp % (arg,)))
+                return
+            func()
+        else:
+            super(PianetteCmd, self).do_help(arg)
+
+    def completenames(self, text, *ignored):
+        dotext = 'do_' + text.replace(".", "__").replace("-","_")
+        return [a[3:].replace("__", ".").replace("_","-") for a in self.get_names() if a.startswith(dotext)]
+
     # Commands
 
     def do_console__hit(self, args):
+        'Play a sequence of buttons in a definite order for a single cycle'
         Debug.println("INFO", "running command: console.hit" + " " + args)
         self.pianette.push_console_controls(args, duration_cycles=1)
 
     def do_console__play(self, args):
+        'Play a sequence of buttons in a definite order for a full Pianette cycle'
         Debug.println("INFO", "running command: console.play" + " " + args)
         self.pianette.push_console_controls(args)
 
     def do_console__reset(self, args):
+        'Do a full console reset (START + RESET)'
         Debug.println("INFO", "running command: console.reset" + " " + args)
         self.onecmd("console.play START + SELECT")
 
     def do_game(self, args):
+        'The `game` namespace contains all game-defined commands.'
         try:
             method = args[0]
         except IndexError:
@@ -135,18 +168,22 @@ class PianetteCmd(cmd.Cmd):
             Debug.println("WARNING", "Command %s (%s) does not exist for the game '%s'" % (method, args[1:], game))
 
     def do_pianette__disable_source(self, args):
+        'Disable a previously enabled source'
         Debug.println("INFO", "running command: pianette.disable_source" + " " + args)
         self.pianette.disable_source(args)
 
     def do_pianette__enable_source(self, args):
+        'Enable an input source'
         Debug.println("INFO", "running command: pianette.enable_source" + " " + args)
         self.pianette.enable_source(args)
 
     def do_pianette__select_game(self, args):
+        'Select a game and load its configuration'
         Debug.println("INFO", "running command: pianette.select_game" + " " + args)
         self.pianette.select_game(args)
 
     def do_pianette__dump_state(self, args):
+        'Dump a full state of the Pianette configuration'
         Debug.println("INFO", "running command: pianette.dump_state")
 
         # Dump general info on the pianette instance
@@ -163,18 +200,22 @@ class PianetteCmd(cmd.Cmd):
         print(json.dumps(self.pianette.get_selected_player_config(), sort_keys=True, indent=4))
 
     def do_piano__play(self, args):
+        'Play a sequence of notes, chords and pedals'
         Debug.println("INFO", "running command: piano.play" + " " + args)
         self.pianette.push_piano_notes(args)
 
     def do_piano__hold(self, args):
+        'Hold a sequence of notes, chords and pedals'
         Debug.println("INFO", "running command: piano.hold" + " " + args)
         self.pianette.hold_piano_pedals(args)
 
     def do_piano__release(self, args):
+        'Release a sequence of notes, chords and pedals'
         Debug.println("INFO", "running command: piano.release" + " " + args)
         self.pianette.release_piano_pedals(args)
 
     def do_time__sleep(self, args):
+        'Block the exeuction for a certain amount of seconds'
         Debug.println("INFO", "running command: time.sleep" + " " + args)
         args_list = args.split()
         if args_list:
