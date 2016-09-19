@@ -110,16 +110,26 @@ class PianetteCmd(cmd.Cmd):
         self.onecmd("console.play START + SELECT")
 
     def do_game(self, args):
-        module = self.pianette.get_selected_game_module()
-        game = self.pianette.get_selected_game()
-        config = self.pianette.get_selected_game_config()
-        player_config = self.pianette.get_selected_player_config()
         try:
             method = args[0]
-            # Call the relevant game method from the loaded module
-            getattr(module, method)(args[1:], cmd=self, config=config, player_config=player_config)
         except IndexError:
             Debug.println("WARNING", "You must specify a command")
+            return
+        config = self.pianette.get_selected_game_config()
+        player_config = self.pianette.get_selected_player_config()
+        
+        # Is there a command defined in the configuration for this method ?
+        commands = player_config.get("Commands").get(method)
+        if commands is not None:
+            self.pianette.inputcmds(commands=commands, source="api")
+            return
+
+        # In this case, let's ask the game module
+        module = self.pianette.get_selected_game_module()
+        game = self.pianette.get_selected_game()
+        try:
+            # Call the relevant game method from the loaded module
+            getattr(module, method)(args[1:], cmd=self, config=config, player_config=player_config)
         except AttributeError:
             # Method does not exist, gracefully fail
             Debug.println("WARNING", "Command %s (%s) does not exist for the game '%s'" % (method, args[1:], game))
