@@ -80,7 +80,7 @@ class Pianette:
                 controls_string = controls_string.replace("↘", "→ + ↓")
                 controls_string = controls_string.replace("↙", "↓ + ←")
 
-                self.pianette_buffered_states_mappings .append({
+                self.pianette_buffered_states_mappings.append({
                     "piano": notes_string.replace("+", " ").split(),
                     "psx_controller": Pianette.get_buffered_states_for_controls_string(controls_string)
                 })
