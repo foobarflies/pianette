@@ -12,6 +12,7 @@ import sys
 import importlib
 import threading
 import time
+import random
 
 # Pianette Configuration
 
@@ -82,7 +83,7 @@ class Pianette:
 
                 self.pianette_buffered_states_mappings.append({
                     "piano": notes_string.replace("+", " ").split(),
-                    "psx_controller": Pianette.get_buffered_states_for_controls_string(controls_string)
+                    "psx_controller": self.get_buffered_states_for_controls_string(controls_string)
                 })
 
         # Assign a unique, combinable bitid to configured notes
@@ -283,18 +284,72 @@ class Pianette:
         Debug.println("INFO", "Selecting Player %s" % (player))
         self.selected_player = player
 
-    @staticmethod
-    def get_buffered_states_for_controls_string(controls_string, duration_cycles = None):
-        if duration_cycles is None:
-            duration_cycles = PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
+    def extract(self, controls_string, combo_controls, force_duration_cycles):
+        if (force_duration_cycles is None):
+            force_duration_cycles = PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
 
+        # Grammar:
+        # `x|y` selects randomly one of the control. If used in a combo, it will not select 
+        #     the same control twice, thus `x|y + x|z` will never return `x` for both disjunctions
+        #     Nevertheless, `x|y + y` might return `x + y` or simply `y`, since extract cannot go
+        #     backwards in a combo. `x + x|y` will always return `x + y`.
+        # `x{100}` outputs `x` for 100 cycles
+        #
+        # Priority:
+        # The combo operator is **always** evaluated last.
+        # The `{}` operator has precedence and thus will be evaluated _after_ `|`.
+
+        if '|' in controls_string:
+            choices = list(set(controls_string.split('|')) - set(combo_controls))
+            control = random.choice(choices)
+        else:
+            control = controls_string
+
+        if '{' in control:
+            [c, d_temp] = control.split('{')
+            if (d_temp):
+                [d, temp] = d_temp.split('}')
+                return (c, int(d))
+
+        return (control, force_duration_cycles)
+
+    def get_buffered_states_for_controls_string(self, controls_string, force_duration_cycles = None):
+        # Initial state and time
         controls_buffered_states = {}
         time_index = 0
 
+        # Combo loop variables
+        in_combo = False
+        combo_controls = []
+        previous_control = None
+
+        # By default, no duration cycle is set to detect malformed controls_string starting with `+`
+        duration_cycles = None
+
         for control in controls_string.split():
-            if control == "+":
+            # '+' should not be at the start of the string, fail gracefully
+            if control == "+" and duration_cycles is None:
+                Debug.println("FAIL", "Control string is not grammatically correct (starting with a +)")
+                return controls_buffered_states
+            elif control == "+":
                 time_index -= duration_cycles
+                in_combo = True
+            elif control == "," and in_combo == False: # During a combo, a comma (,) is not grammatically correct.
+                # We add a "0" cycle count for every possible state, to be sure 
+                # that it will add an offset even for future added controls
+                # that are not yet present in self.controls_buffered_states
+                for c in self.psx_controller_buffered_states:
+                    if c in controls_buffered_states:
+                        controls_buffered_states[c].append(0)
+                    else:
+                        controls_buffered_states[c] = [0]
             else:
+                if in_combo:
+                    combo_controls.append(previous_control) # Next control will be in a combo
+                else:
+                    combo_controls = []
+                control, duration_cycles = self.extract(control, combo_controls, force_duration_cycles)
+                
                 if control in controls_buffered_states:
                     buffer_duration = 0
                     for duration in controls_buffered_states[control]:
@@ -303,10 +358,14 @@ class Pianette:
                     if time_index - buffer_duration > 0:
                         controls_buffered_states[control].append(-time_index + buffer_duration)
                         controls_buffered_states[control].append(duration_cycles)
-                    else:
-                        controls_buffered_states[control][-1] += duration_cycles
+                    elif not in_combo or time_index == buffer_duration:
+                        controls_buffered_states[control].append(duration_cycles)
 
-                else:
+                # If we've got an unknown control, it will be ignored and the string will
+                # be parsed as if the control was not there, still modifying the time index
+                # if needed and not breaking combos, leading to generally correct and expected
+                # results. No exception should be raised.
+                elif control in self.psx_controller_buffered_states:
                     controls_buffered_states[control] = []
 
                     if time_index > 0:
@@ -315,11 +374,14 @@ class Pianette:
                     controls_buffered_states[control].append(duration_cycles)
 
                 time_index += duration_cycles
+                in_combo = False # Always assume that we're the last control in the combo
+
+                previous_control = control
 
         return controls_buffered_states
 
     def push_console_controls(self, controls_string, duration_cycles = None):
-        controls_buffered_states = Pianette.get_buffered_states_for_controls_string(controls_string, duration_cycles)
+        controls_buffered_states = self.get_buffered_states_for_controls_string(controls_string, duration_cycles)
 
         for control, buffered_states in controls_buffered_states.items():
             self.psx_controller_buffered_states[control] = buffered_states
@@ -415,23 +477,38 @@ class Pianette:
                                 self.piano_buffered_note_states[piano_note] = self.piano_buffered_note_states[piano_note][1:]
 
         # Output PSX Controller Buffered states to PSX Controller
+        triggered_controls = ""
+        cleared_controls = ""
         for psx_control, buffered_state in self.psx_controller_buffered_states.items():
             if buffered_state:
                 cyclesCount = buffered_state.pop(0)
                 if cyclesCount > 0:
-                    Debug.println("INFO", "Keeping PSX Control %s Triggered for %d cycles" % (psx_control, cyclesCount))
+                    triggered_controls += "(%s, %d) " % (psx_control, cyclesCount)
                     self.psx_controller_state.raiseFlag(psx_control)
                     cyclesCount-= 1
-                    buffered_state.insert(0, cyclesCount)
+                    # If we're decrementing a cycle count, we don't
+                    # want to insert 0 to avoid 'missing a step'.
+                    if cyclesCount > 0:
+                        buffered_state.insert(0, cyclesCount)
                 elif cyclesCount < 0:
-                    Debug.println("INFO", "Keeping PSX Control %s Cleared for %d cycles" % (psx_control, -cyclesCount))
+                    cleared_controls += "(%s, %d) " % (psx_control, -cyclesCount)
                     self.psx_controller_state.clearFlag(psx_control)
                     cyclesCount+= 1
-                    buffered_state.insert(0, cyclesCount)
+                    # If we're incrementing a cycle count, we don't
+                    # want to insert 0 to avoid 'missing a step'.
+                    if cyclesCount < 0:
+                        buffered_state.insert(0, cyclesCount)
                 else:
-                    Debug.println("INFO", "Clearing PSX Control %s" % psx_control)
+                    cleared_controls += "(%s, %d) " % (psx_control, 1)
                     self.psx_controller_state.clearFlag(psx_control)
             else:
                 self.psx_controller_state.clearFlag(psx_control)
+
+        if len(triggered_controls) > 0:
+            Debug.println("INFO", "Keeping PSX Controls %sTriggered" % triggered_controls)
+        if len(cleared_controls) > 0 and len(triggered_controls) == 0:
+            Debug.println("INFO", "General pause for 1 cycle")
+        elif len(cleared_controls) > 0:
+            Debug.println("DEBUG", "Keeping PSX Control %sCleared" % cleared_controls)
 
         self.console_controller.sendStateBytes()
