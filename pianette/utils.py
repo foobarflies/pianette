@@ -3,6 +3,7 @@ import tty, sys, termios
 class bColors():
 
   colors = {
+    "DEBUG" : '\033[30m', # GRAY
     "NOTICE" : '\033[95m', # Pink
     "INFO" : '\033[94m', # Blue
     "SUCCESS" : '\033[92m', # Green
