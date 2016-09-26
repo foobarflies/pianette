@@ -224,7 +224,8 @@ class PianetteCmd(cmd.Cmd):
         args_list = args.split()
         sleep_time = float(args_list[0]) * self.pianette.get_cycle_period()
         if args_list:
-            Debug.println("INFO", 'sleeping for {:.3f} seconds'.format(sleep_time))
+            Debug.println("NOTICE", 'sleeping for {:.3f} seconds'.format(sleep_time))
             time.sleep(sleep_time)
+            Debug.println("NOTICE", 'done sleeping for {:.3f} seconds'.format(sleep_time))
         else:
             raise pianette.errors.PianetteCmdError("No argument provided for time.sleep")
