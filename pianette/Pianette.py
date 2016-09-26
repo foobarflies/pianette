@@ -340,9 +340,9 @@ class Pianette:
                 # that are not yet present in self.controls_buffered_states
                 for c in self.psx_controller_buffered_states:
                     if c in controls_buffered_states:
-                        controls_buffered_states[c].append(0)
+                        controls_buffered_states[c].extend([0] * PIANETTE_CONSOLE_PLAY_DURATION_CYCLES)
                     else:
-                        controls_buffered_states[c] = [0]
+                        controls_buffered_states[c] = [0] * PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
             else:
                 if in_combo:
                     combo_controls.append(previous_control) # Next control will be in a combo
