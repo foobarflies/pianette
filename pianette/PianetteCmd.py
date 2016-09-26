@@ -145,11 +145,6 @@ class PianetteCmd(cmd.Cmd):
         Debug.println("INFO", "running command: console.play" + " " + args)
         self.pianette.push_console_controls(args)
 
-    def do_console__reset(self, args):
-        'Do a full console reset (START + RESET)'
-        Debug.println("INFO", "running command: console.reset" + " " + args)
-        self.onecmd("console.play START + SELECT")
-
     def do_game(self, args):
         'The `game` namespace contains all game-defined commands.'
         try:
