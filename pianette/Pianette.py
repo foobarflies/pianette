@@ -76,10 +76,7 @@ class Pianette:
                 pass
             else:
                 # Assume that some arguments in console commands include aliases for longer-to type arguments
-                controls_string = controls_string.replace("↖", "← + ↑")
-                controls_string = controls_string.replace("↗", "↑ + →")
-                controls_string = controls_string.replace("↘", "→ + ↓")
-                controls_string = controls_string.replace("↙", "↓ + ←")
+                controls_string = PianetteCmd.unpack(controls_string)
 
                 self.pianette_buffered_states_mappings.append({
                     "piano": notes_string.replace("+", " ").split(),

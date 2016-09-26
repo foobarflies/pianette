@@ -60,28 +60,11 @@ class PianetteCmd(cmd.Cmd):
 
         if namespace == "piano":
             # Assume that some arguments in piano commands include aliases for harder-to type characters
-            arg = arg.replace("b", "♭")
-            arg = arg.replace("#", "♯")
+            arg = PianetteCmd.unpack(arg)
 
         if namespace == "console":
-            arg = arg.upper()
-
             # Assume that some arguments in console commands include aliases for harder-to type characters
-            arg = arg.replace("UP", "↑")
-            arg = arg.replace("RIGHT", "→")
-            arg = arg.replace("DOWN", "↓")
-            arg = arg.replace("LEFT", "←")
-
-            arg = arg.replace("SQUARE", "□")
-            arg = arg.replace("TRIANGLE", "△")
-            arg = arg.replace("CROSS", "✕")
-            arg = arg.replace("CIRCLE", "◯")
-
-            # Assume that some arguments in console commands include aliases for longer-to type arguments
-            arg = arg.replace("↖", "← + ↑")
-            arg = arg.replace("↗", "↑ + →")
-            arg = arg.replace("↘", "→ + ↓")
-            arg = arg.replace("↙", "↓ + ←")
+            arg = PianetteCmd.unpack(arg)
 
         # Insert safe spaces around "+" signs when arg is a string
         if (arg is not None and not isinstance(arg, list)):
@@ -133,8 +116,40 @@ class PianetteCmd(cmd.Cmd):
             self.pianette.stop_timer()
             return True
 
-    # Commands
+    # Unpack aliases
+    @staticmethod
+    def unpack(arg, forwarding_direction = None):
+        arg = arg.upper()
 
+        arg = arg.replace("b", "♭")
+        arg = arg.replace("#", "♯")
+
+        arg = arg.replace("SQUARE", "□")
+        arg = arg.replace("TRIANGLE", "△")
+        arg = arg.replace("CROSS", "✕")
+        arg = arg.replace("CIRCLE", "◯")
+
+        arg = arg.replace("↖", "← + ↑")
+        arg = arg.replace("↗", "↑ + →")
+        arg = arg.replace("↘", "→ + ↓")
+        arg = arg.replace("↙", "↓ + ←")
+
+        arg = arg.replace("UP", "↑")
+        arg = arg.replace("RIGHT", "→")
+        arg = arg.replace("DOWN", "↓")
+        arg = arg.replace("LEFT", "←")
+
+        if forwarding_direction is not None:
+            backwarding_direction = "←" if forwarding_direction == "→" else "→"
+            # All combos are supposed to be noted
+            # as player 1 (e.g., forwarding right)
+            arg = arg.replace("→", "fw")
+            arg = arg.replace("←", backwarding_direction)
+            arg = arg.replace("fw", forwarding_direction)
+
+        return arg
+
+    # Commands
     def do_console__hit(self, args):
         'Play a sequence of buttons in a definite order for a single cycle'
         Debug.println("INFO", "running command: console.hit" + " " + args)
