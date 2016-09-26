@@ -250,10 +250,10 @@ class Pianette:
         player_mappings = self.selected_player_config.get("Mappings")
 
         # Merge the two dictionaries of keys
-        game_mappings.update(player_mappings)
+        full_mappings = dict(game_mappings, **player_mappings);
 
         # Re-init the mappings
-        self.init_mappings(game_mappings)
+        self.init_mappings(full_mappings)
 
     def unselect_game(self):
         Debug.println("INFO", "Unselecting Game")
