@@ -400,6 +400,9 @@ class Pianette:
 
     # Timer Methods
 
+    def get_cycle_period(self):
+        return PIANETTE_CYCLE_PERIOD
+
     def _run_timer(self):
         self._timer_is_running = False
         self.start_timer()
