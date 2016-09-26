@@ -334,7 +334,7 @@ class Pianette:
             elif control == "+":
                 time_index -= duration_cycles
                 in_combo = True
-            elif control == "," and in_combo == False: # During a combo, a comma (,) is not grammatically correct.
+            elif control == ";" and in_combo == False: # During a combo, a semi-colon (;) is not grammatically correct.
                 # We add a "0" cycle count for every possible state, to be sure 
                 # that it will add an offset even for future added controls
                 # that are not yet present in self.controls_buffered_states
