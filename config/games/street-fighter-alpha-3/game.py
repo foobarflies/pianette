@@ -1,5 +1,6 @@
 # coding: utf-8
 from pianette.utils import Debug
+from pianette.PianetteCmd import PianetteCmd
 import random
 
 def select_character(*args, **kwargs):
@@ -23,6 +24,24 @@ def select_character(*args, **kwargs):
     Debug.println("NOTICE", "Choosing character %s" % character)
     # Process list of commands to obtain this character
     cmd.onecmd("console.play %s ✕" % player_config.get("Positions").get(character))
+
+    # We have to add the character's mappings
+    game_mappings = config.get("Mappings")
+    player_mappings = player_config.get("Mappings")
+    character_mappings = config.get("Mappings").get(character)
+
+    # Character mappings are 'flippable'
+    forwarding_direction = player_config.get('default-character-forwarding')
+    # forwarded_character_mappings = {}
+    Debug.println("NOTICE", "Applying default forwarding direction: %s" % forwarding_direction)
+    forwarded_character_mappings = { n: PianetteCmd.unpack(c, forwarding_direction) for n, c in character_mappings.items() }
+
+    # Merge the three dictionaries of keys
+    full_mappings = dict(game_mappings, **player_mappings)
+    full_mappings.update(forwarded_character_mappings)
+
+    # Re-init the mappings following the character change
+    cmd.pianette.init_mappings(full_mappings)
 
 def select_mode(*args, **kwargs):
     cmd = kwargs['cmd']
