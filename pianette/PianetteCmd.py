@@ -218,6 +218,10 @@ class PianetteCmd(cmd.Cmd):
         Debug.println("NOTICE", "Current player config:")
         print(json.dumps(self.pianette.get_selected_player_config(), sort_keys=True, indent=4))
 
+        # Dumps the buffered mappings
+        Debug.println("NOTICE", "Current buffered mappings:")
+        print(json.dumps(self.pianette.get_buffered_states_mappings(), sort_keys=True, indent=4))
+
     def do_piano__play(self, args):
         'Play a sequence of notes, chords and pedals'
         Debug.println("INFO", "running command: piano.play" + " " + args)

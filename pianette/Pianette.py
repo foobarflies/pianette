@@ -281,6 +281,9 @@ class Pianette:
         Debug.println("INFO", "Selecting Player %s" % (player))
         self.selected_player = player
 
+    def get_buffered_states_mappings(self):
+        return self.pianette_buffered_states_mappings
+
     def extract(self, controls_string, combo_controls, force_duration_cycles):
         if (force_duration_cycles is None):
             force_duration_cycles = PIANETTE_CONSOLE_PLAY_DURATION_CYCLES
