@@ -210,7 +210,7 @@ This namespace is populated with the custom functions defined in `game.py` for e
 
 ### time
 
-This namespace only provides the `time.sleep {duration_in_seconds}` function that allows to pace the inputs as needed.
+This namespace only provides the `time.sleep {duration_in_pianette_cycles}` function that allows to pace the inputs as needed.
 
 ## The Pianette API
 
