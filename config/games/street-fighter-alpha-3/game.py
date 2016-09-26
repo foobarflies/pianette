@@ -42,10 +42,10 @@ def select_fighting_handicap(*args, **kwargs):
     try:
         handicap = args[0][0]
     except IndexError:
-        Debug.println("WARNING", "You must define a handicap (between ▶ and ▶▶▶▶)")
+        Debug.println("WARNING", "You must define a handicap (between ▶ and ▶▶▶▶▶▶▶▶)")
         return
     
-    cmd.onecmd("console.play " + (len(handicap) * "→ ") + "✕")
+    cmd.onecmd("console.play ← , ← , ← , ← , ← , ← , ← , ← , " + ((max(1, min(8, len(handicap))) - 1) * "→ , ") + "✕")
 
 def select_fighting_style(*args, **kwargs):
     cmd = kwargs['cmd']
