@@ -85,4 +85,4 @@ def select_stage(*args, **kwargs):
 
     Debug.println("NOTICE", "Choosing stage '%s'" % stage)
 
-    cmd.onecmd("console.play %s ✕" % config.get("Stages").get(stage))
+    cmd.onecmd("console.play %s ; ✕" % config.get("Stages").get(stage))
