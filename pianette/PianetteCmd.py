@@ -219,10 +219,12 @@ class PianetteCmd(cmd.Cmd):
         self.pianette.release_piano_pedals(args)
 
     def do_time__sleep(self, args):
-        'Block the exeuction for a certain amount of seconds'
+        'Block the exeuction for a certain amount of Pianette cycles'
         Debug.println("INFO", "running command: time.sleep" + " " + args)
         args_list = args.split()
+        sleep_time = float(args_list[0]) * self.pianette.get_cycle_period()
         if args_list:
-            time.sleep(float(args_list[0]))
+            Debug.println("INFO", 'sleeping for {:.3f} seconds'.format(sleep_time))
+            time.sleep(sleep_time)
         else:
             raise pianette.errors.PianetteCmdError("No argument provided for time.sleep")
