@@ -131,16 +131,6 @@ Plays a controller button sequence for a full **Pianette** cycle.
 
     pianette: console.play → + □
 
-### `console.reset`
-
-Sends the **RESET** combo to the console , that is `START + RESET`. In most cases, this will reset the game status in the console and come back to the main starting menu.
-
-This method doesn't accept any arguments.
-
-**Example** :
-
-    pianette: console.reset
-
 ### pianette
 
 ### `pianette.enable-source`

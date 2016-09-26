@@ -43,7 +43,7 @@
 
             <div class="actions">
                 <button data-namespace="console" data-command="play" data-args="START" data-player="{{ host }}" class="button button-multiline state neutral">Console START</button>
-                <button data-namespace="console" data-command="reset" data-args="" data-player="{{ host }}" class="button button-multiline state neutral">Console RESET</button>
+                <button data-namespace="game" data-command="reset" data-args="" data-player="{{ host }}" class="button button-multiline state neutral">Game RESET</button>
             </div>
         </div>
         {% endfor %}
@@ -52,7 +52,6 @@
 
          <div class="actions">
             <button data-namespace="game" data-command="start" data-args="" data-player="*" class="button button-multiline state neutral">Game START</button>
-            <button data-namespace="game" data-command="flip" data-args="" data-player="*" class="button button-multiline state neutral">Game FLIP</button>
             <button data-namespace="game" data-command="pause" data-args="" data-player="*" class="button button-multiline state">Game PAUSE</button>
             <button data-namespace="game" data-command="resume" data-args="" data-player="*" class="button button-multiline state">Game RESUME</button>
         </div>
