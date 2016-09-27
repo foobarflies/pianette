@@ -23,7 +23,7 @@ def select_character(*args, **kwargs):
     # Choosing a deterministic character will only work for the first player to choose
     Debug.println("NOTICE", "_Probably_ choosing character %s" % character)
     # Process list of commands to obtain this character
-    cmd.onecmd("console.play START %s ✕" % config.get("Positions").get(character))
+    cmd.onecmd("console.play START %s ; ; ; ; ; ✕" % config.get("Positions").get(character))
 
 def select_mode(*args, **kwargs):
     cmd = kwargs['cmd']
@@ -61,4 +61,4 @@ def select_track(*args, **kwargs):
 
     Debug.println("NOTICE", "Choosing track '%s'" % track)
 
-    cmd.onecmd("console.play %s ; ; ; ; ; ✕ " % config.get("Tracks").get(track))
+    cmd.onecmd("console.play %s ; ; ; ; ; ; ; ; ; ; ✕ " % config.get("Tracks").get(track))
