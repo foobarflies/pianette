@@ -34,13 +34,13 @@ def select_mode(*args, **kwargs):
         return
 
     if mode == "Mutiplayer Race":
-        cmd.onecmd("console.play ↓ ; ↓ ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕ ")
+        cmd.onecmd("console.play ↓ ; ↓ ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕ ; ; ;")
     elif mode == "Single Race":
-        cmd.onecmd("console.play ↓ ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕")
+        cmd.onecmd("console.play ↓ ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕ ; ; ;")
     elif mode == "Team Race":
-        cmd.onecmd("console.play ↓ ; ✕ ; ; ; ; ; ; ; ↓ ; ✕ ; ; ; ; ; ; ; ✕")
+        cmd.onecmd("console.play ↓ ; ✕ ; ; ; ; ; ; ; ↓ ; ✕ ; ; ; ; ; ; ; ✕ ; ; ;")
     else: 
-        cmd.onecmd("console.play ↓ ; ↓ ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕") # default to multiplayer
+        cmd.onecmd("console.play ↓ ; ↓ ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕ ; ; ;") # default to multiplayer
 
 def select_track(*args, **kwargs):
     cmd = kwargs['cmd']
