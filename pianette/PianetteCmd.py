@@ -153,6 +153,8 @@ class PianetteCmd(cmd.Cmd):
 
         args_string = args_string.upper()
 
+        args_string = args_string.replace("SUSTAIN", "𝆮")
+
         # print('Unpacked piano args string: "%s"' % (args_string))
         return args_string
 
