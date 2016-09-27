@@ -89,8 +89,6 @@ class Pianette:
                     "psx_controller": self.get_buffered_states_for_controls_string(controls_string)
                 })
 
-        print(self.pianette_buffered_states_mappings)
-
         # Assign a unique, combinable bitid to configured notes and pedals
         self._note_bitids = {}
         _current_note_bitid = 0b1
