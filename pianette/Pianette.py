@@ -70,29 +70,43 @@ class Pianette:
     def init_mappings(self, mappings):
         self.pianette_buffered_states_mappings = []
 
-        for notes_string, controls_string in mappings.items():
+        for piano_args_string, controls_string in mappings.items():
             if not isinstance(controls_string, str):
                 # Not a string, probably a configuration sub-section
                 pass
             else:
-                # Assume that some arguments in console commands include aliases for longer-to type arguments
-                notes_string = PianetteCmd.unpack_piano_args_string(notes_string)
+                # Assume that some arguments in piano and console commands include aliases for longer-to type arguments
+                piano_args_string = PianetteCmd.unpack_piano_args_string(piano_args_string)
                 controls_string = PianetteCmd.unpack_console_args_string(controls_string)
 
+                piano_args = piano_args_string.replace("+", " ").split()
+                piano_notes = [ piano_arg for piano_arg in piano_args if piano_arg in self.piano.get_supported_notes()]
+                piano_pedals = [ piano_arg for piano_arg in piano_args if piano_arg in self.piano.get_supported_pedals()]
+
                 self.pianette_buffered_states_mappings.append({
-                    "piano": notes_string.replace("+", " ").split(),
+                    "piano_notes": piano_notes,
+                    "piano_pedals": piano_pedals,
                     "psx_controller": self.get_buffered_states_for_controls_string(controls_string)
                 })
 
-        # Assign a unique, combinable bitid to configured notes
-        self._note_bitids = {}
+        print(self.pianette_buffered_states_mappings)
 
+        # Assign a unique, combinable bitid to configured notes and pedals
+        self._note_bitids = {}
         _current_note_bitid = 0b1
         for buffered_state_mapping in self.pianette_buffered_states_mappings:
-            for note in buffered_state_mapping["piano"]:
+            for note in buffered_state_mapping["piano_notes"]:
                 if not note in self._note_bitids:
                     self._note_bitids[note] = _current_note_bitid
                     _current_note_bitid <<= 1
+
+        self._pedal_bitids = {}
+        _current_pedal_bitid = _current_note_bitid
+        for buffered_state_mapping in self.pianette_buffered_states_mappings:
+            for pedal in buffered_state_mapping["piano_pedals"]:
+                if not pedal in self._pedal_bitids:
+                    self._pedal_bitids[pedal] = _current_pedal_bitid
+                    _current_pedal_bitid <<= 1
 
         # Structure Buffered States Mapping using Piano "Chords" bitids (combination of Note bitids)
         # Rank chords as follows:
@@ -103,9 +117,9 @@ class Pianette:
         self._buffered_states_mapping_for_chord_bitid = {}
         for buffered_state_mapping in self.pianette_buffered_states_mappings:
             chord_bitid = 0b0
-            note_count = len(buffered_state_mapping["piano"])
+            note_count = len(buffered_state_mapping["piano_notes"])
 
-            for note in buffered_state_mapping["piano"]:
+            for note in buffered_state_mapping["piano_notes"]:
                 chord_bitid |= self._note_bitids[note]
 
             self._buffered_states_mapping_for_chord_bitid[chord_bitid] = buffered_state_mapping
