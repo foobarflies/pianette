@@ -76,17 +76,27 @@ class Pianette:
                 pass
             else:
                 # Assume that some arguments in piano and console commands include aliases for longer-to type arguments
-                piano_args_string = PianetteCmd.unpack_piano_args_string(piano_args_string)
+                unpacked_piano_args_string = PianetteCmd.unpack_piano_args_string(piano_args_string)
                 controls_string = PianetteCmd.unpack_console_args_string(controls_string)
 
-                piano_args = piano_args_string.replace("+", " ").split()
+                piano_args = unpacked_piano_args_string.replace("+", " ").split()
                 piano_notes = [ piano_arg for piano_arg in piano_args if piano_arg in self.piano.get_supported_notes()]
                 piano_pedals = [ piano_arg for piano_arg in piano_args if piano_arg in self.piano.get_supported_pedals()]
+                if len(piano_pedals) > 1:
+                    raise PianetteConfigError("Mapping '%s' includes more than one pedal, this is currently unsupported" % (piano_args_string))
+                if len(piano_notes) > 0 and len(piano_pedals) > 0:
+                    raise PianetteConfigError("Mapping '%s' includes mixes notes and pedal, this is currently unsupported" % (piano_args_string))
+
+                duration_cycles = None
+                if piano_pedals:
+                    if len(controls_string.split()) > 1:
+                        raise PianetteConfigError("Mapping '%s' includes more than one buffered command, this is currently unsupported for pedals" % (controls_string))
+                    duration_cycles = 1
 
                 self.pianette_buffered_states_mappings.append({
                     "piano_notes": piano_notes,
-                    "piano_pedals": piano_pedals,
-                    "psx_controller": self.get_buffered_states_for_controls_string(controls_string)
+                    "piano_pedal": (piano_pedals[:1] or [None])[0], # First item or None
+                    "psx_controller": self.get_buffered_states_for_controls_string(controls_string, duration_cycles)
                 })
 
         # Assign a unique, combinable bitid to configured notes and pedals
@@ -101,10 +111,9 @@ class Pianette:
         self._pedal_bitids = {}
         _current_pedal_bitid = _current_note_bitid
         for buffered_state_mapping in self.pianette_buffered_states_mappings:
-            for pedal in buffered_state_mapping["piano_pedals"]:
-                if not pedal in self._pedal_bitids:
-                    self._pedal_bitids[pedal] = _current_pedal_bitid
-                    _current_pedal_bitid <<= 1
+            if buffered_state_mapping["piano_pedal"] is not None:
+                self._pedal_bitids[buffered_state_mapping["piano_pedal"]] = _current_pedal_bitid
+                _current_pedal_bitid <<= 1
 
         # Structure Buffered States Mapping using Piano "Chords" bitids (combination of Note bitids)
         # Rank chords as follows:
@@ -128,6 +137,12 @@ class Pianette:
         self._ranked_chord_bitids = []
         for note_count in sorted(list(_ranked_chord_bitids_for_note_count.keys()), reverse = True):
             self._ranked_chord_bitids.extend(_ranked_chord_bitids_for_note_count[note_count])
+
+        # Structure Buffered States Mapping using Pedal bitids
+        self._buffered_states_mapping_for_pedal_bitid = {}
+        for buffered_state_mapping in self.pianette_buffered_states_mappings:
+            if buffered_state_mapping["piano_pedal"] is not None:
+                self._buffered_states_mapping_for_pedal_bitid[self._pedal_bitids[buffered_state_mapping["piano_pedal"]]] = buffered_state_mapping
 
     def __init__(self, configobj=None):
         self.__init_using_configobj(configobj=configobj)
@@ -455,7 +470,7 @@ class Pianette:
             if self.piano.is_pedal_on(piano_pedal):
                 if not self.piano_buffered_pedal_states[piano_pedal]:
                     Debug.println("INFO", "Indefinitely buffering Piano Pedal %s" % (piano_pedal))
-                self.piano_buffered_pedal_states[piano_pedal].append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
+                self.piano_buffered_pedal_states[piano_pedal] = [{ "cycles_remaining": "∞" }]
             else:
                 if self.piano_buffered_pedal_states[piano_pedal]:
                     Debug.println("INFO", "Indefinitely unbuffering Piano Pedal %s" % (piano_pedal))
@@ -500,6 +515,20 @@ class Pianette:
                         if self._note_bitids[piano_note] & winning_chord_bitid:
                             if self.piano_buffered_note_states[piano_note]:
                                 self.piano_buffered_note_states[piano_note] = self.piano_buffered_note_states[piano_note][1:]
+
+        # Pedals buffer their own PSX controls in parallel of chord resolution
+        for piano_pedal in self.piano_buffered_pedal_states.keys():
+            for buffered_state in self.piano_buffered_pedal_states[piano_pedal]:
+                if buffered_state["cycles_remaining"] == "∞":
+                    if piano_pedal in self._pedal_bitids:
+                        # Unshift pedal command to PSX Controller buffer, merging with any pending combo
+                        psx_controller_states_for_pedal = self._buffered_states_mapping_for_pedal_bitid[self._pedal_bitids[piano_pedal]]["psx_controller"]
+                        for control, single_cycles_count in psx_controller_states_for_pedal.items():
+                            cycles_count = single_cycles_count[0]
+                            if not self.psx_controller_buffered_states[control]:
+                                self.psx_controller_buffered_states[control] = [ cycles_count ]
+                            elif self.psx_controller_buffered_states[control][0] < cycles_count:
+                                self.psx_controller_buffered_states[control][0] = cycles_count
 
         # Output PSX Controller Buffered states to PSX Controller
         triggered_controls = ""
