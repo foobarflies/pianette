@@ -448,11 +448,11 @@ class Pianette:
         for piano_pedal in self.piano.get_supported_pedals():
             if self.piano.is_pedal_on(piano_pedal):
                 if not self.piano_buffered_pedal_states[piano_pedal]:
-                    Debug.println("INFO", "Buffering Piano Pedal %s" % (piano_pedal))
+                    Debug.println("INFO", "Indefinitely buffering Piano Pedal %s" % (piano_pedal))
                 self.piano_buffered_pedal_states[piano_pedal].append({ "cycles_remaining": PIANETTE_PROCESSING_CYCLES })
             else:
                 if self.piano_buffered_pedal_states[piano_pedal]:
-                    Debug.println("INFO", "Unbuffering Piano Pedal %s" % (piano_pedal))
+                    Debug.println("INFO", "Indefinitely unbuffering Piano Pedal %s" % (piano_pedal))
                 self.piano_buffered_pedal_states[piano_pedal] = []
 
         # Process Buffered States: Determine piano note or chord
