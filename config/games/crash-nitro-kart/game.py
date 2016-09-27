@@ -61,4 +61,4 @@ def select_track(*args, **kwargs):
 
     Debug.println("NOTICE", "Choosing track '%s'" % track)
 
-    cmd.onecmd("console.play %s ; ✕" % config.get("Tracks").get(track))
+    cmd.onecmd("console.play %s ; ; ; ; ; ✕ " % config.get("Tracks").get(track))
