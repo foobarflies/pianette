@@ -298,10 +298,13 @@ class Pianette:
             full_mappings = game_mappings
 
         # Finally, override PIANETTE_CYCLE_PERIOD
+        global PIANETTE_CYCLE_PERIOD
         if self.selected_game_config.get('cycle-period') is not None:
-            global PIANETTE_CYCLE_PERIOD
             PIANETTE_CYCLE_PERIOD = float(self.selected_game_config.get('cycle-period'))
-            Debug.println("NOTICE", "Cycle period is now %f" % PIANETTE_CYCLE_PERIOD)
+            Debug.println("NOTICE", "The selected game overrides the cycle period : %f seconds" % PIANETTE_CYCLE_PERIOD)
+        else:
+            PIANETTE_CYCLE_PERIOD = float(self.configobj.get("Console").get('default-cycle-period'))
+            Debug.println("NOTICE", "Resetting the default cycle period : %f seconds" % PIANETTE_CYCLE_PERIOD)
 
         # Re-init the mappings
         self.init_mappings(full_mappings)
