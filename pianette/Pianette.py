@@ -265,7 +265,10 @@ class Pianette:
         player_mappings = self.selected_player_config.get("Mappings")
 
         # Merge the two dictionaries of keys
-        full_mappings = dict(game_mappings, **player_mappings);
+        if player_mappings is not None:
+            full_mappings = dict(game_mappings, **player_mappings);
+        else:
+            full_mappings = game_mappings
 
         # Re-init the mappings
         self.init_mappings(full_mappings)
