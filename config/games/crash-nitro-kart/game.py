@@ -30,10 +30,10 @@ def select_mode(*args, **kwargs):
     try:
         mode = " ".join(args[0])
     except IndexError:
-        Debug.println("WARNING", "You must define a mode (Mutiplayer Race, Single Race or Team Race)")
+        Debug.println("WARNING", "You must define a mode (Multiplayer Race, Single Race or Team Race)")
         return
 
-    if mode == "Mutiplayer Race":
+    if mode == "Multiplayer Race":
         cmd.onecmd("console.play ↓ ; ↓ ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ;")
     elif mode == "Single Race":
         cmd.onecmd("console.play ↓ ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ; ✕ ; ; ; ; ; ; ;")
