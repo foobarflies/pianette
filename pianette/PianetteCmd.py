@@ -182,7 +182,10 @@ class PianetteCmd(cmd.Cmd):
         # Is there a command defined in the configuration for this method ?
         commands = player_config.get("Commands").get(method)
         if commands is not None:
-            self.pianette.inputcmds(commands=commands, source="api") # TODO Fix source here
+            for command in commands.split("\n"):
+                if command.strip():
+                    self.onecmd(command)
+                    # time.sleep(0.25)
             return
 
         # In this case, let's ask the game module
