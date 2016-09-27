@@ -151,6 +151,8 @@ class PianetteCmd(cmd.Cmd):
         args_string = args_string.replace("b", "♭")
         args_string = args_string.replace("#", "♯")
 
+        args_string = args_string.upper()
+
         # print('Unpacked piano args string: "%s"' % (args_string))
         return args_string
 
