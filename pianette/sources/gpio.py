@@ -109,6 +109,63 @@ class GPIOConfigUtil:
 
         return GPIOConfigUtil.rpi_gpio_event_for_event.get(event, None)
 
+    # Polling
+
+    POLLING_STATUS_HIGH = "High"
+    POLLING_STATUS_LOW = "Low"
+
+    supported_polling_statuses = [ POLLING_STATUS_HIGH, POLLING_STATUS_LOW ]
+
+    @staticmethod
+    def is_supported_polling_status(polling_status):
+        return polling_status in GPIOConfigUtil.supported_polling_statuses
+
+    rpi_gpio_input_for_polling_status = {
+        POLLING_STATUS_HIGH: RPi.GPIO.HIGH,
+        POLLING_STATUS_LOW: RPi.GPIO.LOW,
+    }
+
+    @staticmethod
+    def get_rpi_gpio_input_for_polling_status(polling_status):
+        if not GPIOConfigUtil.is_supported_polling_status(polling_status):
+            raise PianetteGPIOConfigError("Unsupported GPIO polling status '%s'" % (polling_status))
+
+        if polling_status not in GPIOConfigUtil.rpi_gpio_input_for_polling_status.keys():
+            raise PianetteGPIOConfigError("Undefined GPIO input for polling status '%s'" % (polling_status))
+
+        return GPIOConfigUtil.rpi_gpio_input_for_polling_status.get(polling_status, None)
+
+    POLLING_EVENT_FALLING = "Falling"
+    POLLING_EVENT_RISING = "Rising"
+
+    supported_polling_events = [ POLLING_EVENT_FALLING, POLLING_EVENT_RISING ]
+
+    @staticmethod
+    def is_supported_polling_event(polling_event):
+        return polling_event in GPIOConfigUtil.supported_polling_events
+
+    polling_events = {
+        POLLING_EVENT_FALLING: {
+          'from': rpi_gpio_input_for_polling_status[POLLING_STATUS_HIGH],
+          'to': rpi_gpio_input_for_polling_status[POLLING_STATUS_LOW]
+        },
+        POLLING_EVENT_RISING: {
+          'from': rpi_gpio_input_for_polling_status[POLLING_STATUS_LOW],
+          'to': rpi_gpio_input_for_polling_status[POLLING_STATUS_HIGH]
+        }
+    }
+
+    @staticmethod
+    def get_matching_polling_event(from_status, to_status):
+        matching_polling_events = [ polling_event
+                                    for polling_event in GPIOConfigUtil.polling_events.keys()
+                                    if GPIOConfigUtil.polling_events.get(polling_event).get('from') == from_status
+                                    and GPIOConfigUtil.polling_events.get(polling_event).get('to') == to_status
+                                  ]
+        if not matching_polling_events:
+            return None
+        return matching_polling_events.pop(0)
+
 class gpio:
     def __init_using_configobj(self, configobj=None):
         self.configobj = configobj
@@ -196,6 +253,31 @@ class gpio:
                         bouncetime = 500 # HACK to prevent multiple play.reset events
                     RPi.GPIO.add_event_detect(rpi_gpio_channel, rpi_gpio_event, callback=self.define_command_callback(commands), bouncetime=bouncetime)
 
+            # Polling
+            self.polling_status_callbacks = {}
+            self.polling_event_callbacks = {}
+            self.last_polled_gpio_inputs = {}
+
+            gpio_input_polling_configobj = gpio_input_configobj.get("Polling", {})
+
+            gpio_input_polling_statuses_configobj = gpio_input_polling_configobj.get("Statuses", {})
+            for polling_status in gpio_input_polling_statuses_configobj.keys():
+                for channel, commands in gpio_input_polling_statuses_configobj[polling_status].items():
+                    rpi_gpio_channel = GPIOConfigUtil.get_rpi_gpio_channel(channel, channel_labeling)
+                    self.polling_status_callbacks[rpi_gpio_channel] = {
+                        GPIOConfigUtil.get_rpi_gpio_input_for_polling_status(polling_status): self.define_command_callback(commands)
+                    }
+                    self.last_polled_gpio_inputs[rpi_gpio_channel] = None
+
+            gpio_input_polling_events_configobj = gpio_input_polling_configobj.get("Events", {})
+            for polling_event in gpio_input_polling_events_configobj.keys():
+                for channel, commands in gpio_input_polling_events_configobj[polling_event].items():
+                    rpi_gpio_channel = GPIOConfigUtil.get_rpi_gpio_channel(channel, channel_labeling)
+                    self.polling_event_callbacks[rpi_gpio_channel] = {
+                        polling_event: self.define_command_callback(commands)
+                    }
+                    self.last_polled_gpio_inputs[rpi_gpio_channel] = None
+
         # Output
         gpio_output_configobj = gpio_configobj.get("Output")
         if gpio_output_configobj:
@@ -219,3 +301,30 @@ class gpio:
             self.pianette.inputcmds(commands, source="gpio")
 
         return command_callback
+
+    def poll(self):
+        channel_inputs = {}
+        channels_with_events = []
+
+        for channel in self.last_polled_gpio_inputs.keys():
+            polled_gpio_input = RPi.GPIO.input(channel)
+            channel_inputs[channel] = polled_gpio_input
+
+            if self.last_polled_gpio_inputs[channel] is not None:
+                matching_polling_event = GPIOConfigUtil.get_matching_polling_event(self.last_polled_gpio_inputs[channel], polled_gpio_input)
+                if (matching_polling_event is not None
+                    and channel in self.polling_event_callbacks
+                    and matching_polling_event in self.polling_event_callbacks[channel]
+                   ):
+                    channels_with_events.append(channel)
+                    Debug.println('INFO', 'Invoking polling event callback for channel %d, input %d, event %s' % (channel, polled_gpio_input, matching_polling_event))
+                    self.polling_event_callbacks[channel][matching_polling_event](channel)
+
+            self.last_polled_gpio_inputs[channel] = polled_gpio_input
+
+            if (channel not in channels_with_events
+                and channel in self.polling_status_callbacks
+                and polled_gpio_input in self.polling_status_callbacks[channel]
+               ):
+                Debug.println('INFO', 'Invoking polling callback for channel %d, input %d' % (channel, polled_gpio_input))
+                self.polling_status_callbacks[channel][polled_gpio_input](channel)
