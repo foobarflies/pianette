@@ -205,8 +205,22 @@ class Pianette:
 
     def get_source_instance(self, source):
         return self.sources[source]['instance']
-
+    
     def enable_source(self, source):
+        Debug.println("INFO", "Enabling Source '%s'" % (source))
+        if source in self.sources and self.sources[source]['instance'] is not None:
+            self.sources[source]['enabled'] = True
+        else:
+            raise PianetteConfigError("Source '%s' is not loaded yet" % (source))
+
+    def disable_source(self, source):
+        Debug.println("INFO", "Disabling Source '%s'" % (source))
+        if source in self.sources:
+            self.sources[source]['enabled'] = False
+        else:
+            raise PianetteConfigError("Source '%s' is not loaded yet" % (source))
+
+    def load_source(self, source):
         if source in self.sources and 'instance' in self.sources[source]:
             Debug.println("WARNING", "Source '%s' is already enabled" % (source))
             return
@@ -219,14 +233,14 @@ class Pianette:
         source_class = getattr(source_module, source)
         instance = source_class(configobj=self.configobj, pianette=self)
 
-        Debug.println("INFO", "Enabling Source '%s'" % (source))
+        Debug.println("INFO", "Loading Source '%s'" % (source))
         self.sources[source] = {
             'enabled': True,
             'instance': instance,
         }
 
-    def disable_source(self, source):
-        Debug.println("INFO", "Disabling Source '%s'" % (source))
+    def unload_source(self, source):
+        Debug.println("INFO", "Unloading Source '%s'" % (source))
         # Gives a chance for the source to disable itself
         if source in self.sources and 'instance' in self.sources[source]:
             try:

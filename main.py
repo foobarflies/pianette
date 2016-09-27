@@ -41,7 +41,7 @@ pianette.select_game(args.selected_game)
 
 if args.enabled_sources is not None:
     for source in args.enabled_sources:
-        pianette.enable_source(source)
+        pianette.load_source(source)
 
 # Run the main loop of interactive Pianette
 Debug.println("NOTICE", "Entering main loop")
