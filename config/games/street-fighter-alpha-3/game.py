@@ -9,7 +9,7 @@ def select_character(*args, **kwargs):
     player_config = kwargs['player_config']
 
     try:
-        character = args[0][0]
+        character = " ".join(args[0])
     except IndexError:
         Debug.println("WARNING", "You must define a character or pass {random}")
         return
@@ -47,7 +47,7 @@ def select_character(*args, **kwargs):
 def select_mode(*args, **kwargs):
     cmd = kwargs['cmd']
     try:
-        mode = args[0][0]
+        mode = " ".join(args[0])
     except IndexError:
         Debug.println("WARNING", "You must define a mode (Versus or Arcade)")
         return
@@ -70,7 +70,7 @@ def select_fighting_handicap(*args, **kwargs):
 def select_fighting_style(*args, **kwargs):
     cmd = kwargs['cmd']
     try:
-        style = args[0][0]
+        style = " ".join(args[0])
     except IndexError:
         Debug.println("WARNING", "You must define a style (A-ISM, X-ISM or V-ISM)")
         return
@@ -91,7 +91,7 @@ def select_stage(*args, **kwargs):
     cmd = kwargs['cmd']
     config = kwargs['config']
     try:
-        stage = args[0][0]
+        stage = " ".join(args[0])
     except IndexError:
         Debug.println("WARNING", "You must define a stage")
         return
