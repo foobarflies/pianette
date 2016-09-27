@@ -34,7 +34,8 @@ def select_character(*args, **kwargs):
     forwarding_direction = player_config.get('default-character-forwarding')
     # forwarded_character_mappings = {}
     Debug.println("NOTICE", "Applying default forwarding direction: %s" % forwarding_direction)
-    forwarded_character_mappings = { n: PianetteCmd.unpack(c, forwarding_direction) for n, c in character_mappings.items() }
+    forwarded_character_mappings = { n: PianetteCmd.unpack_console_args_string(c, forwarding_direction)
+                                     for n, c in character_mappings.items() }
 
     # Merge the three dictionaries of keys
     full_mappings = dict(game_mappings, **player_mappings)

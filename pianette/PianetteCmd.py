@@ -60,11 +60,11 @@ class PianetteCmd(cmd.Cmd):
 
         if namespace == "piano":
             # Assume that some arguments in piano commands include aliases for harder-to type characters
-            arg = PianetteCmd.unpack(arg)
+            arg = PianetteCmd.unpack_piano_args_string(arg)
 
         if namespace == "console":
             # Assume that some arguments in console commands include aliases for harder-to type characters
-            arg = PianetteCmd.unpack(arg)
+            arg = PianetteCmd.unpack_console_args_string(arg)
 
         # Insert safe spaces around "+" signs when arg is a string
         if (arg is not None and not isinstance(arg, list)):
@@ -116,38 +116,43 @@ class PianetteCmd(cmd.Cmd):
             self.pianette.stop_timer()
             return True
 
-    # Unpack aliases
     @staticmethod
-    def unpack(arg, forwarding_direction = None):
-        arg = arg.upper()
+    def unpack_console_args_string(args_string, forwarding_direction = None):
+        args_string = args_string.upper()
 
-        arg = arg.replace("b", "♭")
-        arg = arg.replace("#", "♯")
+        args_string = args_string.replace("SQUARE", "□")
+        args_string = args_string.replace("TRIANGLE", "△")
+        args_string = args_string.replace("CROSS", "✕")
+        args_string = args_string.replace("CIRCLE", "◯")
 
-        arg = arg.replace("SQUARE", "□")
-        arg = arg.replace("TRIANGLE", "△")
-        arg = arg.replace("CROSS", "✕")
-        arg = arg.replace("CIRCLE", "◯")
+        args_string = args_string.replace("↖", "← + ↑")
+        args_string = args_string.replace("↗", "↑ + →")
+        args_string = args_string.replace("↘", "→ + ↓")
+        args_string = args_string.replace("↙", "↓ + ←")
 
-        arg = arg.replace("↖", "← + ↑")
-        arg = arg.replace("↗", "↑ + →")
-        arg = arg.replace("↘", "→ + ↓")
-        arg = arg.replace("↙", "↓ + ←")
-
-        arg = arg.replace("UP", "↑")
-        arg = arg.replace("RIGHT", "→")
-        arg = arg.replace("DOWN", "↓")
-        arg = arg.replace("LEFT", "←")
+        args_string = args_string.replace("UP", "↑")
+        args_string = args_string.replace("RIGHT", "→")
+        args_string = args_string.replace("DOWN", "↓")
+        args_string = args_string.replace("LEFT", "←")
 
         if forwarding_direction is not None:
             backwarding_direction = "←" if forwarding_direction == "→" else "→"
             # All combos are supposed to be noted
             # as player 1 (e.g., forwarding right)
-            arg = arg.replace("→", "fw")
-            arg = arg.replace("←", backwarding_direction)
-            arg = arg.replace("fw", forwarding_direction)
+            args_string = args_string.replace("→", "fw")
+            args_string = args_string.replace("←", backwarding_direction)
+            args_string = args_string.replace("fw", forwarding_direction)
 
-        return arg
+        # print('Unpacked console args string: "%s"' % (args_string))
+        return args_string
+
+    @staticmethod
+    def unpack_piano_args_string(args_string):
+        args_string = args_string.replace("b", "♭")
+        args_string = args_string.replace("#", "♯")
+
+        # print('Unpacked piano args string: "%s"' % (args_string))
+        return args_string
 
     # Commands
     def do_console__hit(self, args):
