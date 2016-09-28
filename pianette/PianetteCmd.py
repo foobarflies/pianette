@@ -117,6 +117,10 @@ class PianetteCmd(cmd.Cmd):
             return True
 
     @staticmethod
+    def revert_direction(direction):
+        return "←" if direction == "→" else "→"
+
+    @staticmethod
     def unpack_console_args_string(args_string, forwarding_direction = None):
         args_string = args_string.upper()
 
@@ -136,11 +140,10 @@ class PianetteCmd(cmd.Cmd):
         args_string = args_string.replace("LEFT", "←")
 
         if forwarding_direction is not None:
-            backwarding_direction = "←" if forwarding_direction == "→" else "→"
             # All combos are supposed to be noted
             # as player 1 (e.g., forwarding right)
             args_string = args_string.replace("→", "fw")
-            args_string = args_string.replace("←", backwarding_direction)
+            args_string = args_string.replace("←", PianetteCmd.revert_direction(forwarding_direction))
             args_string = args_string.replace("fw", forwarding_direction)
 
         # print('Unpacked console args string: "%s"' % (args_string))

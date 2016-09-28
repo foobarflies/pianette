@@ -3,7 +3,13 @@ from pianette.utils import Debug
 from pianette.PianetteCmd import PianetteCmd
 import random
 
+FORWARDING_DIRECTION = None
+SELECTED_CHARACTER = None
+
 def select_character(*args, **kwargs):
+    global SELECTED_CHARACTER
+    global FORWARDING_DIRECTION
+
     cmd = kwargs['cmd']
     config = kwargs['config']
     player_config = kwargs['player_config']
@@ -25,16 +31,40 @@ def select_character(*args, **kwargs):
     # Process list of commands to obtain this character
     cmd.onecmd("console.play %s ✕" % player_config.get("Positions").get(character))
 
-    # We have to add the character's mappings
+    SELECTED_CHARACTER = character
+    # When selecting a character, we revert to its default forwarding direction
+    FORWARDING_DIRECTION = player_config.get('default-character-forwarding')
+    
+    reapply_character_mappings(cmd, config, player_config)
+
+def flip(*args, **kwargs):
+    global FORWARDING_DIRECTION
+    FORWARDING_DIRECTION = PianetteCmd.revert_direction(FORWARDING_DIRECTION)
+
+    cmd = kwargs['cmd']
+    config = kwargs['config']
+    player_config = kwargs['player_config']
+
+    reapply_character_mappings(cmd, config, player_config)
+
+def reapply_character_mappings(cmd, config, player_config):
+    global FORWARDING_DIRECTION
+    global SELECTED_CHARACTER
+
+    if SELECTED_CHARACTER is None:
+        Debug.println("FAIL", "You must select a character first")
+        return
+
+    if FORWARDING_DIRECTION is None:
+        FORWARDING_DIRECTION = player_config.get('default-character-forwarding')
+        
+    # Get all the config
     game_mappings = config.get("Mappings")
     player_mappings = player_config.get("Mappings")
-    character_mappings = config.get("Mappings").get(character)
+    character_mappings = game_mappings.get(SELECTED_CHARACTER)
 
-    # Character mappings are 'flippable'
-    forwarding_direction = player_config.get('default-character-forwarding')
-    # forwarded_character_mappings = {}
-    Debug.println("NOTICE", "Applying default forwarding direction: %s" % forwarding_direction)
-    forwarded_character_mappings = { n: PianetteCmd.unpack_console_args_string(c, forwarding_direction)
+    Debug.println("NOTICE", "Applying forwarding direction: %s" % FORWARDING_DIRECTION)
+    forwarded_character_mappings = { n: PianetteCmd.unpack_console_args_string(c, FORWARDING_DIRECTION)
                                      for n, c in character_mappings.items() }
 
     # Merge the three dictionaries of keys
