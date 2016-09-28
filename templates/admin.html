@@ -24,6 +24,9 @@
 
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
         <style>
+            button.small-triangle {
+                background: url("{{ url_for('static', filename='images/triangle.png') }}") no-repeat center center #373737;
+            }
             button.small-cross {
                 background: url("{{ url_for('static', filename='images/cross.png') }}") no-repeat center center #373737;
             }
@@ -46,7 +49,7 @@
             <h2>{{ host|upper }}</h2>
 
             <div class="actions">
-                <button data-namespace="game" data-command="reset" data-args="" data-player="{{ host }}" class="button button-multiline state neutral">Game RESET</button>
+                <button data-namespace="console" data-command="play" data-args="START" data-player="{{ host }}" class="button button-multiline state neutral">Console START</button>
                 <div class="small-controller">
                     <button data-namespace="console" data-command="play" data-player="{{ host }}" data-args="↑" class="button up">↑</button>
                     <button data-namespace="console" data-command="play" data-player="{{ host }}" data-args="→" class="button right">→</button>
@@ -54,7 +57,7 @@
                     <button data-namespace="console" data-command="play" data-player="{{ host }}" data-args="←" class="button left">←</button>
                 </div>
                 <div class="small-buttons">
-                    <button data-namespace="console" data-command="play" data-args="START" data-player="{{ host }}" class="button button-multiline">START</button>
+                    <button data-namespace="console" data-command="play" data-player="{{ host }}" data-args="△" class="button button-multiline small-triangle"></button>
                     <button data-namespace="console" data-command="play" data-player="{{ host }}" data-args="✕" class="button button-multiline small-cross"></button>
                 </div>
             </div>
@@ -64,6 +67,7 @@
         <h1>Broadcast actions *</h1>
 
          <div class="actions">
+            <button data-namespace="game" data-command="reset" data-args="" data-player="*" class="button button-multiline state neutral">Game RESET</button>
             <button data-namespace="game" data-command="start" data-args="" data-player="*" class="button button-multiline state neutral">Game START</button>
             <button data-namespace="game" data-command="flip" data-args="" data-player="*" class="button button-multiline state neutral">Game FLIP</button>
             <button data-namespace="game" data-command="pause" data-args="" data-player="*" class="button button-multiline state">Game PAUSE</button>
