@@ -94,6 +94,47 @@ body.admin .cli .button {
 body.admin .split-admin-panel {
     display: inline-block;
 }
+body.admin .small-controller,
+body.admin .small-buttons {
+    position: relative;
+    display: inline-block;
+    height: 10.75em;
+    width: 10.75em;
+    box-sizing: content-box;
+    line-height: 4.75em;
+    vertical-align: top;
+    margin-right: 10px;
+}
+body.admin .small-controller .button{
+    height: 2em;
+    width: 2em;
+    line-height: 1em;
+    margin: 0;
+    position: absolute;
+}
+body.admin .small-controller .button.up {
+    margin-left: -1em; 
+}
+body.admin .small-controller .button.down {
+    margin-left: -1em;
+}
+body.admin .small-controller .button.left {
+    margin-top: -1em; 
+}
+body.admin .small-controller .button.right {
+    margin-top: -1em;
+}
+body.admin .small-buttons .button {
+    display: block;
+    height: 3.25em;
+    width: 100%;
+    line-height: 1em;
+    font-size: 1.5em;
+    padding: 0 10px;
+}
+body.admin .small-buttons .button:after {
+    display: none;
+}
 
 h1 {
     width: 100%;

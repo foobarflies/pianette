@@ -23,7 +23,11 @@
         <link rel="manifest" href="{{ url_for('static', filename='manifest/manifest.json') }}">
 
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-
+        <style>
+            button.small-cross {
+                background: url("{{ url_for('static', filename='images/cross.png') }}") no-repeat center center #373737;
+            }
+        </style>
     </head>
     <body class="controller admin">
         <h1>Available Game configurations</h1>
@@ -42,8 +46,17 @@
             <h2>{{ host|upper }}</h2>
 
             <div class="actions">
-                <button data-namespace="console" data-command="play" data-args="START" data-player="{{ host }}" class="button button-multiline state neutral">Console START</button>
                 <button data-namespace="game" data-command="reset" data-args="" data-player="{{ host }}" class="button button-multiline state neutral">Game RESET</button>
+                <div class="small-controller">
+                    <button data-namespace="console" data-command="play" data-player="{{ host }}" data-args="↑" class="button up">↑</button>
+                    <button data-namespace="console" data-command="play" data-player="{{ host }}" data-args="→" class="button right">→</button>
+                    <button data-namespace="console" data-command="play" data-player="{{ host }}" data-args="↓" class="button down">↓</button>
+                    <button data-namespace="console" data-command="play" data-player="{{ host }}" data-args="←" class="button left">←</button>
+                </div>
+                <div class="small-buttons">
+                    <button data-namespace="console" data-command="play" data-args="START" data-player="{{ host }}" class="button button-multiline">START</button>
+                    <button data-namespace="console" data-command="play" data-player="{{ host }}" data-args="✕" class="button button-multiline small-cross"></button>
+                </div>
             </div>
         </div>
         {% endfor %}
@@ -52,6 +65,7 @@
 
          <div class="actions">
             <button data-namespace="game" data-command="start" data-args="" data-player="*" class="button button-multiline state neutral">Game START</button>
+            <button data-namespace="game" data-command="flip" data-args="" data-player="*" class="button button-multiline state neutral">Game FLIP</button>
             <button data-namespace="game" data-command="pause" data-args="" data-player="*" class="button button-multiline state">Game PAUSE</button>
             <button data-namespace="game" data-command="resume" data-args="" data-player="*" class="button button-multiline state">Game RESUME</button>
         </div>
