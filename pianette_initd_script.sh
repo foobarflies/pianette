@@ -12,7 +12,7 @@
 is_running(){
     running_processes=`ps axf | grep "python3 /home/pi/pianette/main.py" | wc -l`
 
-    if [ "$running_processes" -gt 2 ]; then
+    if [ "$running_processes" -ge 2 ]; then
         echo 1
     else
         echo 0
