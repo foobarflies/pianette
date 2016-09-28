@@ -185,7 +185,6 @@ class PianetteCmd(cmd.Cmd):
             for command in commands.split("\n"):
                 if command.strip():
                     self.onecmd(command)
-                    # time.sleep(0.25)
             return
 
         # In this case, let's ask the game module
