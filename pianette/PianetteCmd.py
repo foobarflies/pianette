@@ -128,6 +128,11 @@ class PianetteCmd(cmd.Cmd):
 
     @staticmethod
     def unpack_console_args_string(args_string, forwarding_direction = None):
+        args_string = args_string.replace('↖', '← + ↑')
+        args_string = args_string.replace('↗', '↑ + →')
+        args_string = args_string.replace('↘', '→ + ↓')
+        args_string = args_string.replace('↙', '↓ + ←')
+
         args_string = args_string.upper()
 
         args_string = PianetteCmd.unpack_aliases(
@@ -136,10 +141,6 @@ class PianetteCmd(cmd.Cmd):
                 'TRIANGLE': '△',
                 'CROSS': '✕',
                 'CIRCLE': '◯',
-                '↖': '← + ↑',
-                '↗': '↑ + →',
-                '↘': '→ + ↓',
-                '↙': '↓ + ←',
                 'UP': '↑',
                 'RIGHT': '→',
                 'DOWN': '↓',
