@@ -4,7 +4,7 @@ A full-fledged retro-engineering of a Playstation 2 Game Pad Controller that asy
 
 _Written in Python_
 
-You can find more info on [this article](http://www.foobarflies.io/pianette/) we wrote and on the corresponding [hacknernews discussion](https://news.ycombinator.com/item?id=9071205).
+You can find more info on [this article](https://www.foobarflies.io/pianette/) we wrote and on the corresponding [hacknernews discussion](https://news.ycombinator.com/item?id=9071205).
 
 ## Running Pianette
 
@@ -330,7 +330,7 @@ See the `pianette_initd_script.sh` script, to put in `/etc/init.d/` or wherever 
 
 #### Python version
 
-For [Flask](http://flask.pocoo.org/) to run correctly, we need **Python3.3.6**. It is recommended to use **pyenv** to use it, which can be installed via :
+For [Flask](https://flask.palletsprojects.com/en/1.1.x/) to run correctly, we need **Python3.3.6**. It is recommended to use **pyenv** to use it, which can be installed via :
 
     curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
 
@@ -340,8 +340,8 @@ and then :
 
 ## Team
 
-  - **Coox** — [http://coox.org](http://coox.org)
-  - **Tchap** — [http://tchap.me](http://tchap.me)
+  - **Coox** — [https://coox.org](https://coox.org)
+  - **Tchap** — [https://tchap.me](https://tchap.me)
 
 ## License
 
