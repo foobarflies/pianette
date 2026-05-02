@@ -4,7 +4,7 @@ A full-fledged retro-engineering of a Playstation 2 Game Pad Controller that asy
 
 _Written in Python_
 
-You can find more info on [this article](https://www.foobarflies.io/pianette/) we wrote and on the corresponding [hacknernews discussion](https://news.ycombinator.com/item?id=9071205).
+You can find more info on [this article](https://tchap.me/blog/pianette/) we wrote and on the corresponding [hacknernews discussion](https://news.ycombinator.com/item?id=9071205).
 
 ## Running Pianette
 
